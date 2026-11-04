@@ -7,7 +7,7 @@ try {const saved=JSON.parse(localStorage.getItem(KEY));for(const k of Object.key
 const update=()=>{document.body.dataset.kitchenMotion=preferences.motion?'on':'off';listeners.forEach(f=>f());};
 update();
 let gestureReady=false;
-const unlockFeedback=()=>{gestureReady=true;};
+const unlockFeedback=event=>{if(event.isTrusted)gestureReady=true;};
 document.addEventListener('pointerdown',unlockFeedback,{capture:true});
 document.addEventListener('keydown',unlockFeedback,{capture:true});
 export function kitchenFeedback(kind='tap') {

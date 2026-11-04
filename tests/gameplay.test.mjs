@@ -35,3 +35,10 @@ test('hold seasons once; swipe and pointercancel never season or flip; keyboard 
  g.click({detail:0});assert.equal(flips,1);
  g.down(down);g.up();g.click({detail:1});assert.equal(flips,2);
 });
+
+test('unpaid quote follows delayed content, successful first payment fixes subsequent portions',async()=>{
+ const {quotedDiscount}=await import('../src/games/meal-pricing.js');
+ const unpaid={discountFactor:1};assert.equal(quotedDiscount(unpaid,1),1);assert.equal(quotedDiscount(unpaid,.5),.5);
+ const paid={discountFactor:.5,discountCaptured:true};assert.equal(quotedDiscount(paid,.75),.5);assert.equal(quotedDiscount(paid,1),.5);
+ assert.equal(quotedDiscount({...paid,discountCaptured:false},.75),.75);
+});

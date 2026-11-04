@@ -1,6 +1,7 @@
+import {quotedDiscount} from "./meal-pricing.js";
 import {isolateModal} from "../modal-isolation.js";
 import {DEV_TOOLS} from "../runtime.js";
-import {getStoreDiscount,resolveStoreId} from "../content-client.js";
+import {getStoreDiscount,resolveStoreId,useStreet,storeTerms} from "../content-client.js";
 import {discountedCoins} from "../content-model.js";
 import {seedMeal,buddyById,companionLine} from "./outing-model.js";
 import {readOuting,peekOuting,consumeOuting} from "./outing-store.js";
@@ -15,6 +16,7 @@ import {FeedbackSettings,kitchenFeedback,useDockClearance} from "./experience.js
 export const h = React.createElement;
 const RoundContext = React.createContext(null);
 export function useEngine(game, reducer, initial) {
+  useStreet();
   const [state, rawDispatch] = React.useReducer(
       (previous, event) => {
         if(event.paymentGuard && (previous.runId !== event.paymentGuard.runId || previous.phase !== event.paymentGuard.phase || previous.serial !== event.paymentGuard.serial))return previous;
@@ -27,7 +29,8 @@ export function useEngine(game, reducer, initial) {
               companionId:["reset","next"].includes(event.type)?readOuting().buddyId:previous.companionId,
               interaction: !["tick","pause","reset","next"].includes(event.type) ? {type:event.type,serial:(previous.interaction?.serial || 0)+1,target:event.key} : previous.interaction,
               storeId:["reset","next"].includes(event.type)?resolveStoreId(game):previous.storeId,
-              discountFactor:["reset","next"].includes(event.type)?getStoreDiscount(game):previous.discountFactor,
+              discountCaptured:["reset","next"].includes(event.type)?false:previous.discountCaptured||Boolean(event.paidAmount),
+              discountFactor:event.paidAmount?event.paidFactor:previous.discountFactor,
               runId: ["reset","next"].includes(event.type) ? newRunId(game) : previous.runId,
             };
       },
@@ -35,7 +38,8 @@ export function useEngine(game, reducer, initial) {
       () => {const plan=peekOuting(game);return {...seedMeal(game,initial(),plan,plan?.buddyId||readOuting().buddyId),storeId:resolveStoreId(game),discountFactor:getStoreDiscount(game),runId:newRunId(game)};},
     ),
     latest = React.useRef(state);
-  latest.current = state;
+  const quotedState={...state,discountFactor:quotedDiscount(state,getStoreDiscount(state.storeId||game))};
+  latest.current = quotedState;
   React.useEffect(()=>{if(state.outingPlan?.token)consumeOuting(state.outingPlan.token);},[state.runId]);
   const {wallet:liveWallet}=useWallet();
   React.useEffect(()=>{
@@ -53,7 +57,11 @@ export function useEngine(game, reducer, initial) {
       const current=latest.current;paying.current=true;setPaymentPending(true);
       refundMeal(current.runId).then(()=>{if(active.current){rawDispatch({type:"reset"});setPaymentMessage("已撤销这盘，金币原路退回。");}}).finally(()=>{paying.current=false;setPaymentPending(false);});return;
     }
-    const current=latest.current, next=reducer(current,event);
+    const current=latest.current;
+    if(["reset","next"].includes(event.type)&&storeTerms(current.storeId||game).status==="closed") {
+      setPaymentMessage("小店正在歇业，这餐留着慢慢回味，先逛逛其他小店吧。");return;
+    }
+    const next=reducer(current,event);
     if(next === current) return;
     let amount=0;
     if(game === "bbq" && event.type === "start") amount=current.selected.reduce((n,f)=>n+f.price,0);
@@ -62,6 +70,9 @@ export function useEngine(game, reducer, initial) {
     if(game === "hotpot" && event.type === "add_batch")amount=event.ids.reduce((n,id)=>n+(POT_MENU.find(f=>f.id===id)?.price||0),0);
     if(game === "hotpot" && event.type === "add") amount=POT_MENU.find(f=>f.id===event.id)?.price || 0;
     if(!amount) {kitchenFeedback(event.type === "deliver"?"fold":event.type);rawDispatch(event);return;}
+    if(storeTerms(current.storeId||game).status==="closed"&&!liveWallet.orders[current.runId]) {
+      setPaymentMessage("小店正在歇业，暂时不能新下单，先逛逛其他小店吧。");return;
+    }
     amount=discountedCoins(amount,current.discountFactor);
     const names={bbq:"烧烤",tea:"奶茶",breakfast:"早餐套餐",hotpot:"火锅食材"};
     rawDispatch({type:"pause",value:true});
@@ -74,7 +85,7 @@ export function useEngine(game, reducer, initial) {
         if(!active.current){if(result.status === "paid")await refundMeal(current.runId);return;}
         if(result.status === "paid") {
           rawDispatch({type:"pause",value:resume});
-          rawDispatch({...event,paidAmount:amount,paymentGuard:{runId:current.runId,phase:current.phase,serial:current.serial}});
+          rawDispatch({...event,paidAmount:amount,paidFactor:current.discountFactor,paymentGuard:{runId:current.runId,phase:current.phase,serial:current.serial}});
           kitchenFeedback("coin");setCheckout(null);setPaymentMessage(`拍下 ${amount} 金币，开做啦！`);
         } else {rawDispatch({type:"pause",value:resume});setPaymentMessage(result.status === "insufficient"?"金币不够，换个搭配或明天再来领100金币。":"这份订单已结束，请重新选餐。");}
       }catch{rawDispatch({type:"pause",value:resume});setPaymentMessage("这次没能下单，请再点一次。");}
@@ -155,7 +166,7 @@ export function useEngine(game, reducer, initial) {
       return()=>cancelAnimationFrame(frame);
     }
   }, [state.phase]);
-  return [{...state,checkout,paymentMessage,paymentPending,balance:liveWallet.balance,canInteract:()=>!paying.current&&!checkout&&!(latest.current.paused&&!["result","shift"].includes(latest.current.phase))}, dispatch];
+  return [{...quotedState,checkout,paymentMessage,paymentPending,balance:liveWallet.balance,canInteract:()=>!paying.current&&!checkout&&!(latest.current.paused&&!["result","shift"].includes(latest.current.phase))}, dispatch];
 }
 export const action =
   (dispatch, type, extra = {}) =>
