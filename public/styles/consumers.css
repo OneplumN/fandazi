@@ -1,0 +1,21 @@
+.favorite-store,.store-enter,.review-stars button,.receipt-signature button{min-height:44px;min-width:44px;touch-action:manipulation}
+.favorite-store{border:1px solid #bba58a;border-radius:18px;background:#fff9ed;color:#78513d;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer;margin:8px 0}
+.favorite-store[aria-pressed=true]{background:#f9e6ce;color:#8b4a34}
+.store-card .store-enter{display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:#78513d;text-decoration:none;padding:6px}
+.store-enter[aria-disabled=true]{color:#7c7468;cursor:default}
+.street-chat{font-size:14px;color:#745b48;line-height:1.7;padding:10px 14px;border-radius:16px;background:#fff4dc;overflow-wrap:anywhere}
+.regular-welcome{margin:12px auto;max-width:920px;padding:12px 20px;border-radius:20px;background:#fff5df;color:#654632;line-height:1.7}
+.regular-welcome:has(>.favorite-store:only-child){background:transparent;margin-bottom:0;padding-top:0;padding-bottom:0}
+.regular-welcome p{margin:5px 0;overflow-wrap:anywhere}
+.meal-review{margin:24px 0;padding:20px;border:1px dashed #c6ae8d;border-radius:20px;background:#fffaf0}
+.meal-review h3{margin:0 0 8px}.meal-review p{font-size:14px;color:#7d6855;line-height:1.65}
+.review-stars{display:flex;gap:4px;margin-bottom:12px}.review-stars button{border:0;background:transparent;font-size:32px;color:#aa693d;cursor:pointer;border-radius:12px}
+.review-stars button[aria-pressed=true]{background:#f9e6ce}
+.meal-review label,.receipt-note{display:block;font-size:14px;line-height:1.7;margin:16px 0;color:#654632}
+.meal-review textarea,.receipt-note textarea{display:block;width:100%;box-sizing:border-box;resize:vertical;min-height:80px;border:1px solid #c4ac8b;border-radius:12px;background:#fffdf7;color:#523d2c;padding:12px;font:inherit;line-height:1.7}
+.meal-review small{display:block;min-height:24px;margin-top:8px}
+.receipt-signature{margin:12px 0}.receipt-signature p{font-size:14px;color:#745b48}.receipt-signature canvas{display:block;width:100%;height:160px;box-sizing:border-box;background:#fffdf7;border:1px dashed #b8a082;border-radius:12px;touch-action:none}
+.reviews-page{max-width:800px;margin:auto;padding:24px 20px}.review-summary{display:flex;flex-direction:column;gap:12px;background:#fff2db;border-radius:20px;padding:20px;margin:24px 0}.review-entry{padding:20px;background:#fffbf2;border:1px solid #d3bfa0;border-radius:20px;margin:16px 0;overflow-wrap:anywhere}.review-entry h2{font-size:20px;margin:0 0 8px}.review-entry time{font-size:13px;color:#806b56}.review-entry p{line-height:1.8}.reviews-page .memento-image{max-width:100%;height:auto}
+.favorite-store:focus-visible,.store-enter:focus-visible,.review-stars button:focus-visible,.meal-review textarea:focus-visible,.receipt-note textarea:focus-visible{outline:3px solid #9b7047;outline-offset:3px}
+@media(max-width:400px){.meal-review{padding:14px}.regular-welcome{margin:8px 12px;padding:12px}.review-stars{gap:0}.review-stars button{font-size:28px}.store-card-bottom{flex-wrap:wrap;gap:8px}}
+@media(prefers-reduced-motion:reduce){.review-stars button,.favorite-store{transition:none;animation:none}}

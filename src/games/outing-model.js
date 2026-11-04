@@ -1,3 +1,4 @@
+import {discountedCoins} from '../content-model.js';
 import {GRILL_MENU,POT_MENU,FILLINGS,teaPrice} from './rules.js';
 export const COMPANIONS=[
  {id:'wan',name:'丸丸',tag:'随性搭子',intro:'好吃比纠结重要，今天我陪你随便搭。',color:'#C77850'},
@@ -10,28 +11,31 @@ export function malatangCost(entries,menu,settings){
  const total=entries.reduce((sum,e)=>{const f=menu.find(f=>f.id===e.id&&f.enabled!==false);if(!f)return sum;const rate=settings.separatePricing?settings.priceGroups?.[f.priceGroup]:settings.pricePerJin;return sum+f.unitWeightG*e.qty/500*(Number.isFinite(rate)&&rate>=0?rate:19.8);},0);
  return entries.length?Math.max(1,Math.ceil(total)):0;
 }
-export function makeMealPlan({buddyId='wan',budget=20,taste='any',balance=100,round=0,menu=[],settings={pricePerJin:19.8}}){
+export function makeMealPlan({buddyId='wan',budget=20,taste='any',balance=100,round=0,menu=[],settings={pricePerJin:19.8},discounts={},closed=[],favorites=[]}){
+ const factor=id=>discounts[id]||1,price=(n,id)=>discountedCoins(n,factor(id));
+ settings={...settings,pricePerJin:(settings.pricePerJin??19.8)*factor('malatang'),priceGroups:Object.fromEntries(Object.entries(settings.priceGroups||{}).map(([k,v])=>[k,v*factor('malatang')]))};
  const buddy=buddyById(buddyId),limit=Math.max(0,Math.min(Number.isFinite(budget)?budget:20,Number.isFinite(balance)?balance:0));
  const wantsSpicy=taste==='spicy',ids=buddy.id==='lin'?['spinach','xianggu','dongdoufu','oupian','fensi']:buddy.id==='wang'?['feiniujuan','niurouwan','spinach','fensi','dongdoufu']:['spinach','xianggu','niurouwan','fensi','dongdoufu'];
  let entries=ids.filter(id=>menu.some(f=>f.id===id&&f.enabled!==false)).map(id=>({id,qty:1}));
  while(entries.length&&malatangCost(entries,menu,settings)>limit)entries.pop();
  const bbqIds=buddy.id==='lin'?['mushroom','tofu','broccoli']:buddy.id==='wang'?['lamb','chicken','corn']:['lamb','sausage','mushroom'];
- let skewers=bbqIds.slice();while(skewers.length&&skewers.reduce((n,id)=>n+GRILL_MENU.find(f=>f.id===id).price,0)>limit)skewers.pop();
+ let skewers=bbqIds.slice();while(skewers.length&&price(skewers.reduce((n,id)=>n+GRILL_MENU.find(f=>f.id===id).price,0),'bbq')>limit)skewers.pop();
  let potIds=buddy.id==='lin'?['spinach','xianggu','dongdoufu','helandou']:buddy.id==='wang'?['feiniujuan','kuanfen','dongdoufu']:['xiahua','oupian','spinach'];
- while(potIds.length&&potIds.reduce((n,id)=>n+POT_MENU.find(f=>f.id===id).price,0)>limit)potIds.pop();
+ while(potIds.length&&price(potIds.reduce((n,id)=>n+POT_MENU.find(f=>f.id===id).price,0),'hotpot')>limit)potIds.pop();
  const tea={tea:buddy.id==='lin'?'jasmine':buddy.id==='wang'?'cocoa':'black',milk:buddy.id==='lin'?'无奶':'鲜奶',sugar:buddy.id==='lin'||taste==='light'?25:50,ice:'少冰',size:500,toppings:buddy.id==='lin'?['coconut']:['pearl']};
- if(teaPrice(tea)>limit)tea.toppings=[];if(teaPrice(tea)>limit)tea.milk='无奶';
+ if(price(teaPrice(tea),'tea')>limit)tea.toppings=[];if(price(teaPrice(tea),'tea')>limit)tea.milk='无奶';
  const fillings=buddy.id==='lin'?['lettuce','huanggua']:buddy.id==='wang'?['huotuichang','youtiao']:['lettuce','peigen'];
  const candidates=[
   entries.length&&{game:'malatang',title:wantsSpicy?'热辣一盆':'随心热乎一盆',cost:malatangCost(entries,menu,settings),recipe:{entries,spice:wantsSpicy?'中辣':'不辣'},foods:entries.map(e=>menu.find(f=>f.id===e.id))},
-  skewers.length&&{game:'bbq',title:wantsSpicy?'辣香小烤盘':'香香小烤盘',cost:skewers.reduce((n,id)=>n+GRILL_MENU.find(f=>f.id===id).price,0),recipe:{ids:skewers,season:wantsSpicy?'辣椒':buddy.id==='lin'?'蜜汁':'孜然'},foods:skewers.map(id=>GRILL_MENU.find(f=>f.id===id))},
-  teaPrice(tea)<=limit&&{game:'tea',title:buddy.id==='lin'?'清爽茉莉小料茶':'今天的珍珠奶茶',cost:teaPrice(tea),recipe:tea,foods:[]},
-  potIds.length&&{game:'hotpot',title:wantsSpicy?'一锅热辣':'清汤慢慢涮',cost:potIds.reduce((n,id)=>n+POT_MENU.find(f=>f.id===id).price,0),recipe:{ids:potIds,broth:wantsSpicy?'麻辣红汤':'三鲜清汤'},foods:potIds.map(id=>POT_MENU.find(f=>f.id===id))},
-  limit>=10&&{game:'breakfast',title:'加蛋配菜煎饼',cost:10,recipe:{base:'煎饼',egg:true,fillings,sauce:wantsSpicy?'辣酱':'甜面酱'},foods:fillings.map(id=>FILLINGS.find(f=>f.id===id))},
- ].filter(Boolean).filter(p=>taste==='drink'?p.game==='tea':taste==='spicy'?p.game!=='tea':true);
+  skewers.length&&{game:'bbq',title:wantsSpicy?'辣香小烤盘':'香香小烤盘',cost:price(skewers.reduce((n,id)=>n+GRILL_MENU.find(f=>f.id===id).price,0),'bbq'),recipe:{ids:skewers,season:wantsSpicy?'辣椒':buddy.id==='lin'?'蜜汁':'孜然'},foods:skewers.map(id=>GRILL_MENU.find(f=>f.id===id))},
+  price(teaPrice(tea),'tea')<=limit&&{game:'tea',title:buddy.id==='lin'?'清爽茉莉小料茶':'今天的珍珠奶茶',cost:price(teaPrice(tea),'tea'),recipe:tea,foods:[]},
+  potIds.length&&{game:'hotpot',title:wantsSpicy?'一锅热辣':'清汤慢慢涮',cost:price(potIds.reduce((n,id)=>n+POT_MENU.find(f=>f.id===id).price,0),'hotpot'),recipe:{ids:potIds,broth:wantsSpicy?'麻辣红汤':'三鲜清汤'},foods:potIds.map(id=>POT_MENU.find(f=>f.id===id))},
+  limit>=price(10,'breakfast')&&{game:'breakfast',title:'加蛋配菜煎饼',cost:price(10,'breakfast'),recipe:{base:'煎饼',egg:true,fillings,sauce:wantsSpicy?'辣酱':'甜面酱'},foods:fillings.map(id=>FILLINGS.find(f=>f.id===id))},
+ ].filter(Boolean).filter(p=>!closed.includes(p.game)).filter(p=>taste==='drink'?p.game==='tea':taste==='spicy'?p.game!=='tea':true);
  if(!candidates.length)return null;
- const offset=buddy.id==='lin'?2:buddy.id==='wang'?1:0,plan=candidates[(Math.max(0,Math.floor(round))+offset)%candidates.length];
- return {...plan,buddyId:buddy.id,budget,taste,storeName:STORE_NAMES[plan.game],foods:plan.foods.map(f=>({id:f.food||f.id,name:f.name})),reason:taste==='drink'?'想喝点甜的，先来一杯。':taste==='light'?'你说想清爽一点，这份先不加辣。':wantsSpicy?'今天想吃辣，就挑这份热闹的。':buddy.id==='wang'?'有主角也有配菜，踏实吃一顿。':buddy.id==='lin'?'给自己留点清爽的选择。':'别纠结啦，这顿先从这里开始。'};
+ candidates.sort((a,b)=>Number(favorites.includes(b.game))-Number(favorites.includes(a.game)));
+ const offset=favorites.some(id=>candidates.some(p=>p.game===id))?0:buddy.id==='lin'?2:buddy.id==='wang'?1:0,plan=candidates[(Math.max(0,Math.floor(round))+offset)%candidates.length];
+ return {...plan,buddyId:buddy.id,budget,taste,storeName:STORE_NAMES[plan.game],foods:plan.foods.map(f=>({id:f.food||f.id,name:f.name})),reason:favorites.includes(plan.game)?'你收藏的这家我还记得，今天一起再去尝尝？':taste==='drink'?'想喝点甜的，先来一杯。':taste==='light'?'你说想清爽一点，这份先不加辣。':wantsSpicy?'今天想吃辣，就挑这份热闹的。':buddy.id==='wang'?'有主角也有配菜，踏实吃一顿。':buddy.id==='lin'?'给自己留点清爽的选择。':'别纠结啦，这顿先从这里开始。'};
 }
 export function seedMeal(game,base,plan,buddyId){
  const state={...base,companionId:buddyById(buddyId).id};

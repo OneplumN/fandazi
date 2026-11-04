@@ -1,11 +1,14 @@
+import {useStreet} from '../content-client.js';
+import {useConsumer} from './consumer-store.js';
 import {X as React} from '../../vendor/react-runtime.js';
 import {COMPANIONS,buddyById,makeMealPlan} from './outing-model.js';
 import {useOuting,chooseOuting,prepareOuting} from './outing-store.js';
 const h=React.createElement;
 export function TodayMeal({api,balance}){
+ const {content}=useStreet(),{profile:consumer}=useConsumer();
  const {profile}=useOuting(),[round,setRound]=React.useState(0);
  let settings=api.settings;try{settings={...settings,...JSON.parse(localStorage.getItem('malatang.settings')||'{}')};}catch{}
- const plan=makeMealPlan({...profile,balance,round,menu:api.menu,settings});
+ const plan=makeMealPlan({...profile,balance,round,menu:api.menu,settings,favorites:consumer.favorites,discounts:Object.fromEntries(content.stores.map(s=>[s.id,s.discount||1])),closed:content.stores.filter(s=>s.status==='closed').map(s=>s.id)});
  return h('section',{className:'today-meal','aria-labelledby':'today-title'},
  h('div',{className:'today-heading'},h('div',null,h('h1',{id:'today-title'},'今天吃什么？'),h('p',null,'先挑个口味，剩下的交给搭子。')),h('button',{type:'button',className:'text-button',onClick:()=>document.querySelector('.store-grid')?.scrollIntoView({block:'start'})},'随便逛逛 ↓')),
  h('fieldset',{className:'companion-picker'},h('legend',null,'今天谁陪你吃'),...COMPANIONS.map(b=>h('button',{type:'button',key:b.id,'aria-pressed':profile.buddyId===b.id,onClick:()=>{chooseOuting({buddyId:b.id});setRound(0);}},h(api.Avatar,{id:b.id,name:b.name,size:44,color:b.color}),h('span',null,h('b',null,b.name),h('small',null,b.tag))))),

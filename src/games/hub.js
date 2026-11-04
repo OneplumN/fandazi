@@ -1,3 +1,9 @@
+import {DEV_TOOLS} from '../runtime.js';
+import {useStreet,storeTerms} from '../content-client.js';
+import {useConsumer} from './consumer-store.js';
+import {FavoriteButton,RegularWelcome,ReviewsPage} from './consumer-ui.js';
+import {regularStatus} from './consumer-model.js';
+import {buddyById} from './outing-model.js';
 import {DomainNotice,MoveIn,PRIMARY_ORIGIN,LEGACY_ORIGIN} from './domain-move.js';
 import {useOuting} from './outing-store.js';
 import {MealMemento} from './memento.js';
@@ -52,11 +58,6 @@ const stores = [
     tag: "新店开张",
   },
 ];
-stores.sort(
-  (a, b) =>
-    ["malatang", "bbq", "tea", "hotpot", "breakfast"].indexOf(a.id) -
-    ["malatang", "bbq", "tea", "hotpot", "breakfast"].indexOf(b.id),
-);
 export function GameCollection(props) {
   return h(
     React.Fragment,
@@ -68,11 +69,19 @@ export function GameCollection(props) {
 function CollectionContents({ api, Malatang }) {
   const { wallet } = useWallet();
   const {profile}=useOuting();
+  const {profile:consumer}=useConsumer();
+  const {content,live}=useStreet();
+  const entered=React.useRef(null);
   const route = () =>
     window.location.pathname.startsWith("/admin")
       ? "malatang"
       : window.location.hash.slice(1).split("?")[0] || "home";
   const [current, setCurrent] = React.useState(route);
+  const previousRoute=React.useRef(current);
+  const priorOrders=React.useRef(new Set(Object.keys(wallet.orders)));
+  if(previousRoute.current!==current){entered.current=null;priorOrders.current=new Set(Object.keys(wallet.orders));previousRoute.current=current;}
+  const selected=stores.find(s=>s.id===current);
+  if(selected&&!entered.current&&Object.entries(wallet.orders).some(([id,o])=>!priorOrders.current.has(id)&&id.startsWith(current+':')&&o.status!=='refunded'))entered.current=current;
   React.useEffect(() => {
     const change = () => {
       setCurrent(route());
@@ -93,10 +102,12 @@ function CollectionContents({ api, Malatang }) {
         : item
           ? `${item.name} · 搭子小馆`
           : "搭子小馆 · 今天想吃哪一味";
-    if (!item && current !== "shop")
+    if (DEV_TOOLS && !item && current !== "shop")
       window.render_game_to_text = () =>
         JSON.stringify({ game: "home", stores: stores.map((item) => item.id) });
   }, [current]);
+  if(current === "reviews")return h(ReviewsPage);
+  if(selected&&storeTerms(current).status==='closed'&&entered.current!==current)return h('main',{className:'game-shell'},h('a',{href:'#home',className:'game-back'},'← 小馆首页'),h('h1',null,`${selected.name}今天歇歇`),h('p',null,'搭子：老板说今天先收摊，我们去隔壁闻闻香味吧。'));
   if(current === "move-in")return h(MoveIn);
   if(current === "receipt")return h("main",{className:"game-shell receipt-page"},h("a",{href:"#home",className:"game-back"},"← 小馆首页"),profile.lastMeal?h(MealMemento,{saved:profile.lastMeal,api}):h("p",null,"先和搭子吃一顿，再来留张小票。"));
   if (current === "shop") return h(ShopPage, { api });
@@ -110,12 +121,13 @@ function CollectionContents({ api, Malatang }) {
         h("a", { href: "#home" }, "← 小馆首页"),
         h(WalletBadge, {}),
       ),
+      h(RegularWelcome,{game:current,buddyId:profile.buddyId}),
       h(Malatang),
     );
-  if (current === "bbq") return h(BBQ, { api });
-  if (current === "tea") return h(MilkTea, { api });
-  if (current === "hotpot") return h(Hotpot, { api });
-  if (current === "breakfast") return h(Breakfast, { api });
+  if (current === "bbq") return h(React.Fragment,null,h(RegularWelcome,{game:current,buddyId:profile.buddyId}),h(BBQ, { api }));
+  if (current === "tea") return h(React.Fragment,null,h(RegularWelcome,{game:current,buddyId:profile.buddyId}),h(MilkTea, { api }));
+  if (current === "hotpot") return h(React.Fragment,null,h(RegularWelcome,{game:current,buddyId:profile.buddyId}),h(Hotpot, { api }));
+  if (current === "breakfast") return h(React.Fragment,null,h(RegularWelcome,{game:current,buddyId:profile.buddyId}),h(Breakfast, { api }));
   return h(
     "main",
     { className: "game-shell game-home" },
@@ -132,6 +144,8 @@ function CollectionContents({ api, Malatang }) {
     ),
     h(DomainNotice),
     h(TodayMeal,{api,balance:wallet.balance}),
+    h("a",{href:"#reviews",className:"last-meal-link"},"我的点评与吃饭记录 →"),
+    content.messages.map(m=>h("p",{key:m.id,className:"street-chat"},`${buddyById(profile.buddyId).name}：${m.text}`)),
     profile.lastMeal&&h("a",{href:"#receipt",className:"last-meal-link"},`看看上一顿的小票 · ${profile.lastMeal.store} →`),
     h(
       "div",
@@ -142,25 +156,29 @@ function CollectionContents({ api, Malatang }) {
     h(
       "section",
       { className: "store-grid" },
-      stores.map((store, index) =>
+      [...stores].sort((a,b)=>Number(consumer.favorites.includes(b.id))-Number(consumer.favorites.includes(a.id))).map((store, index) =>
         h(
-          "a",
+          "article",
           {
             key: store.id,
-            href: `#${store.id}`,
             className: `store-card store-${store.id}`,
           },
           h(
             "div",
             { className: "store-card-top" },
             h("span", null, `0${index + 1}`),
-            h("i", null, store.tag),
+            h("i", null, storeTerms(store.id).status==='closed'?'今天歇歇':storeTerms(store.id).tag||store.tag),
           ),
           h(ShopArt, { kind: store.kind, api }),
           h(
             "div",
             { className: "store-card-copy" },
-            h("h2", null, store.name),
+            h("h2", null, storeTerms(store.id).name||store.name),
+            h(FavoriteButton,{game:store.id}),
+            storeTerms(store.id).seasonal&&h("p",{className:"street-chat"},`丸丸：听说这里上了${storeTerms(store.id).seasonal}，有空来尝尝。`),
+            storeTerms(store.id).discount<1&&h("p",{className:"street-chat"},`老王：今天是${Number((storeTerms(store.id).discount*10).toFixed(2))}折，结账也按这个算。`),
+            regularStatus(consumer,store.id).regular&&h("small",null,regularStatus(consumer,store.id).side?"熟客 · 老板请小菜":"这里的常客"),
+            live&&content.aggregates?.[store.id]&&h("small",null,`街坊点评 ${content.aggregates[store.id].rating.toFixed(1)} 星 · ${content.aggregates[store.id].count} 条`),
             h("small", null, store.label),
             h("p", null, store.desc),
             h(
@@ -170,10 +188,10 @@ function CollectionContents({ api, Malatang }) {
                 "span",
                 null,
                 store.id === "malatang"
-                  ? "120 种食材"
+                  ? `${api.menu.filter(f=>f.enabled!==false).length} 种食材`
                   : "随心搭配 · 不限时",
               ),
-              h("b", null, "进店吃 →"),
+              h("a",{href:storeTerms(store.id).status==='closed'?undefined:`#${store.id}`,className:"store-enter","aria-disabled":storeTerms(store.id).status==='closed'},storeTerms(store.id).status==='closed'?"今天歇歇":"进店吃 →"),
             ),
           ),
         ),

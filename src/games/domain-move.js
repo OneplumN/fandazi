@@ -2,7 +2,7 @@ import {X as React} from '../../vendor/react-runtime.js';
 import {claimDaily,walletSnapshot,importFreshWallet} from './wallet-store.js';
 const h=React.createElement;
 export const PRIMARY_ORIGIN='https://fandazi.oneplums.cn',LEGACY_ORIGIN='https://malatang.oneplums.cn';
-const PREF_KEYS=['dazi.outing.v1','dazi.dining.v1','dazi.experience.v1','malatang.settings','malatang.budget'];
+const PREF_KEYS=['dazi.outing.v1','dazi.consumer.v1','dazi.dining.v1','dazi.experience.v1','malatang.settings','malatang.budget'];
 export function DomainNotice(){
  const [status,setStatus]=React.useState(''),popup=React.useRef(null),nonce=React.useRef(null);
  React.useEffect(()=>{

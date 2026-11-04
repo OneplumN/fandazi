@@ -1,4 +1,5 @@
 import {X as React} from '../../vendor/react-runtime.js';
+import {recordCompletedMeal} from './consumer-store.js';
 import {buddyById} from './outing-model.js';
 export const OUTING_KEY='dazi.outing.v1';
 const defaults={version:1,buddyId:'wan',budget:20,taste:'any',lastMeal:null};
@@ -16,5 +17,5 @@ let pendingPlan=null;
 export const prepareOuting=plan=>{pendingPlan={...plan,token:crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`,at:Date.now()};};
 export const peekOuting=game=>pendingPlan?.game===game&&Date.now()-pendingPlan.at<30*60*1000?pendingPlan:null;
 export const consumeOuting=token=>{if(pendingPlan?.token===token)pendingPlan=null;};
-export function rememberMeal(meal){if(value.lastMeal?.id===meal.id)return;update({...value,lastMeal:meal});}
+export function rememberMeal(meal){recordCompletedMeal(meal);if(value.lastMeal?.id===meal.id)return;update({...value,lastMeal:meal});}
 export function replaceOuting(raw){update(clean(raw));}
