@@ -59,7 +59,7 @@ export function DiningTable({game,mealId,api,state,onBite,canInteract}) {
       write(mealId,next);animating=lift(index,node);setPulse(n=>n+1);
       const settle=()=>{const after=diningSummary(next,items);setMessage(after.finished?'吃饱啦，慢慢坐一会儿。':game==='tea'?`咕嘟一口，还剩 ${Math.round((1-next[0]/5)*100)}%`:`${items[index].name}，${next[index]===items[index].bites?'吃完啦！':`还剩 ${items[index].bites-next[index]} 口。`}`);setCounts(next);setMouthfuls([]);setBite(null);eating.current=false;setPending(false);onBite?.();};
       if(animating)later(settle,680);else settle();
-      
+
     };
     const run=()=>navigator.locks?.request?navigator.locks.request('dazi-dining-write',task):task();
     queue=queue.then(run,run).catch(()=>setMessage("刚才这一口没记上，再点一下试试。")).finally(()=>{if(!animating&&mounted.current){eating.current=false;setPending(false);}});
@@ -69,7 +69,7 @@ export function DiningTable({game,mealId,api,state,onBite,canInteract}) {
   const tea=TEAS.find(t=>t.id===state.tea);
   return h('section',{ref:sceneRef,'data-motion-visible':'false',className:`dining-table dining-${game}`,'data-eating':bite?String(bite.index):undefined,'data-dining':JSON.stringify({game,mealId,...summary,counts}),'aria-label':'享用这一餐'},
     h('div',{className:'dining-heading'},h('h3',null,summary.finished?'这餐吃好啦':title),h('span',null,summary.finished?'这餐吃完啦':`${summary.eaten} / ${summary.total} 口`)),
-    
+
     !summary.finished&&h('div',{className:'dining-stage','data-finished':summary.finished},
       h('div',{className:'dining-eater',ref:eaterRef,'data-chewing':Boolean(bite),'aria-label':`${buddy.name}陪你尝一口`},h(api.Avatar,{id:buddy.id,name:buddy.name,size:60,color:buddy.color}),h('svg',{className:'munch-marks',viewBox:'0 0 100 80','aria-hidden':true},h('path',{d:'M12 37 q-6 6 0 13 M6 31 q-10 12 0 23 M88 37 q6 6 0 13 M94 31 q10 12 0 23',fill:'none',stroke:'#A5734C',strokeWidth:2,strokeLinecap:'round'})),h('small',null,buddy.name)),
       ['tea','breakfast'].includes(game)?h('button',{type:'button',className:'dining-main-food',disabled:pending||blocked||summary.finished,onClick:event=>eat(0,event.currentTarget),'aria-label':game==='tea'?'喝一口奶茶':'咬一口早餐饼'},
