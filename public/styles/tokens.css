@@ -1,0 +1,9 @@
+:root {
+  --z-local-nav: 10;
+  --z-header: 20;
+  --z-dock: 30;
+  --z-notice: 40;
+  --z-modal: 1000;
+  --z-feedback: 1100;
+  --touch-target: 44px;
+}

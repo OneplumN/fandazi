@@ -1,0 +1,11 @@
+[Unit]
+Description=Check malatang DNS until initial HTTPS is enabled
+
+[Timer]
+OnBootSec=120
+OnUnitActiveSec=120
+AccuracySec=20
+Unit=malatang-https-bootstrap.service
+
+[Install]
+WantedBy=timers.target

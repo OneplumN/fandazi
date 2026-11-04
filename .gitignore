@@ -1,0 +1,21 @@
+# Local dependencies and generated output
+node_modules/
+work/
+dist/
+coverage/
+playwright-report/
+test-results/
+*.log
+
+# Local environment and OS metadata
+.env
+.env.*
+!.env.example
+.DS_Store
+._*
+*.pem
+*.key
+
+# Original capture archives remain local
+/evidence/
+/snapshots/

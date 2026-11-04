@@ -1,0 +1,2109 @@
+[
+  {
+    "id": "spinach",
+    "name": "菠菜",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#5FA85B",
+    "unitLabel": "把",
+    "unitWeightG": 35,
+    "kcalPer100g": 28,
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg",
+    "popular": true
+  },
+  {
+    "id": "lettuce",
+    "name": "生菜",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#7CC46A",
+    "unitLabel": "把",
+    "unitWeightG": 30,
+    "kcalPer100g": 15,
+    "density": 0.2,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg",
+    "popular": true
+  },
+  {
+    "id": "youmaicai",
+    "name": "油麦菜",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#6FB35C",
+    "unitLabel": "把",
+    "unitWeightG": 35,
+    "kcalPer100g": 20,
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "tonghao",
+    "name": "茼蒿",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#83B85A",
+    "unitLabel": "把",
+    "unitWeightG": 30,
+    "kcalPer100g": 25,
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "xiaobaicai",
+    "name": "小白菜",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#9CCB79",
+    "unitLabel": "把",
+    "unitWeightG": 35,
+    "kcalPer100g": 18,
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "wawacai",
+    "name": "娃娃菜",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#C8DE9B",
+    "unitLabel": "片",
+    "unitWeightG": 40,
+    "kcalPer100g": 16,
+    "density": 0.3,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "kongxincai",
+    "name": "空心菜",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#4E9E55",
+    "unitLabel": "把",
+    "unitWeightG": 35,
+    "kcalPer100g": 22,
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "wandouxian",
+    "name": "豌豆尖",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#8FCB6B",
+    "unitLabel": "把",
+    "unitWeightG": 25,
+    "kcalPer100g": 30,
+    "density": 0.2,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "xiangcai",
+    "name": "香菜",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#57A05A",
+    "unitLabel": "把",
+    "unitWeightG": 10,
+    "kcalPer100g": 33,
+    "density": 0.2,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "jiucai",
+    "name": "韭菜",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#5E9E48",
+    "unitLabel": "把",
+    "unitWeightG": 30,
+    "kcalPer100g": 26,
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "muercai",
+    "name": "木耳菜",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#6AAE63",
+    "unitLabel": "把",
+    "unitWeightG": 35,
+    "kcalPer100g": 20,
+    "density": 0.3,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "kuju",
+    "name": "苦菊",
+    "category": "leaf",
+    "shape": "leaf",
+    "color": "#8FBE72",
+    "unitLabel": "把",
+    "unitWeightG": 30,
+    "kcalPer100g": 17,
+    "density": 0.2,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "jinzhengu",
+    "name": "金针菇",
+    "category": "mushroom",
+    "shape": "cap",
+    "color": "#E8D7A8",
+    "unitLabel": "朵",
+    "unitWeightG": 20,
+    "kcalPer100g": 32,
+    "density": 0.3,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "popular": true
+  },
+  {
+    "id": "xianggu",
+    "name": "香菇",
+    "category": "mushroom",
+    "shape": "cap",
+    "color": "#9C7A4E",
+    "unitLabel": "朵",
+    "unitWeightG": 15,
+    "kcalPer100g": 26,
+    "density": 0.35,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "pinggu",
+    "name": "平菇",
+    "category": "mushroom",
+    "shape": "cap",
+    "color": "#C8B79A",
+    "unitLabel": "朵",
+    "unitWeightG": 20,
+    "kcalPer100g": 24,
+    "density": 0.3,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "xingbaogu",
+    "name": "杏鲍菇",
+    "category": "mushroom",
+    "shape": "cap",
+    "color": "#DCCBB0",
+    "unitLabel": "片",
+    "unitWeightG": 25,
+    "kcalPer100g": 35,
+    "density": 0.4,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "haixiangu",
+    "name": "海鲜菇",
+    "category": "mushroom",
+    "shape": "cap",
+    "color": "#EADFC8",
+    "unitLabel": "朵",
+    "unitWeightG": 18,
+    "kcalPer100g": 30,
+    "density": 0.3,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "muer",
+    "name": "木耳",
+    "category": "mushroom",
+    "shape": "cap",
+    "color": "#5C4B47",
+    "unitLabel": "片",
+    "unitWeightG": 8,
+    "kcalPer100g": 27,
+    "density": 0.25,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "haidaijie",
+    "name": "海带结",
+    "category": "mushroom",
+    "shape": "knot",
+    "color": "#4F7A52",
+    "unitLabel": "结",
+    "unitWeightG": 12,
+    "kcalPer100g": 13,
+    "density": 0.5,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "popular": true
+  },
+  {
+    "id": "qundaicai",
+    "name": "裙带菜",
+    "category": "mushroom",
+    "shape": "leaf",
+    "color": "#5F8B57",
+    "unitLabel": "把",
+    "unitWeightG": 20,
+    "kcalPer100g": 15,
+    "density": 0.35,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "yiner",
+    "name": "银耳",
+    "category": "mushroom",
+    "shape": "cap",
+    "color": "#F0E8DA",
+    "unitLabel": "朵",
+    "unitWeightG": 25,
+    "kcalPer100g": 26,
+    "density": 0.2,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "tudoupian",
+    "name": "土豆片",
+    "category": "root",
+    "shape": "disc",
+    "color": "#E3C079",
+    "unitLabel": "片",
+    "unitWeightG": 12,
+    "kcalPer100g": 77,
+    "density": 0.75,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "veg",
+    "popular": true
+  },
+  {
+    "id": "oupian",
+    "name": "藕片",
+    "category": "root",
+    "shape": "disc",
+    "color": "#F0E2C8",
+    "unitLabel": "片",
+    "unitWeightG": 12,
+    "kcalPer100g": 73,
+    "density": 0.75,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "shanyao",
+    "name": "山药",
+    "category": "root",
+    "shape": "disc",
+    "color": "#EFE6D2",
+    "unitLabel": "片",
+    "unitWeightG": 15,
+    "kcalPer100g": 57,
+    "density": 0.7,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "donggua",
+    "name": "冬瓜",
+    "category": "root",
+    "shape": "cube",
+    "color": "#BFD9B4",
+    "unitLabel": "片",
+    "unitWeightG": 20,
+    "kcalPer100g": 12,
+    "density": 0.55,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "nangua",
+    "name": "南瓜",
+    "category": "root",
+    "shape": "cube",
+    "color": "#EFA24E",
+    "unitLabel": "块",
+    "unitWeightG": 25,
+    "kcalPer100g": 26,
+    "density": 0.6,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "bailuobo",
+    "name": "白萝卜",
+    "category": "root",
+    "shape": "disc",
+    "color": "#F4F1E4",
+    "unitLabel": "片",
+    "unitWeightG": 15,
+    "kcalPer100g": 16,
+    "density": 0.55,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "huluobo",
+    "name": "胡萝卜",
+    "category": "root",
+    "shape": "disc",
+    "color": "#E8894A",
+    "unitLabel": "片",
+    "unitWeightG": 10,
+    "kcalPer100g": 39,
+    "density": 0.6,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "wosun",
+    "name": "莴笋",
+    "category": "root",
+    "shape": "disc",
+    "color": "#A9CE7E",
+    "unitLabel": "片",
+    "unitWeightG": 15,
+    "kcalPer100g": 15,
+    "density": 0.55,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "huanggua",
+    "name": "黄瓜",
+    "category": "root",
+    "shape": "disc",
+    "color": "#9FCF7A",
+    "unitLabel": "片",
+    "unitWeightG": 10,
+    "kcalPer100g": 16,
+    "density": 0.4,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "fanqie",
+    "name": "番茄",
+    "category": "root",
+    "shape": "cube",
+    "color": "#E4664F",
+    "unitLabel": "块",
+    "unitWeightG": 25,
+    "kcalPer100g": 20,
+    "density": 0.5,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "yumi",
+    "name": "玉米段",
+    "category": "root",
+    "shape": "cube",
+    "color": "#F2C94C",
+    "unitLabel": "段",
+    "unitWeightG": 40,
+    "kcalPer100g": 112,
+    "density": 0.8,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "doupi",
+    "name": "豆皮",
+    "category": "tofu",
+    "shape": "strip",
+    "color": "#EFD9A8",
+    "unitLabel": "张",
+    "unitWeightG": 20,
+    "kcalPer100g": 409,
+    "density": 0.5,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "fuzhu",
+    "name": "腐竹",
+    "category": "tofu",
+    "shape": "strip",
+    "color": "#E4C98E",
+    "unitLabel": "段",
+    "unitWeightG": 15,
+    "kcalPer100g": 461,
+    "density": 0.55,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "youdoufu",
+    "name": "油豆腐",
+    "category": "tofu",
+    "shape": "cube",
+    "color": "#E2B266",
+    "unitLabel": "块",
+    "unitWeightG": 12,
+    "kcalPer100g": 244,
+    "density": 0.45,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "veg",
+    "popular": true
+  },
+  {
+    "id": "dongdoufu",
+    "name": "冻豆腐",
+    "category": "tofu",
+    "shape": "cube",
+    "color": "#F1E4C8",
+    "unitLabel": "块",
+    "unitWeightG": 30,
+    "kcalPer100g": 92,
+    "density": 0.4,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "doupao",
+    "name": "豆泡",
+    "category": "tofu",
+    "shape": "cube",
+    "color": "#DDB271",
+    "unitLabel": "个",
+    "unitWeightG": 10,
+    "kcalPer100g": 245,
+    "density": 0.45,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "qianzhang",
+    "name": "千张",
+    "category": "tofu",
+    "shape": "strip",
+    "color": "#F3E3BC",
+    "unitLabel": "张",
+    "unitWeightG": 20,
+    "kcalPer100g": 262,
+    "density": 0.5,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "dougan",
+    "name": "豆干",
+    "category": "tofu",
+    "shape": "cube",
+    "color": "#D9B583",
+    "unitLabel": "块",
+    "unitWeightG": 20,
+    "kcalPer100g": 140,
+    "density": 0.55,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "suji",
+    "name": "素鸡",
+    "category": "tofu",
+    "shape": "strip",
+    "color": "#E7CB9E",
+    "unitLabel": "块",
+    "unitWeightG": 25,
+    "kcalPer100g": 192,
+    "density": 0.6,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "doufu",
+    "name": "豆腐",
+    "category": "tofu",
+    "shape": "cube",
+    "color": "#F7F1E2",
+    "unitLabel": "盒",
+    "unitWeightG": 80,
+    "kcalPer100g": 82,
+    "density": 0.6,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "doujie",
+    "name": "豆结",
+    "category": "tofu",
+    "shape": "knot",
+    "color": "#E8CE9B",
+    "unitLabel": "结",
+    "unitWeightG": 10,
+    "kcalPer100g": 180,
+    "density": 0.5,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "veg"
+  },
+  {
+    "id": "niurouwan",
+    "name": "牛肉丸",
+    "category": "meat",
+    "shape": "ball",
+    "color": "#B4715A",
+    "unitLabel": "颗",
+    "unitWeightG": 18,
+    "kcalPer100g": 220,
+    "density": 0.85,
+    "tags": [
+      "protein",
+      "processed",
+      "indulgent"
+    ],
+    "priceGroup": "ball",
+    "popular": true
+  },
+  {
+    "id": "yuwan",
+    "name": "鱼丸",
+    "category": "meat",
+    "shape": "ball",
+    "color": "#E8E3D6",
+    "unitLabel": "颗",
+    "unitWeightG": 15,
+    "kcalPer100g": 107,
+    "density": 0.8,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "ball"
+  },
+  {
+    "id": "xiawan",
+    "name": "虾丸",
+    "category": "meat",
+    "shape": "ball",
+    "color": "#F0B7A0",
+    "unitLabel": "颗",
+    "unitWeightG": 15,
+    "kcalPer100g": 120,
+    "density": 0.8,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "ball"
+  },
+  {
+    "id": "niaoniaoniurou",
+    "name": "撒尿牛丸",
+    "category": "meat",
+    "shape": "ball",
+    "color": "#A96852",
+    "unitLabel": "颗",
+    "unitWeightG": 20,
+    "kcalPer100g": 230,
+    "density": 0.85,
+    "tags": [
+      "protein",
+      "processed",
+      "indulgent"
+    ],
+    "priceGroup": "ball"
+  },
+  {
+    "id": "wucanrou",
+    "name": "午餐肉",
+    "category": "meat",
+    "shape": "cube",
+    "color": "#D98E86",
+    "unitLabel": "片",
+    "unitWeightG": 15,
+    "kcalPer100g": 229,
+    "density": 0.8,
+    "tags": [
+      "protein",
+      "processed",
+      "indulgent"
+    ],
+    "priceGroup": "ball",
+    "popular": true
+  },
+  {
+    "id": "huotuichang",
+    "name": "火腿肠",
+    "category": "meat",
+    "shape": "strip",
+    "color": "#D8766B",
+    "unitLabel": "根",
+    "unitWeightG": 30,
+    "kcalPer100g": 212,
+    "density": 0.8,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "ball"
+  },
+  {
+    "id": "peigen",
+    "name": "培根",
+    "category": "meat",
+    "shape": "strip",
+    "color": "#C4665C",
+    "unitLabel": "片",
+    "unitWeightG": 10,
+    "kcalPer100g": 181,
+    "density": 0.7,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "ball"
+  },
+  {
+    "id": "jixiongrou",
+    "name": "鸡胸肉",
+    "category": "meat",
+    "shape": "strip",
+    "color": "#F0D3B4",
+    "unitLabel": "片",
+    "unitWeightG": 25,
+    "kcalPer100g": 133,
+    "density": 0.7,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "meat"
+  },
+  {
+    "id": "feiniujuan",
+    "name": "肥牛卷",
+    "category": "meat",
+    "shape": "strip",
+    "color": "#C4645C",
+    "unitLabel": "卷",
+    "unitWeightG": 20,
+    "kcalPer100g": 250,
+    "density": 0.75,
+    "tags": [
+      "protein",
+      "indulgent"
+    ],
+    "priceGroup": "meat"
+  },
+  {
+    "id": "yaxue",
+    "name": "鸭血",
+    "category": "meat",
+    "shape": "cube",
+    "color": "#8E4A46",
+    "unitLabel": "块",
+    "unitWeightG": 25,
+    "kcalPer100g": 108,
+    "density": 0.7,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "meat"
+  },
+  {
+    "id": "maodu",
+    "name": "毛肚",
+    "category": "meat",
+    "shape": "strip",
+    "color": "#C8A79E",
+    "unitLabel": "片",
+    "unitWeightG": 20,
+    "kcalPer100g": 72,
+    "density": 0.6,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "meat"
+  },
+  {
+    "id": "xiahua",
+    "name": "虾滑",
+    "category": "meat",
+    "shape": "ball",
+    "color": "#F2B9A8",
+    "unitLabel": "勺",
+    "unitWeightG": 25,
+    "kcalPer100g": 95,
+    "density": 0.6,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "ball"
+  },
+  {
+    "id": "xiaosurou",
+    "name": "小酥肉",
+    "category": "meat",
+    "shape": "cube",
+    "color": "#D9A05C",
+    "unitLabel": "块",
+    "unitWeightG": 20,
+    "kcalPer100g": 300,
+    "density": 0.7,
+    "tags": [
+      "protein",
+      "processed",
+      "indulgent"
+    ],
+    "priceGroup": "meat"
+  },
+  {
+    "id": "yudoufu",
+    "name": "鱼豆腐",
+    "category": "meat",
+    "shape": "cube",
+    "color": "#F0DCA8",
+    "unitLabel": "块",
+    "unitWeightG": 15,
+    "kcalPer100g": 130,
+    "density": 0.75,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "ball"
+  },
+  {
+    "id": "xieban",
+    "name": "蟹棒",
+    "category": "meat",
+    "shape": "strip",
+    "color": "#E8796A",
+    "unitLabel": "根",
+    "unitWeightG": 12,
+    "kcalPer100g": 125,
+    "density": 0.7,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "ball"
+  },
+  {
+    "id": "kuanfen",
+    "name": "宽粉",
+    "category": "staple",
+    "shape": "strip",
+    "color": "#EFE3C6",
+    "unitLabel": "卷",
+    "unitWeightG": 50,
+    "kcalPer100g": 340,
+    "density": 0.85,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple",
+    "popular": true
+  },
+  {
+    "id": "xifen",
+    "name": "细粉",
+    "category": "staple",
+    "shape": "strip",
+    "color": "#F2E9CF",
+    "unitLabel": "卷",
+    "unitWeightG": 40,
+    "kcalPer100g": 330,
+    "density": 0.85,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple"
+  },
+  {
+    "id": "fangbianmian",
+    "name": "方便面",
+    "category": "staple",
+    "shape": "cube",
+    "color": "#F0D27A",
+    "unitLabel": "块",
+    "unitWeightG": 70,
+    "kcalPer100g": 470,
+    "density": 0.9,
+    "tags": [
+      "carb",
+      "processed"
+    ],
+    "priceGroup": "staple"
+  },
+  {
+    "id": "wudongmian",
+    "name": "乌冬面",
+    "category": "staple",
+    "shape": "strip",
+    "color": "#F5EEDC",
+    "unitLabel": "份",
+    "unitWeightG": 80,
+    "kcalPer100g": 137,
+    "density": 0.85,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple"
+  },
+  {
+    "id": "niangao",
+    "name": "年糕",
+    "category": "staple",
+    "shape": "disc",
+    "color": "#F6EDD8",
+    "unitLabel": "片",
+    "unitWeightG": 20,
+    "kcalPer100g": 154,
+    "density": 0.9,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple"
+  },
+  {
+    "id": "fensi",
+    "name": "粉丝",
+    "category": "staple",
+    "shape": "strip",
+    "color": "#F7F1E0",
+    "unitLabel": "把",
+    "unitWeightG": 30,
+    "kcalPer100g": 335,
+    "density": 0.8,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple"
+  },
+  {
+    "id": "moyusi",
+    "name": "魔芋丝",
+    "category": "staple",
+    "shape": "strip",
+    "color": "#E9E3D2",
+    "unitLabel": "把",
+    "unitWeightG": 40,
+    "kcalPer100g": 7,
+    "density": 0.5,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "staple"
+  },
+  {
+    "id": "mifen",
+    "name": "米粉",
+    "category": "staple",
+    "shape": "strip",
+    "color": "#F4EEDD",
+    "unitLabel": "份",
+    "unitWeightG": 60,
+    "kcalPer100g": 350,
+    "density": 0.85,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple"
+  },
+  {
+    "id": "youtiao",
+    "name": "油条",
+    "category": "staple",
+    "shape": "strip",
+    "color": "#DDB25F",
+    "unitLabel": "根",
+    "unitWeightG": 40,
+    "kcalPer100g": 388,
+    "density": 0.6,
+    "tags": [
+      "carb",
+      "processed"
+    ],
+    "priceGroup": "staple"
+  },
+  {
+    "id": "anchundan",
+    "name": "鹌鹑蛋",
+    "category": "egg",
+    "shape": "egg",
+    "color": "#F4E7C8",
+    "unitLabel": "颗",
+    "unitWeightG": 8,
+    "kcalPer100g": 160,
+    "density": 0.8,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "ball"
+  },
+  {
+    "id": "jidan",
+    "name": "鸡蛋",
+    "category": "egg",
+    "shape": "egg",
+    "color": "#F6E3B0",
+    "unitLabel": "个",
+    "unitWeightG": 50,
+    "kcalPer100g": 143,
+    "density": 0.8,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "ball"
+  },
+  {
+    "id": "zhishiniangao",
+    "name": "芝士年糕",
+    "category": "egg",
+    "shape": "cube",
+    "color": "#F5D98A",
+    "unitLabel": "块",
+    "unitWeightG": 25,
+    "kcalPer100g": 250,
+    "density": 0.85,
+    "tags": [
+      "carb",
+      "indulgent"
+    ],
+    "priceGroup": "staple"
+  },
+  {
+    "id": "xiaomahua",
+    "name": "小麻花",
+    "category": "egg",
+    "shape": "knot",
+    "color": "#D9A85C",
+    "unitLabel": "个",
+    "unitWeightG": 15,
+    "kcalPer100g": 440,
+    "density": 0.7,
+    "tags": [
+      "carb",
+      "processed"
+    ],
+    "priceGroup": "staple"
+  },
+  {
+    "shape": "leaf",
+    "color": "#6BAA63",
+    "unitLabel": "把",
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg",
+    "id": "shanghaiqing",
+    "name": "上海青",
+    "category": "leaf",
+    "unitWeightG": 35,
+    "kcalPer100g": 20,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 70
+  },
+  {
+    "shape": "leaf",
+    "color": "#77A965",
+    "unitLabel": "把",
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg",
+    "id": "xiyangcai",
+    "name": "西洋菜",
+    "category": "leaf",
+    "unitWeightG": 30,
+    "kcalPer100g": 20,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 71
+  },
+  {
+    "shape": "leaf",
+    "color": "#8AA565",
+    "unitLabel": "把",
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg",
+    "id": "xiancai",
+    "name": "苋菜",
+    "category": "leaf",
+    "unitWeightG": 35,
+    "kcalPer100g": 25,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 72
+  },
+  {
+    "shape": "leaf",
+    "color": "#72A56B",
+    "unitLabel": "把",
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg",
+    "id": "hongshuye",
+    "name": "红薯叶",
+    "category": "leaf",
+    "unitWeightG": 30,
+    "kcalPer100g": 30,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 73
+  },
+  {
+    "shape": "leaf",
+    "color": "#A879A0",
+    "unitLabel": "把",
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg",
+    "id": "ziganlan",
+    "name": "紫甘蓝",
+    "category": "leaf",
+    "unitWeightG": 30,
+    "kcalPer100g": 25,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 74
+  },
+  {
+    "shape": "leaf",
+    "color": "#77A36A",
+    "unitLabel": "把",
+    "density": 0.25,
+    "tags": [
+      "fiber",
+      "leafy"
+    ],
+    "priceGroup": "veg",
+    "id": "jielan",
+    "name": "芥蓝",
+    "category": "leaf",
+    "unitWeightG": 35,
+    "kcalPer100g": 25,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 75
+  },
+  {
+    "shape": "cap",
+    "color": "#EAE1C9",
+    "unitLabel": "份",
+    "density": 0.32,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "baiyugu",
+    "name": "白玉菇",
+    "category": "mushroom",
+    "unitWeightG": 30,
+    "kcalPer100g": 25,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 76
+  },
+  {
+    "shape": "cap",
+    "color": "#BDA47F",
+    "unitLabel": "份",
+    "density": 0.32,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "xieweigu",
+    "name": "蟹味菇",
+    "category": "mushroom",
+    "unitWeightG": 30,
+    "kcalPer100g": 30,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 77
+  },
+  {
+    "shape": "cap",
+    "color": "#C8BEA1",
+    "unitLabel": "份",
+    "density": 0.32,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "jigu",
+    "name": "姬菇",
+    "category": "mushroom",
+    "unitWeightG": 30,
+    "kcalPer100g": 25,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 78
+  },
+  {
+    "shape": "cap",
+    "color": "#AB8E68",
+    "unitLabel": "份",
+    "density": 0.32,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "chashugu",
+    "name": "茶树菇",
+    "category": "mushroom",
+    "unitWeightG": 25,
+    "kcalPer100g": 30,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 79
+  },
+  {
+    "shape": "strip",
+    "color": "#E9DEBD",
+    "unitLabel": "份",
+    "density": 0.32,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "zhusun",
+    "name": "竹荪",
+    "category": "mushroom",
+    "unitWeightG": 20,
+    "kcalPer100g": 30,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 80
+  },
+  {
+    "shape": "cap",
+    "color": "#E0D0AF",
+    "unitLabel": "份",
+    "density": 0.32,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "jituigu",
+    "name": "鸡腿菇",
+    "category": "mushroom",
+    "unitWeightG": 35,
+    "kcalPer100g": 30,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 81
+  },
+  {
+    "shape": "strip",
+    "color": "#617D59",
+    "unitLabel": "份",
+    "density": 0.32,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "haidaisi",
+    "name": "海带丝",
+    "category": "mushroom",
+    "unitWeightG": 25,
+    "kcalPer100g": 20,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 82
+  },
+  {
+    "shape": "leaf",
+    "color": "#649957",
+    "unitLabel": "份",
+    "density": 0.6,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "xilanhua",
+    "name": "西兰花",
+    "category": "root",
+    "unitWeightG": 35,
+    "kcalPer100g": 35,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 83
+  },
+  {
+    "shape": "leaf",
+    "color": "#E4DEBA",
+    "unitLabel": "份",
+    "density": 0.6,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "huacai",
+    "name": "花菜",
+    "category": "root",
+    "unitWeightG": 35,
+    "kcalPer100g": 25,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 84
+  },
+  {
+    "shape": "leaf",
+    "color": "#8BB669",
+    "unitLabel": "份",
+    "density": 0.6,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "helandou",
+    "name": "荷兰豆",
+    "category": "root",
+    "unitWeightG": 25,
+    "kcalPer100g": 40,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 85
+  },
+  {
+    "shape": "strip",
+    "color": "#85A95F",
+    "unitLabel": "份",
+    "density": 0.6,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "qiukui",
+    "name": "秋葵",
+    "category": "root",
+    "unitWeightG": 25,
+    "kcalPer100g": 30,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 86
+  },
+  {
+    "shape": "strip",
+    "color": "#88A86B",
+    "unitLabel": "份",
+    "density": 0.6,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "lusun",
+    "name": "芦笋",
+    "category": "root",
+    "unitWeightG": 30,
+    "kcalPer100g": 25,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 87
+  },
+  {
+    "shape": "disc",
+    "color": "#937398",
+    "unitLabel": "份",
+    "density": 0.6,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "qiezi",
+    "name": "茄子",
+    "category": "root",
+    "unitWeightG": 30,
+    "kcalPer100g": 25,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 88
+  },
+  {
+    "shape": "disc",
+    "color": "#A1B77C",
+    "unitLabel": "份",
+    "density": 0.6,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "xihulu",
+    "name": "西葫芦",
+    "category": "root",
+    "unitWeightG": 30,
+    "kcalPer100g": 20,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 89
+  },
+  {
+    "shape": "strip",
+    "color": "#D9BF70",
+    "unitLabel": "份",
+    "density": 0.6,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "huangdouya",
+    "name": "黄豆芽",
+    "category": "root",
+    "unitWeightG": 35,
+    "kcalPer100g": 45,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 90
+  },
+  {
+    "shape": "strip",
+    "color": "#A1B773",
+    "unitLabel": "份",
+    "density": 0.6,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "lvdouya",
+    "name": "绿豆芽",
+    "category": "root",
+    "unitWeightG": 35,
+    "kcalPer100g": 20,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 91
+  },
+  {
+    "shape": "ball",
+    "color": "#BBA080",
+    "unitLabel": "份",
+    "density": 0.6,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "veg",
+    "id": "shanyaodou",
+    "name": "山药豆",
+    "category": "root",
+    "unitWeightG": 25,
+    "kcalPer100g": 85,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 92
+  },
+  {
+    "shape": "strip",
+    "color": "#D8AD67",
+    "unitLabel": "份",
+    "density": 0.55,
+    "tags": [
+      "protein",
+      "indulgent"
+    ],
+    "priceGroup": "veg",
+    "id": "xianglingjuan",
+    "name": "响铃卷",
+    "category": "tofu",
+    "unitWeightG": 15,
+    "kcalPer100g": 380,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 93
+  },
+  {
+    "shape": "cube",
+    "color": "#D2B781",
+    "unitLabel": "份",
+    "density": 0.55,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "veg",
+    "id": "mianjin",
+    "name": "面筋",
+    "category": "tofu",
+    "unitWeightG": 25,
+    "kcalPer100g": 160,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 94
+  },
+  {
+    "shape": "cube",
+    "color": "#E9D6A9",
+    "unitLabel": "份",
+    "density": 0.55,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "veg",
+    "id": "baiyedoufu",
+    "name": "百页豆腐",
+    "category": "tofu",
+    "unitWeightG": 25,
+    "kcalPer100g": 200,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 95
+  },
+  {
+    "shape": "cube",
+    "color": "#EEE1BB",
+    "unitLabel": "份",
+    "density": 0.55,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "veg",
+    "id": "laodoufu",
+    "name": "老豆腐",
+    "category": "tofu",
+    "unitWeightG": 30,
+    "kcalPer100g": 90,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 96
+  },
+  {
+    "shape": "strip",
+    "color": "#E3CD93",
+    "unitLabel": "份",
+    "density": 0.55,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "veg",
+    "id": "doufusi",
+    "name": "豆腐丝",
+    "category": "tofu",
+    "unitWeightG": 25,
+    "kcalPer100g": 150,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 97
+  },
+  {
+    "shape": "strip",
+    "color": "#D5BA87",
+    "unitLabel": "份",
+    "density": 0.55,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "veg",
+    "id": "sudu",
+    "name": "素肚",
+    "category": "tofu",
+    "unitWeightG": 25,
+    "kcalPer100g": 150,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 98
+  },
+  {
+    "shape": "strip",
+    "color": "#E3D4AB",
+    "unitLabel": "份",
+    "density": 0.55,
+    "tags": [
+      "fiber"
+    ],
+    "priceGroup": "veg",
+    "id": "sumaodu",
+    "name": "素毛肚",
+    "category": "tofu",
+    "unitWeightG": 25,
+    "kcalPer100g": 35,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 99
+  },
+  {
+    "shape": "strip",
+    "color": "#E9A18E",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "meat",
+    "id": "xianxia",
+    "name": "鲜虾",
+    "category": "meat",
+    "unitWeightG": 25,
+    "kcalPer100g": 90,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 100
+  },
+  {
+    "shape": "knot",
+    "color": "#E6D7C7",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "meat",
+    "id": "youyuquan",
+    "name": "鱿鱼圈",
+    "category": "meat",
+    "unitWeightG": 25,
+    "kcalPer100g": 90,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 101
+  },
+  {
+    "shape": "strip",
+    "color": "#EDE1CE",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "meat",
+    "id": "bashayupian",
+    "name": "巴沙鱼片",
+    "category": "meat",
+    "unitWeightG": 30,
+    "kcalPer100g": 90,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 102
+  },
+  {
+    "shape": "ball",
+    "color": "#A9A39D",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "ball",
+    "id": "moyuwan",
+    "name": "墨鱼丸",
+    "category": "meat",
+    "unitWeightG": 20,
+    "kcalPer100g": 150,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 103
+  },
+  {
+    "shape": "ball",
+    "color": "#C7A184",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "ball",
+    "id": "gongwan",
+    "name": "贡丸",
+    "category": "meat",
+    "unitWeightG": 20,
+    "kcalPer100g": 180,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 104
+  },
+  {
+    "shape": "strip",
+    "color": "#D98C7D",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein",
+      "processed",
+      "indulgent"
+    ],
+    "priceGroup": "ball",
+    "id": "qinqinchang",
+    "name": "亲亲肠",
+    "category": "meat",
+    "unitWeightG": 20,
+    "kcalPer100g": 260,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 105
+  },
+  {
+    "shape": "ball",
+    "color": "#E3C9A1",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein",
+      "processed"
+    ],
+    "priceGroup": "ball",
+    "id": "jirouwan",
+    "name": "鸡肉丸",
+    "category": "meat",
+    "unitWeightG": 20,
+    "kcalPer100g": 160,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 106
+  },
+  {
+    "shape": "strip",
+    "color": "#DA9D91",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "meat",
+    "id": "zhuroupian",
+    "name": "猪肉片",
+    "category": "meat",
+    "unitWeightG": 25,
+    "kcalPer100g": 200,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 107
+  },
+  {
+    "shape": "strip",
+    "color": "#CE8B83",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "meat",
+    "id": "yangroujuan",
+    "name": "羊肉卷",
+    "category": "meat",
+    "unitWeightG": 25,
+    "kcalPer100g": 230,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 108
+  },
+  {
+    "shape": "strip",
+    "color": "#D5BCA2",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "meat",
+    "id": "yachang",
+    "name": "鸭肠",
+    "category": "meat",
+    "unitWeightG": 20,
+    "kcalPer100g": 130,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 109
+  },
+  {
+    "shape": "disc",
+    "color": "#BB827D",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "meat",
+    "id": "jizhen",
+    "name": "鸡胗",
+    "category": "meat",
+    "unitWeightG": 25,
+    "kcalPer100g": 120,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 110
+  },
+  {
+    "shape": "knot",
+    "color": "#CCAB84",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "protein",
+      "indulgent"
+    ],
+    "priceGroup": "meat",
+    "id": "feichang",
+    "name": "肥肠",
+    "category": "meat",
+    "unitWeightG": 25,
+    "kcalPer100g": 200,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 111
+  },
+  {
+    "shape": "strip",
+    "color": "#EEE4CC",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple",
+    "id": "tudoufen",
+    "name": "土豆粉",
+    "category": "staple",
+    "unitWeightG": 50,
+    "kcalPer100g": 100,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 112
+  },
+  {
+    "shape": "strip",
+    "color": "#C6AD8C",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple",
+    "id": "hongshufen",
+    "name": "红薯粉",
+    "category": "staple",
+    "unitWeightG": 50,
+    "kcalPer100g": 100,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 113
+  },
+  {
+    "shape": "strip",
+    "color": "#E8CE8A",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple",
+    "id": "lamian",
+    "name": "拉面",
+    "category": "staple",
+    "unitWeightG": 50,
+    "kcalPer100g": 130,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 114
+  },
+  {
+    "shape": "strip",
+    "color": "#AE977A",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple",
+    "id": "qiaomaimian",
+    "name": "荞麦面",
+    "category": "staple",
+    "unitWeightG": 50,
+    "kcalPer100g": 120,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 115
+  },
+  {
+    "shape": "strip",
+    "color": "#E4C275",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple",
+    "id": "yimian",
+    "name": "意面",
+    "category": "staple",
+    "unitWeightG": 50,
+    "kcalPer100g": 150,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 116
+  },
+  {
+    "shape": "strip",
+    "color": "#E9D7B1",
+    "unitLabel": "份",
+    "density": 0.8,
+    "tags": [
+      "carb"
+    ],
+    "priceGroup": "staple",
+    "id": "shouganmian",
+    "name": "手擀面",
+    "category": "staple",
+    "unitWeightG": 50,
+    "kcalPer100g": 140,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 117
+  },
+  {
+    "shape": "egg",
+    "color": "#F5E8D0",
+    "unitLabel": "个",
+    "density": 0.75,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "ball",
+    "id": "tangxindan",
+    "name": "溏心蛋",
+    "category": "egg",
+    "unitWeightG": 50,
+    "kcalPer100g": 150,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 118
+  },
+  {
+    "shape": "egg",
+    "color": "#A08354",
+    "unitLabel": "个",
+    "density": 0.75,
+    "tags": [
+      "protein"
+    ],
+    "priceGroup": "ball",
+    "id": "songhuadan",
+    "name": "松花蛋",
+    "category": "egg",
+    "unitWeightG": 50,
+    "kcalPer100g": 170,
+    "popular": false,
+    "note": "新增模拟食材，重量与热量为游戏估算",
+    "imageUrl": null,
+    "enabled": true,
+    "sortOrder": 119
+  }
+]

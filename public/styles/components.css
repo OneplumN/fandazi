@@ -1,0 +1,1964 @@
+
+.game-shell h2 {
+  font-size: 18px
+}
+
+/* components: one ordered source area; component rules stay with their responsive variants. */
+
+@media (max-width: 620px) {
+  .dock .bowl-item svg {
+    width: 34px;
+    height: 34px;
+  }
+  .dock-actions .btn {
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 12px;
+  }
+}
+.checkout-dock.dock {
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 16px 24px;
+  padding: 16px 20px;
+}
+.checkout-dock-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.checkout-basket-icon {
+  font-size: 32px;
+  flex: none;
+}
+.checkout-dock-info {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+.checkout-dock-info > span {
+  font-size: 14px;
+  font-weight: 800;
+}
+.checkout-dock-info small {
+  font-size: 11px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.checkout-dock-price {
+  margin-left: auto;
+  font-size: 26px;
+  color: var(--red-deep);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.checkout-dock .dock-actions {
+  grid-column: auto;
+}
+.checkout-dock .dock-actions .btn {
+  min-height: 46px;
+}
+.checkout-overlay {
+  padding: 20px 16px;
+}
+.checkout-panel {
+  width: min(680px,100%);
+  max-height: calc(100dvh - 40px);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+}
+.checkout-panel:focus {
+  outline: none;
+}
+.checkout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1.5px solid #3d2b2320;
+  flex: none;
+  background: #fffdf7;
+}
+.checkout-header h2 {
+  font-size: 18px;
+}
+.checkout-header .icon-btn {
+  width: 44px;
+  height: 44px;
+  flex: none;
+}
+.detail-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px 18px;
+}
+.result-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px 18px;
+}
+.detail-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.detail-toolbar button {
+  min-height: 44px;
+}
+.food-detail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.food-detail-row {
+  display: grid;
+  grid-template-columns: 40px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 12px;
+  background: var(--cream);
+  border: 1px solid #3d2b2320;
+  border-radius: 16px;
+}
+.food-detail-name {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.food-detail-name b {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.food-detail-name small {
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+.food-detail-price {
+  font-size: 14px;
+  white-space: nowrap;
+  color: var(--red-deep);
+  font-variant-numeric: tabular-nums;
+}
+.quantity-control {
+  grid-column: 2 / -1;
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 4px;
+}
+.quantity-control button {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 22px;
+  font-weight: 700;
+}
+.quantity-control button:disabled {
+  opacity: .35;
+}
+.quantity-control span {
+  width: 28px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 800;
+}
+.detail-footer {
+  flex: none;
+  padding: 14px 18px;
+  border-top: 1.5px solid #3d2b2320;
+  background: #fffdf7;
+}
+.result-footer {
+  flex: none;
+  padding: 14px 18px;
+  border-top: 1.5px solid #3d2b2320;
+  background: #fffdf7;
+}
+.detail-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 13px;
+}
+.detail-total strong {
+  font-size: 24px;
+  color: var(--red-deep);
+}
+.checkout-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.checkout-actions .btn {
+  min-width: 0;
+  min-height: 46px;
+  padding: 10px 12px;
+}
+.detail-empty {
+  text-align: center;
+  padding: 28px 8px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.detail-empty > span {
+  font-size: 32px;
+}
+.result-ticket {
+  border: 1.5px solid #3d2b2330;
+  border-radius: 18px;
+  background: #fffdf7;
+  padding: 18px;
+}
+.result-ticket > small {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.result-label {
+  margin-top: 16px;
+  font-size: 12px;
+}
+.result-price {
+  display: block;
+  font-size: 40px;
+  line-height: 1.3;
+  color: var(--red-deep);
+  font-variant-numeric: tabular-nums;
+}
+.result-metrics {
+  font-size: 12px;
+  margin-top: 7px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+.result-pricing {
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+.receipt-details {
+  margin-top: 14px;
+  border-top: 1.5px dashed #3d2b2340;
+}
+.receipt-details > summary {
+  cursor: pointer;
+  min-height: 48px;
+  padding: 14px 4px;
+  font-size: 13px;
+  font-weight: 800;
+}
+.receipt-details .food-detail-row {
+  padding: 8px;
+  grid-template-columns: 32px minmax(0,1fr) auto;
+}
+.receipt-details .food-detail-row > svg {
+  width: 32px;
+  height: 32px;
+}
+.checkout-panel .verdict-name {
+  flex-wrap: wrap;
+}
+.checkout-panel .verdict-name b {
+  overflow-wrap: anywhere;
+}
+.checkout-panel .verdict-name i {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.checkout-panel .verdict-main p {
+  overflow-wrap: anywhere;
+}
+.checkout-panel button:focus-visible {
+  outline: 3px solid #c47e31;
+  outline-offset: 3px;
+}
+.checkout-panel summary:focus-visible {
+  outline: 3px solid #c47e31;
+  outline-offset: 3px;
+}
+@media(max-width:620px) {
+  .checkout-dock.dock {
+    grid-template-columns: minmax(0,1fr);
+    padding: 12px;
+    gap: 10px;
+  }
+  .checkout-dock-summary {
+    gap: 8px;
+  }
+  .checkout-basket-icon {
+    font-size: 25px;
+  }
+  .checkout-dock-info > span {
+    font-size: 12px;
+  }
+  .checkout-dock-info small {
+    font-size: 10px;
+  }
+  .checkout-dock-price {
+    font-size: 25px;
+  }
+  .checkout-dock .dock-actions {
+    grid-column: 1;
+  }
+  .checkout-overlay {
+    padding: 10px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom, 0px));
+  }
+  .detail-overlay {
+    place-items: end center;
+  }
+  .detail-overlay .checkout-panel {
+    max-height: min(78dvh,760px);
+  }
+  .result-overlay .checkout-panel {
+    max-height: calc(100dvh - 20px - env(safe-area-inset-bottom, 0px));
+  }
+  .checkout-header {
+    padding: 10px 14px;
+  }
+  .detail-body {
+    padding: 12px;
+  }
+  .result-body {
+    padding: 12px;
+  }
+  .detail-footer {
+    padding: 12px;
+  }
+  .result-footer {
+    padding: 12px;
+  }
+  .result-ticket {
+    padding: 14px;
+  }
+}
+.checkout-dock.dock--over .checkout-dock-info small {
+  color: var(--red-deep);
+  font-weight: 700;
+}
+.game-shell .btn {
+  min-height: 46px;
+  padding: 10px 18px;
+  line-height: 1.4
+}
+.game-shell .btn:disabled {
+  opacity: .5
+}
+.game-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px
+}
+.game-back {
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 800;
+  min-height: 44px;
+  padding: 4px 0
+}
+.game-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 20px 0
+}
+.game-title p {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--ink-soft);
+  font-weight: 700
+}
+.game-title h1 {
+  font-size: clamp(28px,5vw,44px);
+  letter-spacing: -1px;
+  margin: 5px 0
+}
+.game-title span {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.6
+}
+.game-guide {
+  border: 1.5px solid #3d2b2330;
+  border-radius: 14px;
+  background: #fffaf3;
+  margin-bottom: 18px;
+  font-size: 12px;
+  line-height: 1.7
+}
+.game-guide summary {
+  padding: 12px 16px;
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 700
+}
+.game-guide ol {
+  margin: 0 12px 10px 32px;
+  padding: 0 10px
+}
+.game-guide>p {
+  padding: 0 16px 14px;
+  color: var(--ink-soft);
+  font-size: 11px
+}
+.game-muted {
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.65;
+  margin: 6px 0 12px
+}
+.customer-ticket {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: #ffedda;
+  border: 1.5px solid #3d2b2325;
+  padding: 12px;
+  border-radius: 16px
+}
+.customer-ticket>div {
+  min-width: 0
+}
+.customer-ticket small {
+  font-size: 10px;
+  color: #9c694a
+}
+.customer-ticket h2 {
+  font-size: 14px;
+  margin: 2px 0
+}
+.customer-ticket p {
+  font-size: 12px;
+  line-height: 1.65
+}
+.game-choice {
+  border: 0;
+  padding: 0;
+  margin: 0 0 18px;
+  min-width: 0
+}
+.game-choice legend {
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 9px
+}
+.choice-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px
+}
+.choice-buttons button {
+  border: 1.5px solid #3d2b2338;
+  border-radius: 12px;
+  padding: 9px 12px;
+  min-height: 44px;
+  background: #fffdf7;
+  font-size: 12px;
+  font-weight: 700
+}
+.choice-buttons button[aria-pressed=true] {
+  border-color: var(--ink);
+  background: #ffcf69;
+  box-shadow: 0 3px #3d2b2320
+}
+.game-food-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 8px
+}
+.game-food-grid button {
+  min-width: 0;
+  padding: 10px 4px;
+  border: 1.5px solid #3d2b2330;
+  background: #fffdf7;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 110px
+}
+.game-food-grid button:not(:disabled):hover {
+  background: #ffedcf;
+  border-color: var(--line)
+}
+.game-food-grid b {
+  font-size: 12px
+}
+.game-food-grid small {
+  font-size: 9px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  text-align: center
+}
+.game-food-grid button:disabled {
+  opacity: .42;
+  cursor: default
+}
+.game-food-grid button[aria-pressed=true] {
+  background: #ffedcf;
+  border-color: var(--ink)
+}
+.game-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px
+}
+.game-pause-note .btn {
+  min-height: 40px;
+  font-size: 12px;
+  padding: 8px 12px
+}
+.game-footnote {
+  font-size: 10px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  text-align: center;
+  margin-top: 24px
+}
+.result-eyebrow {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #9f6c4c;
+  margin-bottom: 8px
+}
+.game-score {
+  font-size: 76px;
+  font-weight: 900;
+  color: var(--red-deep);
+  line-height: 1.25;
+  margin-top: 12px
+}
+.game-score small {
+  font-size: 16px;
+  margin-left: 6px
+}
+.game-best {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-bottom: 18px
+}
+.game-breakdown {
+  display: grid;
+  gap: 8px;
+  max-width: 420px;
+  margin: 18px auto;
+  text-align: left
+}
+.game-breakdown>div {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #3d2b2330;
+  padding: 5px 0;
+  font-size: 12px;
+  gap: 10px
+}
+.game-review {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  border: 1.5px solid #3d2b2330;
+  background: #ffedda;
+  border-radius: 16px;
+  text-align: left;
+  align-items: center;
+  margin-top: 20px
+}
+.game-review b {
+  font-size: 13px
+}
+.game-review p {
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 5px
+}
+.game-result-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 18px 0;
+  justify-content: center
+}
+.game-result-items>div {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 11px;
+  border-radius: 10px;
+  background: #fff1da;
+  padding: 6px
+}
+.game-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: #3d2b2399;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: 18px
+}
+.game-confirm {
+  background: #fffaf1;
+  border: 2px solid var(--line);
+  border-radius: 20px;
+  width: min(400px,100%);
+  padding: 22px
+}
+.game-confirm p {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-top: 8px
+}
+@media(max-width:900px) {
+  .game-food-grid {
+    grid-template-columns: repeat(4,minmax(0,1fr))
+  }
+  .game-controls .game-choice {
+    margin-bottom: 14px
+  }
+}
+@media(max-width:600px) {
+  .game-title {
+    margin: 16px 0
+  }
+  .game-title h1 {
+    font-size: 31px
+  }
+  .game-title span {
+    font-size: 11px
+  }
+  .game-guide {
+    margin-bottom: 12px
+  }
+  .customer-ticket {
+    padding: 10px;
+    gap: 10px
+  }
+  .customer-ticket .avatar {
+    width: 46px!important;
+    height: 46px!important
+  }
+  .customer-ticket p {
+    font-size: 11px
+  }
+  .game-food-grid {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 6px
+  }
+  .game-food-grid button {
+    min-height: 104px;
+    padding: 8px 2px
+  }
+  .game-food-grid b {
+    font-size: 11px
+  }
+  .game-food-grid small {
+    font-size: 9px
+  }
+  .game-food-grid svg {
+    width: 52px;
+    height: 52px
+  }
+  .game-actions>.btn {
+    flex: 1;
+    min-width: 0
+  }
+  .game-score {
+    font-size: 68px
+  }
+  .game-review {
+    padding: 10px;
+    gap: 10px
+  }
+  .game-review .avatar {
+    width: 50px!important;
+    height: 50px!important
+  }
+  .game-result .game-actions {
+    flex-direction: column
+  }
+  .game-result .game-actions .btn {
+    width: 100%
+  }
+}
+.tea-result-art {
+  max-width: 240px;
+  margin: 12px auto
+}
+.breakfast-result-art {
+  max-width: 270px;
+  margin: 8px auto
+}
+.game-breakfast .game-controls .game-choice:last-of-type {
+  margin-top: 20px
+}
+@media(max-width:600px) {
+  .breakfast-tools .btn {
+    flex: 1;
+    font-size: 11px;
+    padding: 8px 10px
+  }
+}
+@media(max-width:900px) {
+  .game-mobile-dock .btn {
+    min-width: 120px;
+    flex: none;
+    font-size: 12px;
+    padding: 8px 12px
+  }
+}
+.wallet-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  background: #fff0bf;
+  box-shadow: 0 2px #3d2b231a;
+  color: var(--ink)!important;
+  text-decoration: none;
+  min-height: 42px;
+  white-space: nowrap;
+  flex: none
+}
+.wallet-badge>span {
+  font-size: 14px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums
+}
+.wallet-badge small {
+  font-size: 10px;
+  border-left: 1px solid #3d2b2330;
+  padding-left: 7px
+}
+.coin-receipt {
+  border: 1.5px solid #c09a54;
+  background: #fff2c9;
+  border-radius: 16px;
+  padding: 14px;
+  margin: 18px 0;
+  text-align: left
+}
+.coin-receipt-heading {
+  display: flex;
+  gap: 10px;
+  align-items: center
+}
+.coin-receipt-heading>svg {
+  flex: none
+}
+.coin-receipt-heading>div {
+  min-width: 0;
+  display: grid;
+  gap: 5px
+}
+.coin-receipt-heading b {
+  font-size: 14px
+}
+.coin-receipt-heading small {
+  font-size: 10px;
+  line-height: 1.6;
+  color: #806147
+}
+.coin-receipt-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed #b6975840;
+  font-size: 11px;
+  font-weight: 800
+}
+.coin-receipt a {
+  color: #815333;
+  text-decoration: none
+}
+.coin-once-note {
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin: 8px 0
+}
+.wallet-note {
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin: 8px 0
+}
+.wallet-summary {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  background: #fff1c4;
+  border: 2px solid var(--line);
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: var(--shadow)
+}
+.wallet-summary small {
+  font-size: 11px;
+  color: #9a7248
+}
+.wallet-summary strong {
+  font-size: 42px;
+  display: block;
+  line-height: 1.25
+}
+.wallet-summary p {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 6px
+}
+.cosmetic-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 16px
+}
+.cosmetic-card {
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid #3d2b2335;
+  background: #fffaf0;
+  border-radius: 20px;
+  padding: 16px;
+  gap: 14px;
+  min-width: 0
+}
+.cosmetic-card.is-equipped {
+  border: 2px solid var(--ink);
+  background: #f3e6c8
+}
+.cosmetic-card small {
+  font-size: 10px;
+  color: #9a7248
+}
+.cosmetic-card h2 {
+  font-size: 17px;
+  margin: 5px 0
+}
+.cosmetic-card p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  min-height: 38px
+}
+.cosmetic-card .btn {
+  margin-top: auto;
+  font-size: 12px
+}
+.wallet-ledger {
+  margin-top: 28px;
+  background: #fffaf2;
+  border: 1.5px solid #3d2b2330;
+  border-radius: 20px;
+  padding: 20px
+}
+.wallet-ledger h2 {
+  font-size: 18px;
+  margin-bottom: 8px
+}
+.wallet-ledger ul {
+  margin-top: 14px
+}
+.wallet-ledger li {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px dashed #3d2b2325;
+  padding: 12px 0
+}
+.wallet-ledger li>span {
+  font-size: 12px;
+  min-width: 0
+}
+.wallet-ledger li small {
+  display: block;
+  font-size: 10px;
+  color: var(--ink-soft);
+  margin-top: 4px
+}
+.wallet-ledger li strong {
+  font-size: 16px;
+  font-variant-numeric: tabular-nums
+}
+body[data-dazi-tray=gold] .checkout-panel {
+  box-shadow: inset 0 0 0 4px #e5c77b,var(--shadow)
+}
+.bbq-season-station .btn {
+  width: 100%
+}
+@media(max-width:900px) {
+  .cosmetic-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr))
+  }
+  .game-bbq .game-mobile-dock .btn {
+    min-width: 0;
+    padding: 8px 10px;
+    font-size: 11px
+  }
+}
+@media(max-width:600px) {
+  .wallet-badge {
+    padding: 6px 8px;
+    gap: 4px
+  }
+  .wallet-badge>span {
+    font-size: 13px
+  }
+  .wallet-badge small {
+    font-size: 9px;
+    padding-left: 5px
+  }
+  .wallet-badge svg {
+    width: 22px;
+    height: 22px
+  }
+  .game-shop .game-title h1 {
+    font-size: 29px
+  }
+  .wallet-summary {
+    padding: 16px;
+    gap: 14px
+  }
+  .wallet-summary strong {
+    font-size: 36px
+  }
+  .wallet-summary p {
+    font-size: 11px
+  }
+  .cosmetic-grid {
+    grid-template-columns: 1fr;
+    gap: 12px
+  }
+  .cosmetic-card {
+    display: grid;
+    grid-template-columns: 82px minmax(0,1fr);
+    gap: 8px 12px;
+    align-items: center;
+    padding: 12px
+  }
+  .cosmetic-card .shop-item-art {
+    width: 82px;
+    height: 82px
+  }
+  .cosmetic-card .btn {
+    grid-column: 1/-1;
+    min-height: 44px
+  }
+  .cosmetic-card h2 {
+    font-size: 16px
+  }
+  .cosmetic-card p {
+    font-size: 10px;
+    min-height: 0
+  }
+  .wallet-ledger {
+    padding: 14px
+  }
+  .coin-receipt {
+    padding: 12px
+  }
+  .coin-receipt-heading b {
+    font-size: 12px
+  }
+}
+.game-shop .cosmetic-card:has(.btn:disabled):not(.is-equipped) .shop-item-price {
+  color: #966b3b
+}
+.shop-wallet-dock {
+  display: none
+}
+@media(max-width:900px) {
+  .shop-wallet-dock {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    position: fixed;
+    z-index: var(--z-dock);
+    bottom: calc(10px + env(safe-area-inset-bottom,0px));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(640px,calc(100vw - 20px));
+    padding: 11px 14px;
+    background: #fff9e9;
+    border: 2px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow-lg);
+    min-height: 62px
+  }
+  .shop-wallet-dock b {
+    font-size: 19px
+  }
+  .shop-wallet-dock span {
+    font-size: 10px;
+    color: var(--ink-soft)
+  }
+  .shop-wallet-dock a {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 10px;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: #ffcf69
+  }
+}
+.member-card {
+  margin: 24px 0;
+  padding: 22px 24px;
+  border: 2px solid #3d2b23;
+  border-radius: 20px;
+  background: #fff0ce;
+  box-shadow: 3px 4px 0 #3d2b2320;
+  color: #3d2b23;
+  overflow-wrap: anywhere;
+}
+.member-card b {
+  font-size: 19px;
+  display: block;
+  line-height: 1.6;
+}
+.member-card p {
+  margin: 8px 0;
+  line-height: 1.7;
+}
+.member-card small {
+  display: block;
+  line-height: 1.8;
+}
+.member-card progress {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: 12px;
+  margin: 14px 0;
+  accent-color: #a76b40;
+}
+body[data-dazi-member="银卡会员"] .member-card {
+  background: #e9eee6;
+}
+body[data-dazi-member="金卡会员"] .member-card {
+  background: #ffe5a7;
+}
+body[data-dazi-member="黑金食客"] .member-card {
+  background: #554135;
+  color: #fff0ce;
+  border-color: #c79848;
+}
+.pending-meals {
+  position: relative;
+  z-index: var(--z-notice);
+  padding: 12px 20px;
+  background: #ffedbe;
+  border-bottom: 2px solid #3d2b23;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  line-height: 1.7;
+}
+.pending-meals button {
+  border: 1px solid #3d2b23;
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff8ed;
+  min-height: 44px;
+}
+.game-confirm {
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+.coin-receipt {
+  overflow-wrap: anywhere;
+}
+.coin-receipt .btn {
+  white-space: normal;
+  max-width: 100%;
+}
+@media(max-width:600px) {
+  .member-card {
+    padding: 18px;
+    margin: 20px 0;
+  }
+  .member-card b {
+    font-size: 17px;
+  }
+  .wallet-badge small {
+    font-size: 10px;
+  }
+  .game-confirm .game-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .game-confirm .btn {
+    width: 100%;
+    white-space: normal;
+  }
+  .game-confirm-backdrop {
+    padding: 16px;
+    padding-bottom: max(16px,env(safe-area-inset-bottom));
+  }
+}
+.experience-settings {
+  margin: 8px 0 14px;
+  color: #624735;
+  font-size: 12px;
+  text-align: left
+}
+.experience-settings summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  text-decoration: underline;
+  text-underline-offset: 4px
+}
+.experience-settings>div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 4px 0 12px
+}
+.experience-settings label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  cursor: pointer
+}
+.experience-settings input {
+  width: 19px;
+  height: 19px;
+  accent-color: #9d613c;
+  cursor: pointer
+}
+.experience-settings small {
+  flex-basis: 100%;
+  font-size: 11px;
+  line-height: 1.7
+}
+.dining-table {
+  margin: 22px 0;
+  text-align: left;
+  border-top: 1px dashed #ad8c69;
+  padding-top: 20px;
+  color: #3d2b23
+}
+.dining-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap
+}
+.dining-heading h3 {
+  font-size: 20px;
+  line-height: 1.4;
+  margin: 0
+}
+.dining-heading>span {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: #624735
+}
+.dining-hint {
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 10px 0 16px;
+  color: #624735
+}
+.dining-stage {
+  background: #f8edda;
+  border-radius: 18px;
+  padding: 12px;
+  position: relative;
+  isolation: isolate
+}
+.dining-foods {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 12px 8px
+}
+.dining-food {
+  border: 0;
+  background: transparent;
+  color: #3d2b23;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  min-width: 0;
+  padding: 6px;
+  border-radius: 12px;
+  touch-action: manipulation;
+  cursor: pointer
+}
+.dining-food:hover:not(:disabled) {
+  background: #ffe4ac
+}
+.dining-food:active:not(:disabled) {
+  background: #f1d39d
+}
+.dining-food:focus-visible {
+  outline: 3px solid #9d613c;
+  outline-offset: 3px
+}
+.dining-main-food:focus-visible {
+  outline: 3px solid #9d613c;
+  outline-offset: 3px
+}
+.experience-settings summary:focus-visible {
+  outline: 3px solid #9d613c;
+  outline-offset: 3px
+}
+.experience-settings input:focus-visible {
+  outline: 3px solid #9d613c;
+  outline-offset: 3px
+}
+.dining-food>svg {
+  width: 64px;
+  height: 64px
+}
+.dining-bbq .dining-food>svg {
+  width: min(110px,100%);
+  height: 140px
+}
+.dining-food b {
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere
+}
+.dining-food small {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #624735
+}
+.dining-food[data-eaten=true] {
+  opacity: .65;
+  cursor: default
+}
+.dining-main-food {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #3d2b23;
+  cursor: pointer;
+  touch-action: manipulation;
+  min-height: 44px;
+  border-radius: 14px
+}
+.dining-main-food>span {
+  display: block;
+  padding: 10px 24px;
+  min-height: 44px;
+  line-height: 24px;
+  background: #ffcf69;
+  border: 1.5px solid #3d2b23;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+  margin: 6px 0
+}
+.dining-main-food:disabled {
+  cursor: default
+}
+.dining-main-food:disabled>span {
+  background: #e9dfcc
+}
+.dining-motion {
+  max-width: 300px;
+  width: 100%;
+  transform-origin: 50% 80%
+}
+.dining-response {
+  margin: 14px 0 0;
+  line-height: 1.7;
+  min-height: 24px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #624735
+}
+.dining-table .experience-settings {
+  margin: 8px 0 0
+}
+.serving-bowl {
+  position: relative;
+  max-width: 260px;
+  margin: 4px auto 12px;
+  min-height: 130px;
+  text-align: center
+}
+.serving-bowl>svg {
+  width: 100%;
+  display: block
+}
+.bowl-mouthful {
+  position: absolute;
+  top: 17%;
+  left: 12%;
+  right: 12%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #624735
+}
+.dining-breakfast .served-pancake {
+  transform-origin: center
+}
+@media(max-width:600px) {
+  .dining-table {
+    margin: 18px 0
+  }
+  .dining-heading h3 {
+    font-size: 18px
+  }
+  .dining-heading>span {
+    font-size: 11px
+  }
+  .dining-foods {
+    gap: 8px 4px
+  }
+  .dining-stage {
+    padding: 10px 6px
+  }
+  .dining-food {
+    padding: 4px
+  }
+  .dining-main-food>span {
+    font-size: 12px
+  }
+  .dining-motion {
+    max-width: 260px
+  }
+  .dining-bbq .dining-food>svg {
+    height: 120px
+  }
+  .dining-food b {
+    font-size: 11px
+  }
+}
+.dining-foods {
+  grid-template-columns: repeat(var(--servings,3),minmax(0,110px));
+  justify-content: center
+}
+.bowl-mouthful>span:not(.freshly-served) {
+  padding-top: 32px
+}
+.game-bbq .game-food-grid button {
+  position: relative;
+  gap: 3px;
+  min-height: 150px
+}
+.game-bbq .game-food-grid .bbq-skewer-drawing {
+  width: 50px;
+  height: 96px;
+  margin: 0 auto
+}
+.game-bbq .game-food-grid button:disabled {
+  opacity: .7
+}
+.dining-bbq .dining-food>.bbq-skewer-drawing {
+  height: 168px;
+  width: 86px
+}
+@media(max-width:600px) {
+  .game-bbq .game-food-grid .bbq-skewer-drawing {
+    width: 46px;
+    height: 90px
+  }
+  .game-bbq .game-food-grid button {
+    min-height: 145px
+  }
+  .dining-bbq .dining-food>.bbq-skewer-drawing {
+    height: 144px;
+    width: 74px
+  }
+}
+.game-hotpot .served-plate .game-result-items {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin-top: 10px
+}
+.game-hotpot .served-plate .game-result-items>div {
+  border-bottom: 1px solid #dbc9ae;
+  border-radius: 0;
+  padding: 8px 0;
+  background: transparent
+}
+.game-hotpot .served-plate .game-result-items>div>span {
+  flex: 1;
+  font-size: 11px;
+  line-height: 1.7
+}
+.serving-bowl {
+  position: relative;
+  width: min(100%,380px);
+  max-width: 380px;
+  min-height: 0;
+  margin: 0 auto 8px
+}
+.serving-bowl>svg {
+  width: 100%;
+  height: auto;
+  display: block
+}
+.serving-bowl>.bowl-front {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none
+}
+.bowl-mouthful {
+  position: absolute;
+  top: 8%;
+  left: 17%;
+  right: 17%;
+  z-index: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center
+}
+.bowl-mouthful>span:not(.freshly-served) {
+  padding-top: 32px;
+  font-size: 12px;
+  color: #624735
+}
+.bowl-preview-foods {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 1px 7px;
+  width: 100%;
+  align-items: center;
+  justify-items: center
+}
+.bowl-edible-foods {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 1px 7px;
+  width: 100%;
+  align-items: center;
+  justify-items: center
+}
+.bowl-preview-foods>span {
+  height: 48px;
+  display: grid;
+  place-items: center
+}
+.bowl-preview-foods svg {
+  width: 44px;
+  height: 44px
+}
+.bowl-edible-foods .dining-food {
+  position: relative;
+  min-height: 48px;
+  width: 100%;
+  height: 48px;
+  min-width: 44px;
+  padding: 2px;
+  border-radius: 8px
+}
+.bowl-edible-foods .dining-food>svg {
+  width: 42px;
+  height: 42px
+}
+.bowl-edible-foods .dining-food:hover:not(:disabled) {
+  background: transparent;
+  outline: 2px solid #aa7a42;
+  outline-offset: 1px
+}
+.bowl-edible-foods .dining-food small {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 9px;
+  line-height: 16px;
+  background: #fff4d7;
+  border: 1px solid #aa8b64;
+  border-radius: 6px;
+  padding: 0 2px;
+  color: #624735;
+  z-index: 1
+}
+.bowl-ingredient-list {
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: center;
+  color: #624735;
+  margin: 0 4px 10px;
+  overflow-wrap: anywhere
+}
+.dining-bowl-wrap>.dining-hint {
+  margin: 4px 8px 10px;
+  text-align: center
+}
+.dining-stage {
+  overflow: visible
+}
+.game-breakfast .game-food-grid svg {
+  width: 56px;
+  height: 56px
+}
+@media(max-width:900px) {
+  .game-tea .game-mobile-dock .btn {
+    min-width: 76px;
+    padding: 8px 9px;
+    font-size: 11px;
+    min-height: 44px
+  }
+  .game-hotpot .game-mobile-dock .btn {
+    min-width: 76px;
+    padding: 8px 9px;
+    font-size: 11px;
+    min-height: 44px
+  }
+  .game-breakfast .game-mobile-dock .btn {
+    min-width: 76px;
+    padding: 8px 9px;
+    font-size: 11px;
+    min-height: 44px
+  }
+}
+@media(max-width:600px) {
+  .serving-bowl {
+    max-width: 340px
+  }
+  .bowl-edible-foods .dining-food {
+    height: 44px;
+    min-height: 44px
+  }
+  .bowl-edible-foods .dining-food>svg {
+    width: 38px;
+    height: 38px
+  }
+  .bowl-preview-foods>span {
+    height: 44px
+  }
+  .bowl-preview-foods svg {
+    width: 38px;
+    height: 38px
+  }
+  .bowl-ingredient-list {
+    font-size: 11px
+  }
+  .game-breakfast .game-food-grid svg {
+    width: 50px;
+    height: 50px
+  }
+}
+.bowl-edible-foods .dining-food {
+  height: 56px;
+  min-height: 56px;
+  gap: 0
+}
+.bowl-edible-foods .dining-food>svg {
+  width: 32px;
+  height: 32px
+}
+.bowl-edible-foods .dining-food b {
+  font-size: 9px;
+  line-height: 12px;
+  white-space: nowrap;
+  max-width: none
+}
+.bowl-preview-foods>span {
+  height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center
+}
+.bowl-preview-foods>span svg {
+  width: 32px;
+  height: 32px
+}
+.bowl-preview-foods>span small {
+  font-size: 9px;
+  line-height: 12px;
+  white-space: nowrap
+}
+@media(max-width:600px) {
+  .bowl-mouthful {
+    top: 4%
+  }
+  .bowl-edible-foods .dining-food {
+    height: 44px;
+    min-height: 44px
+  }
+  .bowl-edible-foods .dining-food>svg {
+    width: 28px;
+    height: 28px
+  }
+  .bowl-edible-foods .dining-food b {
+    font-size: 8px;
+    line-height: 10px
+  }
+  .bowl-preview-foods>span {
+    height: 44px
+  }
+  .bowl-preview-foods>span svg {
+    width: 28px;
+    height: 28px
+  }
+  .bowl-preview-foods>span small {
+    font-size: 8px;
+    line-height: 10px
+  }
+  .bowl-mouthful {
+    top: 3%
+  }
+  .bowl-edible-foods .dining-food b {
+    font-size: 10px;
+    line-height: 12px
+  }
+  .bowl-preview-foods>span small {
+    font-size: 10px;
+    line-height: 12px
+  }
+}
+.simple-game .customer-idea {
+  padding: 8px 0;
+  border-bottom: 1px dashed #d7c3a8;
+  margin-bottom: 12px
+}
+.customer-idea summary {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer
+}
+.customer-idea p {
+  font-size: 13px;
+  line-height: 1.7
+}
+.meal-notes {
+  margin: 12px 0;
+  padding: 12px;
+  border: 1px dashed #d6c0a2;
+  border-radius: 12px
+}
+.meal-notes>summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  line-height: 1.6
+}
+.simple-game>.game-guide {
+  order: 6
+}
+.simple-game>.experience-settings {
+  order: 7
+}
+.simple-game>.game-footnote {
+  order: 8
+}
+.raw-bowl-food {
+  display: grid;
+  place-items: center;
+  background: transparent!important;
+  border: 0!important;
+  padding: 2px!important;
+  min-width: 44px;
+  min-height: 64px;
+  color: #3d2b23
+}
+.raw-bowl-food small {
+  font-size: 10px
+}
+.simple-game .game-result .dining-table {
+  margin-top: 12px
+}
+@media(max-width:600px) {
+  .simple-game .game-title {
+    margin-bottom: 12px
+  }
+  .simple-game .game-title>div>span {
+    display: none
+  }
+  .simple-game .game-guide {
+    margin-top: 16px
+  }
+}
+.simple-game .served-plate .dining-food {
+  border: 0;
+  background: transparent;
+  padding: 2px
+}
+.simple-game .served-plate .dining-food:disabled {
+  opacity: 1
+}
+.bowl-edible-foods:has(>button:only-child) {
+  grid-template-columns: 1fr
+}
+.bowl-edible-foods:has(>button:only-child)>.dining-food {
+  width: 70px;
+  height: 68px
+}
+.bowl-edible-foods:has(>button:only-child)>.dining-food>svg {
+  width: 48px;
+  height: 48px
+}
+.bowl-mouthful:has(.bowl-edible-foods>button:only-child) {
+  top: 13%
+}
+.selection-bowl {
+  width: 74px;
+  height: 54px;
+  flex: none;
+  position: relative;
+  pointer-events: none
+}
+.selection-bowl .serving-bowl {
+  width: 100%;
+  margin: 0;
+  max-width: none
+}
+.selection-bowl .bowl-mouthful {
+  top: 7%;
+  left: 15%;
+  right: 15%
+}
+.selection-bowl-foods {
+  display: flex;
+  justify-content: center;
+  gap: 0
+}
+.selection-bowl-foods>span {
+  display: block;
+  width: 20px;
+  height: 20px
+}
+.selection-bowl-foods svg {
+  display: block;
+  width: 20px;
+  height: 20px
+}
+.picked-food-flight {
+  position: fixed;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  z-index: var(--z-feedback);
+  pointer-events: none;
+  transform-origin: 50% 65%;
+  contain: layout style
+}
+.malatang-mouthful {
+  position: fixed;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  z-index: var(--z-feedback);
+  pointer-events: none;
+  transform-origin: 50% 65%;
+  contain: layout style
+}
+.picked-food-flight>svg {
+  display: block;
+  width: 100%;
+  height: 100%
+}
+.malatang-mouthful>svg {
+  display: block;
+  width: 100%;
+  height: 100%
+}
+.picked-food-flight>.meal-chopsticks {
+  position: absolute;
+  inset: -15px -12px 0 auto;
+  width: 56px;
+  height: 56px
+}
+.malatang-mouthful>.meal-chopsticks {
+  position: absolute;
+  inset: -15px -12px 0 auto;
+  width: 56px;
+  height: 56px
+}
+body.modal-open .picked-food-flight {
+  display: none
+}
+.dining-malatang .dining-bowl-wrap {
+  position: relative;
+  padding-top: 8px
+}
+.dining-malatang .serving-bowl {
+  isolation: isolate
+}
+.dining-malatang .malatang-food-settle {
+  display: block;
+  width: 32px;
+  height: 32px;
+  line-height: 0;
+  transform-origin: 50% 80%
+}
+.dining-malatang .malatang-food-settle>svg {
+  width: 100%;
+  height: 100%;
+  display: block
+}
+.malatang-mouthful {
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px
+}
+@media(max-width:600px) {
+  .selection-bowl {
+    width: 60px;
+    height: 45px
+  }
+  .selection-bowl-foods>span {
+    width: 17px;
+    height: 17px
+  }
+  .selection-bowl-foods svg {
+    width: 17px;
+    height: 17px
+  }
+  .dining-malatang .malatang-food-settle {
+    width: 28px;
+    height: 28px
+  }
+  .dining-malatang .bowl-edible-foods:has(>button:only-child) .malatang-food-settle {
+    width: 48px;
+    height: 48px
+  }
+}
+.dining-malatang .bowl-edible-foods:has(>button:only-child) .malatang-food-settle {
+  width: 48px;
+  height: 48px
+}
+.dining-malatang .dining-stage {
+  padding-top: 44px
+}
+@media(max-width:900px) {
+  .malatang-game-nav .wallet-badge {
+    min-height: 44px
+  }
+  .game-topbar .wallet-badge {
+    min-height: 44px
+  }
+  .game-back {
+    min-height: 44px
+  }
+  .checkout-panel summary {
+    min-height: 44px
+  }
+}
+.checkout-dock button {
+  touch-action: manipulation
+}
+.checkout-dock {
+  max-width: calc(100vw - 20px)
+}
+@media(max-height:450px) and (max-width:900px) {
+  .game-mobile-dock .btn {
+    min-height: 44px
+  }
+  .checkout-dock.dock {
+    bottom: calc(6px + env(safe-area-inset-bottom,0px));
+    padding: 8px 12px
+  }
+  .checkout-overlay {
+    padding-block: 6px;
+    max-height: 100dvh
+  }
+  .checkout-panel {
+    max-height: calc(100dvh - 12px)
+  }
+}
+.game-bbq>.game-guide {
+  order: 6
+}
+.game-bbq>.experience-settings {
+  order: 7
+}
+.game-bbq>.game-footnote {
+  order: 8
+}
+.served-plate .bowl-mouthful {
+  top: 12%
+}
+.dining-table .bowl-mouthful {
+  top: 12%
+}
+.game-hotpot .bowl-preview-foods>.raw-bowl-food {
+  min-height: 54px;
+  height: 54px;
+  gap: 0
+}
+.game-hotpot .bowl-preview-foods>.raw-bowl-food svg {
+  width: 32px;
+  height: 32px
+}
+.game-hotpot .bowl-preview-foods>.raw-bowl-food small {
+  font-size: 10px;
+  line-height: 11px;
+  white-space: nowrap
+}
+
+
+/* Recommendations own their complete layout; closed drawers mount no focusable controls. */
+.reco {padding:0;color:var(--ink)}
+.reco-head {display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.reco-note {font-size:12px;line-height:1.7;color:var(--ink-soft);max-width:390px}
+.reco-head .link-btn {flex:none;min-width:76px;min-height:var(--touch-target);padding:8px 12px;border:1px solid #ac9271;border-radius:10px;background:#fff8ed;color:var(--ink);font-weight:700}
+.reco-list {display:grid;gap:14px}
+.reco-card {padding:16px;background:#fff3df;border:1px solid #d8bfa0;border-radius:16px}
+.reco-title {display:flex;gap:8px;align-items:center;font-size:14px;flex-wrap:wrap}
+.reco-title>i {margin-left:auto;font-style:normal;font-weight:800;color:var(--red-deep)}
+.reco-blurb {font-size:12px;line-height:1.8;color:var(--ink-soft);margin:8px 0}
+.reco-items {display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.reco-items>svg {flex:none;width:34px;height:34px}
+.reco-more {font-size:11px;color:var(--ink-soft);line-height:1.6}
+.reco-card>.btn {width:100%;min-height:var(--touch-target);padding:10px 14px;font-size:13px}
+.recommendation-overlay .detail-body {overscroll-behavior:contain}
+.recommendation-overlay .checkout-panel {max-height:calc(100dvh - 32px)}
+.hud-actions .icon-btn {min-width:var(--touch-target);min-height:var(--touch-target)}
+@media(max-width:620px){
+ .checkout-dock .dock-actions {grid-template-columns:1fr 1fr 1.45fr;gap:6px}
+ .checkout-dock .dock-actions .btn {min-width:0;min-height:var(--touch-target);font-size:12px;padding:9px 6px;line-height:1.5}
+ .recommendation-overlay {place-items:end center}
+ .recommendation-overlay .checkout-panel {max-height:calc(100dvh - 20px - env(safe-area-inset-bottom,0px))}
+ .reco-head {align-items:flex-start;gap:8px}
+ .reco-card {padding:12px}
+}

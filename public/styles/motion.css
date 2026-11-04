@@ -1,0 +1,1222 @@
+/* motion: one ordered source area; component rules stay with their responsive variants. */
+
+.boot-pot {
+  animation: bob 1.2s ease-in-out infinite
+}
+@keyframes bob {
+  50% {
+    transform: translateY(-10px) rotate(-6deg)
+  }
+}
+.btn {
+  transition: transform .08s ease,box-shadow .08s ease
+}
+.hud {
+  transition: background .2s ease
+}
+.overbar {
+  animation: nudge .4s ease
+}
+@keyframes nudge {
+  50% {
+    transform: translate(4px)
+  }
+}
+.goods-icon {
+  transition: transform .12s ease
+}
+.goods-tag {
+  transition: background .12s ease,border-color .12s ease
+}
+.goods-badge {
+  animation: pop .18s ease
+}
+.overlay {
+  animation: fade .12s ease
+}
+@keyframes fade {
+  0% {
+    opacity: 0
+  }
+}
+.sheet {
+  animation: rise .14s ease
+}
+@keyframes rise {
+  0% {
+    transform: translateY(10px);
+    opacity: 0
+  }
+}
+.weigh {
+  animation: rise .16s ease
+}
+.budgetbar-fill {
+  transition: width .3s ease
+}
+.bowl-item {
+  transition: filter .12s ease;
+  will-change: transform
+}
+.dock-bar-fill {
+  transition: width .25s ease
+}
+@media(prefers-reduced-motion:reduce) {
+  * {
+    animation-duration: .001ms!important;
+    transition-duration: .001ms!important
+  }
+  *:before {
+    animation-duration: .001ms!important;
+    transition-duration: .001ms!important
+  }
+  *:after {
+    animation-duration: .001ms!important;
+    transition-duration: .001ms!important
+  }
+}
+.store-card {
+  transition: transform .15s
+}
+.kitchen-steam path {
+  animation: steam 2s ease-in-out infinite
+}
+.cup-shaking {
+  animation: shake .3s ease-in-out infinite
+}
+@keyframes steam {
+  50% {
+    opacity: .25;
+    transform: translateY(-4px)
+  }
+}
+@keyframes shake {
+  25% {
+    transform: rotate(-3deg)
+  }
+  75% {
+    transform: rotate(3deg)
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .kitchen-steam path {
+    animation: none
+  }
+  .cup-shaking {
+    animation: none
+  }
+  .store-card {
+    transition: none
+  }
+}
+.game-shell[data-paused=true] .kitchen-steam path {
+  animation-play-state: paused
+}
+.skewer-turn.is-turning {
+  animation: skewer-flip .35s ease
+}
+.seasoning-burst i {
+  animation: season-fall .7s ease-out both;
+  animation-delay: var(--fall-delay)
+}
+.skewer-smoke i {
+  animation: char-smoke 1.5s ease-out infinite
+}
+.skewer-smoke i:nth-child(2) {
+  animation-delay: .5s
+}
+.skewer-smoke i:nth-child(3) {
+  animation-delay: 1s
+}
+@keyframes skewer-flip {
+  0% {
+    transform: translateY(0) rotateY(0)
+  }
+  45% {
+    transform: translateY(-6px) rotateY(90deg)
+  }
+  100% {
+    transform: translateY(0) rotateY(0)
+  }
+}
+@keyframes season-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px)
+  }
+  15% {
+    opacity: 1
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(45px) rotate(90deg)
+  }
+}
+@keyframes char-smoke {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(.6)
+  }
+  40% {
+    opacity: .5
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-32px) scale(1.4)
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .skewer-turn.is-turning {
+    animation: none
+  }
+  .seasoning-burst i {
+    animation: none
+  }
+  .skewer-smoke i {
+    animation: none
+  }
+  .seasoning-burst {
+    display: none
+  }
+}
+.kitchen-action-note {
+  animation: kitchen-ack 180ms ease-out
+}
+.dining-tea .dining-motion {
+  animation: dining-sip 280ms cubic-bezier(.16,1,.3,1)
+}
+.dining-breakfast .dining-motion {
+  animation: dining-bite 220ms cubic-bezier(.16,1,.3,1)
+}
+.freshly-served {
+  animation: pot-to-bowl 340ms cubic-bezier(.16,1,.3,1)
+}
+.game-breakfast[data-action=flip] .breakfast-stage>.shop-art {
+  animation: pan-turn 300ms cubic-bezier(.16,1,.3,1)
+}
+.game-breakfast[data-action=egg] .breakfast-stage>.shop-art {
+  animation: kitchen-ack 180ms ease-out
+}
+.game-shell[data-paused=true] .cup-shaking {
+  animation-play-state: paused
+}
+.dining-breakfast .served-pancake {
+  animation: wrap-ready 300ms cubic-bezier(.16,1,.3,1)
+}
+@keyframes dining-sip {
+  0% {
+    transform: rotate(-5deg)
+  }
+  100% {
+    transform: rotate(0)
+  }
+}
+@keyframes dining-bite {
+  0% {
+    transform: scale(.96)
+  }
+  100% {
+    transform: scale(1)
+  }
+}
+@keyframes kitchen-ack {
+  0% {
+    opacity: .55
+  }
+  100% {
+    opacity: 1
+  }
+}
+@keyframes pot-to-bowl {
+  0% {
+    transform: translateY(-36px) rotate(-12deg);
+    opacity: .3
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+    opacity: 1
+  }
+}
+@keyframes pan-turn {
+  0% {
+    transform: rotateX(0)
+  }
+  50% {
+    transform: rotateX(75deg) translateY(-12px)
+  }
+  100% {
+    transform: rotateX(0)
+  }
+}
+@keyframes wrap-ready {
+  0% {
+    transform: scaleX(.82)
+  }
+  100% {
+    transform: scaleX(1)
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .dining-table * {
+    animation: none!important;
+    transition: none!important
+  }
+  .kitchen-action-note {
+    animation: none!important;
+    transition: none!important
+  }
+  .freshly-served {
+    animation: none!important;
+    transition: none!important
+  }
+  .game-breakfast .breakfast-stage>.shop-art {
+    animation: none!important;
+    transition: none!important
+  }
+  .game-shell .kitchen-steam path {
+    animation: none!important
+  }
+  .game-shell .cup-shaking {
+    animation: none!important
+  }
+}
+body[data-kitchen-motion=off] .dining-table * {
+  animation: none!important;
+  transition: none!important
+}
+body[data-kitchen-motion=off] .kitchen-action-note {
+  animation: none!important;
+  transition: none!important
+}
+body[data-kitchen-motion=off] .freshly-served {
+  animation: none!important;
+  transition: none!important
+}
+body[data-kitchen-motion=off] .shop-art * {
+  animation: none!important;
+  transition: none!important
+}
+body[data-kitchen-motion=off] .shop-art {
+  animation: none!important;
+  transition: none!important
+}
+body[data-kitchen-motion=off] .skewer-art {
+  animation: none!important;
+  transition: none!important
+}
+.recipe-topping {
+  animation: pot-to-bowl 220ms cubic-bezier(.16,1,.3,1)
+}
+@media(prefers-reduced-motion:reduce) {
+  .recipe-topping {
+    animation: none
+  }
+}
+body[data-kitchen-motion=off] .skewer-turn {
+  animation: none!important;
+  transition: none!important
+}
+body[data-kitchen-motion=off] .kitchen-steam path {
+  animation: none!important;
+  transition: none!important
+}
+body[data-kitchen-motion=off] .cup-shaking {
+  animation: none!important;
+  transition: none!important
+}
+.game-shell[data-paused=true] .skewer-smoke i {
+  animation-play-state: paused
+}
+body[data-kitchen-motion=off] .skewer-smoke i {
+  animation: none!important
+}
+body[data-kitchen-motion=off] .seasoning-burst i {
+  animation: none!important
+}
+@media(prefers-reduced-motion:reduce) {
+  .refined-cup * {
+    animation: none!important;
+    transition: none!important
+  }
+  .breakfast-detail * {
+    animation: none!important;
+    transition: none!important
+  }
+}
+.bbq-food-piece {
+  transition: transform 180ms linear
+}
+.bbq-food-piece path {
+  transition: fill 180ms linear,stroke 180ms linear,opacity 180ms linear
+}
+.bbq-food-piece rect {
+  transition: fill 180ms linear,stroke 180ms linear,opacity 180ms linear
+}
+.bbq-food-piece ellipse {
+  transition: fill 180ms linear,stroke 180ms linear,opacity 180ms linear
+}
+.bbq-food-piece circle {
+  transition: fill 180ms linear,stroke 180ms linear,opacity 180ms linear
+}
+.bbq-oil-glint {
+  animation: bbq-gloss 1.8s ease-in-out infinite
+}
+.bbq-oil-bubble {
+  animation: bbq-sizzle 1.45s ease-out infinite
+}
+.bbq-juice-drop {
+  animation: bbq-drip 3.1s ease-in infinite
+}
+.bbq-vapour-path {
+  animation: bbq-vapour 2.3s ease-out infinite
+}
+.bbq-heat-vapour.is-smoky .bbq-vapour-path {
+  animation-duration: 1.7s
+}
+.bbq-coal {
+  animation: bbq-embers 2.7s ease-in-out infinite
+}
+.bbq-grill-drawing[data-fire-active=false] .bbq-coal {
+  animation: none
+}
+.game-bbq .skewer-turn.is-turning {
+  animation: bbq-utensil-flip 520ms cubic-bezier(.2,.7,.2,1)
+}
+.bbq-on-grate {
+  animation: bbq-set-down 300ms cubic-bezier(.16,1,.3,1)
+}
+.bbq-turning-tongs {
+  animation: bbq-tongs 520ms ease-out both
+}
+.bbq-season-shaker {
+  animation: bbq-shaker-out 850ms ease-out both
+}
+.bbq-shaker-sway {
+  animation: bbq-shake-jar 650ms ease-in-out both
+}
+.bbq-shaker-grain {
+  animation: bbq-grain 650ms ease-in both
+}
+.game-bbq .seasoning-burst i {
+  animation-duration: 680ms
+}
+.game-bbq .warming-items article {
+  animation: bbq-tray-down 320ms cubic-bezier(.16,1,.3,1)
+}
+@keyframes bbq-gloss {
+  0%,100% {
+    opacity: .12;
+    transform: translateX(-2px)
+  }
+  45% {
+    opacity: .8;
+    transform: translateX(2px)
+  }
+}
+@keyframes bbq-sizzle {
+  0%,12% {
+    opacity: 0;
+    transform: translateY(1px) scale(.3)
+  }
+  32% {
+    opacity: .8;
+    transform: translateY(0) scale(.9)
+  }
+  65% {
+    opacity: 0;
+    transform: translateY(-3px) scale(1.35)
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-3px) scale(1.35)
+  }
+}
+@keyframes bbq-drip {
+  0%,58% {
+    opacity: 0;
+    transform: translateY(-4px) scale(.45)
+  }
+  64% {
+    opacity: .8;
+    transform: translateY(0) scale(.8)
+  }
+  82% {
+    opacity: 0;
+    transform: translateY(20px) scale(.5)
+  }
+  100% {
+    opacity: 0
+  }
+}
+@keyframes bbq-vapour {
+  0% {
+    opacity: 0;
+    transform: translate(0,4px) scaleX(.8)
+  }
+  20% {
+    opacity: .55
+  }
+  85%,100% {
+    opacity: 0;
+    transform: translate(5px,-35px) scaleX(1.2)
+  }
+}
+@keyframes bbq-embers {
+  0%,100% {
+    opacity: .7
+  }
+  45% {
+    opacity: 1
+  }
+  75% {
+    opacity: .85
+  }
+}
+@keyframes bbq-utensil-flip {
+  0% {
+    transform: translateY(0) rotateZ(0) rotateY(var(--face-from))
+  }
+  28% {
+    transform: translateY(-12px) rotateZ(-5deg) rotateY(calc(var(--face-from) + 35deg))
+  }
+  55% {
+    transform: translateY(-20px) rotateZ(0) rotateY(calc(var(--face-from) + 110deg))
+  }
+  100% {
+    transform: translateY(0) rotateZ(0) rotateY(var(--face-to))
+  }
+}
+@keyframes bbq-tongs {
+  0% {
+    opacity: 0;
+    transform: translate(18px,-14px)
+  }
+  12%,62% {
+    opacity: 1;
+    transform: translate(0,0)
+  }
+  100% {
+    opacity: 0;
+    transform: translate(22px,-25px)
+  }
+}
+@keyframes bbq-set-down {
+  0% {
+    transform: translateY(-10px);
+    opacity: .6
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1
+  }
+}
+@keyframes bbq-tray-down {
+  0% {
+    transform: translateY(-8px) rotate(-2deg);
+    opacity: .65
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+    opacity: 1
+  }
+}
+@keyframes bbq-shake-jar {
+  0%,100% {
+    transform: rotate(-30deg)
+  }
+  20%,60% {
+    transform: rotate(-48deg) translateY(-4px)
+  }
+  40%,80% {
+    transform: rotate(-22deg) translateY(2px)
+  }
+}
+@keyframes bbq-shaker-out {
+  0% {
+    opacity: 0;
+    transform: translate(4px,-10px)
+  }
+  12%,75% {
+    opacity: 1;
+    transform: translate(0,0)
+  }
+  100% {
+    opacity: 0;
+    transform: translate(10px,-20px)
+  }
+}
+@keyframes bbq-grain {
+  0% {
+    opacity: 0;
+    transform: translateY(-15px)
+  }
+  20% {
+    opacity: 1
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-20px,45px)
+  }
+}
+.game-bbq[data-paused=true] .bbq-motion-loop {
+  animation-play-state: paused!important
+}
+.game-bbq[data-paused=true] .skewer-turn.is-turning {
+  animation-play-state: paused!important
+}
+.game-bbq[data-paused=true] .bbq-turning-tongs {
+  animation-play-state: paused!important
+}
+.game-bbq[data-paused=true] .bbq-season-shaker {
+  animation-play-state: paused!important
+}
+.game-bbq[data-paused=true] .bbq-shaker-sway {
+  animation-play-state: paused!important
+}
+.game-bbq[data-paused=true] .bbq-shaker-grain {
+  animation-play-state: paused!important
+}
+.bbq-live-grill[data-visible=false] .bbq-motion-loop {
+  animation-play-state: paused!important
+}
+body[data-kitchen-hidden=true] .bbq-motion-loop {
+  animation-play-state: paused!important
+}
+@media(prefers-reduced-motion:reduce) {
+  .game-bbq .bbq-motion-loop {
+    animation: none!important
+  }
+  .game-bbq .skewer-turn.is-turning {
+    animation: none!important
+  }
+  .game-bbq .bbq-turning-tongs {
+    animation: none!important
+  }
+  .game-bbq .bbq-on-grate {
+    animation: none!important
+  }
+  .game-bbq .warming-items article {
+    animation: none!important
+  }
+  .game-bbq .bbq-season-shaker {
+    animation: none!important
+  }
+  .game-bbq .bbq-shaker-sway {
+    animation: none!important
+  }
+  .game-bbq .bbq-shaker-grain {
+    animation: none!important
+  }
+  .bbq-heat-vapour {
+    display: none!important
+  }
+  .bbq-turning-tongs {
+    display: none!important
+  }
+  .bbq-oil-bubbles {
+    display: none!important
+  }
+  .bbq-juice-drop {
+    display: none!important
+  }
+  .bbq-season-shaker {
+    display: none!important
+  }
+  .bbq-food-piece {
+    transition: none!important
+  }
+  .bbq-food-piece * {
+    transition: none!important
+  }
+  .bbq-food-piece {
+    transform: none!important
+  }
+}
+body[data-kitchen-motion=off] .game-bbq .bbq-motion-loop {
+  animation: none!important
+}
+body[data-kitchen-motion=off] .game-bbq .skewer-turn.is-turning {
+  animation: none!important
+}
+body[data-kitchen-motion=off] .game-bbq .bbq-turning-tongs {
+  animation: none!important
+}
+body[data-kitchen-motion=off] .game-bbq .bbq-on-grate {
+  animation: none!important
+}
+body[data-kitchen-motion=off] .game-bbq .warming-items article {
+  animation: none!important
+}
+body[data-kitchen-motion=off] .game-bbq .bbq-season-shaker {
+  animation: none!important
+}
+body[data-kitchen-motion=off] .game-bbq .bbq-shaker-sway {
+  animation: none!important
+}
+body[data-kitchen-motion=off] .game-bbq .bbq-shaker-grain {
+  animation: none!important
+}
+body[data-kitchen-motion=off] .bbq-heat-vapour {
+  display: none!important
+}
+body[data-kitchen-motion=off] .bbq-turning-tongs {
+  display: none!important
+}
+body[data-kitchen-motion=off] .bbq-oil-bubbles {
+  display: none!important
+}
+body[data-kitchen-motion=off] .bbq-juice-drop {
+  display: none!important
+}
+body[data-kitchen-motion=off] .bbq-season-shaker {
+  display: none!important
+}
+body[data-kitchen-motion=off] .bbq-food-piece {
+  transition: none!important
+}
+body[data-kitchen-motion=off] .bbq-food-piece * {
+  transition: none!important
+}
+body[data-kitchen-motion=off] .bbq-food-piece {
+  transform: none!important
+}
+.cup-rock {
+  animation: tea-rock 760ms ease-in-out infinite
+}
+.cup-hand-shake {
+  animation: tea-hand-shake 620ms cubic-bezier(.16,1,.3,1)
+}
+[data-mixing=true] .cup-liquid-edge {
+  animation: tea-liquid 760ms ease-in-out infinite
+}
+[data-mixing=true] .cup-milk-current {
+  animation: tea-milk 1100ms ease-in-out infinite
+}
+[data-mixing=true] .cup-ice-drift {
+  animation: tea-ice 760ms ease-in-out infinite;
+  animation-delay: var(--lag)
+}
+[data-mixing=true] .cup-toppings-drift {
+  animation: tea-toppings 760ms ease-in-out infinite
+}
+[data-mixing=true] .cup-straw-flex {
+  animation: tea-straw 760ms ease-in-out infinite
+}
+[data-mixing=true] .cup-foam-drift {
+  animation: tea-foam 760ms ease-in-out infinite
+}
+@keyframes tea-rock {
+  0%,100% {
+    transform: translate(0,0) rotate(0)
+  }
+  23% {
+    transform: translate(-7px,-3px) rotate(-7deg)
+  }
+  53% {
+    transform: translate(7px,-5px) rotate(7deg)
+  }
+  79% {
+    transform: translate(-3px,-1px) rotate(-3deg)
+  }
+}
+@keyframes tea-hand-shake {
+  0%,100% {
+    transform: translate(0,0) rotate(0)
+  }
+  18% {
+    transform: translate(-10px,-9px) rotate(-8deg)
+  }
+  43% {
+    transform: translate(10px,-15px) rotate(9deg)
+  }
+  69% {
+    transform: translate(-5px,-4px) rotate(-4deg)
+  }
+}
+@keyframes tea-liquid {
+  0%,100% {
+    transform: translateY(0) rotate(0)
+  }
+  27% {
+    transform: translateY(-2px) rotate(4deg)
+  }
+  59% {
+    transform: translateY(2px) rotate(-4deg)
+  }
+}
+@keyframes tea-milk {
+  0%,100% {
+    transform: translate(-4px,0) rotate(-3deg)
+  }
+  50% {
+    transform: translate(5px,-7px) rotate(3deg)
+  }
+}
+@keyframes tea-ice {
+  0%,100% {
+    transform: translate(0,0)
+  }
+  30% {
+    transform: translate(5px,-5px)
+  }
+  65% {
+    transform: translate(-5px,2px)
+  }
+}
+@keyframes tea-toppings {
+  0%,100% {
+    transform: translate(0,0) rotate(0)
+  }
+  30% {
+    transform: translate(4px,-6px) rotate(3deg)
+  }
+  65% {
+    transform: translate(-5px,-2px) rotate(-3deg)
+  }
+}
+@keyframes tea-straw {
+  0%,100% {
+    transform: rotate(0)
+  }
+  35% {
+    transform: rotate(5deg)
+  }
+  65% {
+    transform: rotate(-5deg)
+  }
+}
+@keyframes tea-foam {
+  0%,100% {
+    transform: translateY(0) rotate(0)
+  }
+  30% {
+    transform: translateY(-1px) rotate(3deg)
+  }
+  65% {
+    transform: translateY(1px) rotate(-3deg)
+  }
+}
+[data-boiling=true] .broth-bubble {
+  animation: broth-pop var(--cycle) ease-out infinite;
+  animation-delay: var(--lag)
+}
+[data-boiling=true] .broth-ring {
+  animation: broth-ring var(--cycle) ease-out infinite;
+  animation-delay: var(--lag)
+}
+[data-boiling=true] .broth-current {
+  animation: broth-current 2600ms ease-in-out infinite;
+  animation-delay: var(--lag)
+}
+[data-boiling=true] .pot-vapour path {
+  animation: pot-vapour 2800ms ease-out infinite;
+  animation-delay: var(--lag)
+}
+@keyframes broth-pop {
+  0%,12% {
+    transform: scale(.2);
+    opacity: 0
+  }
+  23% {
+    opacity: .8
+  }
+  59% {
+    transform: translateY(-2px) scale(1);
+    opacity: .85
+  }
+  67%,100% {
+    transform: translateY(-2px) scale(1.13);
+    opacity: 0
+  }
+}
+@keyframes broth-ring {
+  0%,56% {
+    transform: scale(.4);
+    opacity: 0
+  }
+  64% {
+    opacity: .6
+  }
+  94%,100% {
+    transform: scale(1.45);
+    opacity: 0
+  }
+}
+@keyframes broth-current {
+  0%,100% {
+    transform: translateX(-4px);
+    opacity: .15
+  }
+  50% {
+    transform: translateX(4px);
+    opacity: .5
+  }
+}
+@keyframes pot-vapour {
+  0% {
+    transform: translate(0,12px) scaleX(.9);
+    opacity: 0
+  }
+  30% {
+    opacity: .45
+  }
+  100% {
+    transform: translate(7px,-15px) scaleX(1.08);
+    opacity: 0
+  }
+}
+.pot-food-entry {
+  animation: pot-food-drop 430ms cubic-bezier(.16,1,.3,1)
+}
+.pot-ingredient-float {
+  animation: pot-food-float 2100ms ease-in-out infinite;
+  animation-delay: var(--lag)
+}
+@keyframes pot-food-drop {
+  0% {
+    transform: translateY(-25px) scale(.9);
+    opacity: .3
+  }
+  70% {
+    transform: translateY(3px) scale(1.02)
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1
+  }
+}
+@keyframes pot-food-float {
+  0%,100% {
+    transform: translateY(0) rotate(-2deg)
+  }
+  50% {
+    transform: translateY(-3px) rotate(2deg)
+  }
+}
+.game-breakfast[data-action=flip] .breakfast-stage>.shop-art {
+  animation: none
+}
+.game-breakfast[data-action=egg] .breakfast-stage>.shop-art {
+  animation: none
+}
+.pancake-flip {
+  animation: pancake-flip 650ms cubic-bezier(.22,.65,.25,1)
+}
+.pancake-spatula {
+  animation: pancake-spatula 650ms cubic-bezier(.22,.65,.25,1)
+}
+.pancake-flight-shadow {
+  animation: pancake-shadow 650ms ease-in-out
+}
+.pancake-sizzle circle {
+  animation: pancake-sizzle 1450ms ease-out infinite;
+  animation-delay: var(--lag)
+}
+@keyframes pancake-flip {
+  0% {
+    transform: translate(0,0) rotate(0) scaleY(1)
+  }
+  22% {
+    transform: translate(9px,-15px) rotate(-8deg) scaleY(.9)
+  }
+  48% {
+    transform: translate(0,-59px) rotate(-16deg) scaleY(.09)
+  }
+  66% {
+    transform: translate(-7px,-34px) rotate(7deg) scaleY(.75)
+  }
+  84% {
+    transform: translate(0,2px) rotate(0) scaleY(.96)
+  }
+  100% {
+    transform: translate(0,0) scaleY(1)
+  }
+}
+@keyframes pancake-spatula {
+  0% {
+    opacity: 0;
+    transform: translate(14px,10px) rotate(6deg)
+  }
+  13% {
+    opacity: 1
+  }
+  36% {
+    opacity: 1;
+    transform: translate(-7px,-17px) rotate(17deg)
+  }
+  64% {
+    opacity: 1;
+    transform: translate(3px,2px) rotate(-3deg)
+  }
+  100% {
+    opacity: 0;
+    transform: translate(24px,16px) rotate(8deg)
+  }
+}
+@keyframes pancake-shadow {
+  0%,100% {
+    transform: scale(1);
+    opacity: .12
+  }
+  48% {
+    transform: scale(.7);
+    opacity: .05
+  }
+  84% {
+    transform: scale(1.03);
+    opacity: .15
+  }
+}
+@keyframes pancake-sizzle {
+  0%,100% {
+    transform: scale(.35);
+    opacity: 0
+  }
+  28% {
+    opacity: .75
+  }
+  72% {
+    transform: scale(1.2);
+    opacity: .5
+  }
+  86% {
+    transform: scale(1.5);
+    opacity: 0
+  }
+}
+.game-shell[data-paused=true] .kitchen-motion-art * {
+  animation-play-state: paused!important
+}
+.game-shell[data-paused=true] .pot-food-entry {
+  animation-play-state: paused!important
+}
+.game-shell[data-paused=true] .pot-ingredient-float {
+  animation-play-state: paused!important
+}
+.kitchen-motion-art[data-motion-visible=false] * {
+  animation-play-state: paused!important
+}
+body[data-kitchen-hidden=true] .kitchen-motion-art * {
+  animation-play-state: paused!important
+}
+body[data-kitchen-hidden=true] .pot-food-entry {
+  animation-play-state: paused!important
+}
+body[data-kitchen-hidden=true] .pot-ingredient-float {
+  animation-play-state: paused!important
+}
+.physical-pot:has([data-motion-visible=false]) .pot-food-entry {
+  animation-play-state: paused!important
+}
+.physical-pot:has([data-motion-visible=false]) .pot-ingredient-float {
+  animation-play-state: paused!important
+}
+body[data-kitchen-motion=off] .kitchen-motion-art * {
+  animation: none!important;
+  transition: none!important
+}
+body[data-kitchen-motion=off] .pot-food-entry {
+  animation: none!important;
+  transition: none!important
+}
+body[data-kitchen-motion=off] .pot-ingredient-float {
+  animation: none!important;
+  transition: none!important
+}
+@media(prefers-reduced-motion:reduce) {
+  .kitchen-motion-art * {
+    animation: none!important;
+    transition: none!important
+  }
+  .pot-food-entry {
+    animation: none!important;
+    transition: none!important
+  }
+  .pot-ingredient-float {
+    animation: none!important;
+    transition: none!important
+  }
+}
+.selection-food-arrives {
+  animation: bowl-arrival 280ms cubic-bezier(.16,1,.3,1)
+}
+@keyframes bowl-arrival {
+  0% {
+    transform: translateY(-11px) rotate(-12deg)
+  }
+  72% {
+    transform: translateY(2px) rotate(3deg)
+  }
+  100% {
+    transform: translateY(0) rotate(0)
+  }
+}
+.picked-food-flight {
+  animation: food-to-bowl 520ms cubic-bezier(.22,.68,.3,1) both
+}
+.malatang-mouthful {
+  animation: food-to-bowl 520ms cubic-bezier(.22,.68,.3,1) both
+}
+@keyframes food-to-bowl {
+  0% {
+    transform: translate(0,0) rotate(-8deg) scale(1);
+    opacity: .95
+  }
+  40% {
+    transform: translate(var(--arc-x),var(--arc-y)) rotate(9deg) scale(1.08);
+    opacity: 1
+  }
+  86% {
+    transform: translate(var(--fly-x),var(--fly-y)) rotate(-5deg) scale(.52);
+    opacity: 1
+  }
+  100% {
+    transform: translate(var(--fly-x),var(--fly-y)) rotate(0) scale(.32);
+    opacity: 0
+  }
+}
+.dining-malatang .malatang-food-settle {
+  animation: malatang-serve 340ms cubic-bezier(.16,1,.3,1) backwards;
+  animation-delay: var(--serve-lag,0ms)
+}
+@keyframes malatang-serve {
+  0% {
+    transform: translateY(-16px) rotate(-10deg) scale(.85);
+    opacity: .3
+  }
+  72% {
+    transform: translateY(2px) rotate(3deg) scale(1.03)
+  }
+  100% {
+    transform: translateY(0) rotate(0) scale(1);
+    opacity: 1
+  }
+}
+.malatang-mouthful {
+  animation: malatang-bite 460ms cubic-bezier(.16,1,.3,1) both
+}
+@keyframes malatang-bite {
+  0% {
+    transform: translate(0,0) rotate(0) scale(1);
+    opacity: 1
+  }
+  42% {
+    transform: translate(var(--bite-x),var(--bite-y)) rotate(-12deg) scale(1.22);
+    opacity: 1
+  }
+  72% {
+    transform: translate(var(--bite-x),calc(var(--bite-y) - 8px)) rotate(-7deg) scale(1.1);
+    opacity: 1
+  }
+  100% {
+    transform: translate(var(--bite-x),calc(var(--bite-y) - 13px)) rotate(0) scale(.45);
+    opacity: 0
+  }
+}
+.malatang-warmth path {
+  animation: malatang-warmth 2800ms ease-out infinite;
+  animation-delay: var(--lag)
+}
+@keyframes malatang-warmth {
+  0% {
+    transform: translate(0,5px);
+    opacity: 0
+  }
+  30% {
+    opacity: .34
+  }
+  100% {
+    transform: translate(6px,-9px);
+    opacity: 0
+  }
+}
+.dining-malatang[data-motion-visible=false] * {
+  animation-play-state: paused!important
+}
+.game-shell[data-paused=true] .dining-malatang * {
+  animation-play-state: paused!important
+}
+body[data-kitchen-hidden=true] .dining-malatang * {
+  animation-play-state: paused!important
+}
+body[data-kitchen-hidden=true] .selection-bowl * {
+  animation-play-state: paused!important
+}
+body[data-kitchen-motion=off] .selection-bowl * {
+  animation: none!important;
+  transition: none!important
+}
+body[data-kitchen-motion=off] .dining-malatang * {
+  animation: none!important;
+  transition: none!important
+}
+body[data-kitchen-motion=off] .picked-food-flight {
+  display: none
+}
+body[data-kitchen-motion=off] .malatang-mouthful {
+  display: none
+}
+body[data-kitchen-hidden=true] .picked-food-flight {
+  display: none
+}
+body[data-kitchen-hidden=true] .malatang-mouthful {
+  display: none
+}
+@media(prefers-reduced-motion:reduce) {
+  .selection-bowl * {
+    animation: none!important;
+    transition: none!important
+  }
+  .dining-malatang * {
+    animation: none!important;
+    transition: none!important
+  }
+  .picked-food-flight {
+    display: none
+  }
+  .malatang-mouthful {
+    display: none
+  }
+}
+.game-shell[data-paused=true] .dining-table * {
+  animation-play-state: paused!important
+}
+body[data-kitchen-hidden=true] .dining-motion {
+  animation-play-state: paused!important
+}
+body[data-kitchen-hidden=true] .recipe-topping {
+  animation-play-state: paused!important
+}
+body[data-kitchen-hidden=true] .kitchen-action-note {
+  animation-play-state: paused!important
+}
+
+
+/* A bite has a source, a destination and a short chewing beat. */
+.dining-stage{padding-top:48px;isolation:isolate}
+.dining-eater{position:absolute;right:4px;top:0;width:84px;display:grid;justify-items:center;pointer-events:none;z-index:3}
+.dining-eater .avatar{border:2px solid #3d2b23;background:#fff4dd;box-shadow:0 3px 6px #3d2b2314}
+.dining-eater small{font-size:11px;color:#725541;margin-top:4px}
+.munch-marks{position:absolute;width:84px;height:67px;inset:-3px 0 auto;opacity:0}
+.dining-eater[data-chewing=true] .avatar{animation:meal-chew 680ms ease-out both;transform-origin:50% 85%}
+.dining-eater[data-chewing=true] .munch-marks{animation:meal-munch-marks 680ms ease-out both}
+.dining-table[data-eating] .dining-food[data-lifting=true]>svg,.dining-table[data-eating] .dining-food[data-lifting=true]>.malatang-food-settle{animation:meal-source 680ms ease-out both}
+.dining-mouthful{position:fixed;width:46px;height:46px;margin:-23px 0 0 -23px;z-index:var(--z-feedback,1100);pointer-events:none;animation:meal-mouthful 680ms cubic-bezier(.25,.65,.25,1) both;transform-origin:center;will-change:transform,opacity}
+.dining-mouthful>svg:first-child{width:46px;height:46px;display:block}
+.dining-mouthful .meal-chopsticks{position:absolute;left:0;top:-17px;width:58px;height:58px;transform:rotate(-20deg)}
+.bite-crumb{position:absolute;width:5px;height:7px;border:1px solid #795333;border-radius:2px;background:#ddbb78;opacity:0;animation:meal-crumb 680ms ease-out both;left:24px;top:25px}
+.crumb-two{--crumb-x:-14px;--crumb-turn:-35deg;left:16px;top:20px}
+.crumb-one{--crumb-x:17px;--crumb-turn:45deg}
+.dining-tea .dining-motion,.dining-breakfast .dining-motion{animation:none}
+.dining-tea[data-eating] .dining-motion{animation:meal-drink 680ms cubic-bezier(.16,1,.3,1) both;transform-origin:50% 80%}
+.dining-breakfast[data-eating] .dining-motion{animation:meal-nibble 680ms cubic-bezier(.16,1,.3,1) both}
+@keyframes meal-mouthful{0%{transform:translate(0,0) rotate(-6deg) scale(1);opacity:1}28%{transform:translate(calc(var(--bite-x)*.25),calc(var(--bite-y)*.25 - 34px)) rotate(-13deg) scale(1.12);opacity:1}60%{transform:translate(var(--bite-x),var(--bite-y)) rotate(8deg) scale(.72);opacity:1}76%,100%{transform:translate(var(--bite-x),var(--bite-y)) rotate(6deg) scale(.12);opacity:0}}
+@keyframes meal-source{0%{opacity:1;transform:scale(1)}18%,78%{opacity:.18;transform:scale(.88)}100%{opacity:1;transform:scale(1)}}
+@keyframes meal-chew{0%,45%{transform:rotate(0) scale(1)}58%{transform:rotate(-5deg) scale(1.06,.95)}70%{transform:rotate(3deg) scale(.98,1.04)}83%{transform:rotate(-2deg) scale(1.04,.97)}100%{transform:rotate(0) scale(1)}}
+@keyframes meal-munch-marks{0%,48%{opacity:0}60%,78%{opacity:1}100%{opacity:0}}
+@keyframes meal-crumb{0%,61%{opacity:0;transform:translate(0,0)}68%{opacity:1}100%{opacity:0;transform:translate(var(--crumb-x),24px) rotate(var(--crumb-turn))}}
+@keyframes meal-drink{0%{transform:translate(0,0) rotate(0)}28%{transform:translate(12px,-14px) rotate(12deg)}56%{transform:translate(14px,-16px) rotate(15deg)}72%{transform:translate(11px,-13px) rotate(11deg)}100%{transform:translate(0,0) rotate(0)}}
+@keyframes meal-nibble{0%{transform:translate(0,0) rotate(0)}22%{transform:translate(0,-9px) rotate(-4deg)}50%{transform:translate(0,-7px) rotate(2deg)}100%{transform:translate(0,0) rotate(0)}}
+body[data-kitchen-motion=off] .dining-mouthful,body[data-kitchen-hidden=true] .dining-mouthful{display:none}
+body[data-kitchen-motion=off] .dining-eater *,body[data-kitchen-motion=off] .dining-table[data-eating] *,.game-shell[data-paused=true] .dining-table[data-eating] *{animation:none!important}
+@media(prefers-reduced-motion:reduce){.dining-mouthful{display:none}.dining-eater *,.dining-table[data-eating] *{animation:none!important}}

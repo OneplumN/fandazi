@@ -1,0 +1,7 @@
+/* Cascade order is explicit; no late patch stylesheet is loaded by HTML. */
+@import './tokens.css';
+@import './base.css';
+@import './components.css';
+@import './pages.css';
+@import './outings.css';
+@import './motion.css';

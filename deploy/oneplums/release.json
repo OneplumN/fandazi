@@ -1,0 +1,93 @@
+{
+  "server": "120.55.170.173",
+  "domain": "fandazi.oneplums.cn",
+  "release": "20261104T084355Z",
+  "http_deployed": true,
+  "dns_status": "A record verified: 120.55.170.173",
+  "tls_status": "fandazi certificate issued; expires2027-02-02; strict TLS browser/curl and HTTP2 verified",
+  "webroot": "/var/www/malatang.oneplums.cn/current",
+  "browser_verification": [
+    "Local eight viewport40 paid meal flows; production four viewport20 paid meal flows",
+    "Five recommended recipes enter without charging; actual costs match saved PNG receipts; saved receipt survives reload",
+    "Mobile390px: old-to-new wallet/preferences/cosmetics/receipt transfer; source retained; existing new-site spending not overwritten"
+  ],
+  "existing_regex_http_status": 301,
+  "previous_release": "20261104T081907Z",
+  "icon_verification": "120 rendered SVGs match local, original70 unchanged, new50 changed",
+  "collection": [
+    "malatang",
+    "bbq",
+    "tea",
+    "hotpot",
+    "breakfast"
+  ],
+  "file_count": 41,
+  "game_verification": "44 unit tests;40 preview/20 production paid flows; five recommended meal flows and PNG downloads local and production;6 home viewport control checks; recommendation drawer8 preview/4 live viewports; native CDP gesture and wallet regression; hashed asset cache verified",
+  "economy": "local browser wallet v2: daily100, paid meals, pending-order refunds, cumulative-spend membership; v1 balances/cosmetics migrated",
+  "existing_regex_https_status": 200,
+  "experience": "Five-shop edible tables, drink liquid level, pancake bite masks, bowl transfers, optional shaking, opt-in sound/haptics, reduced-motion support",
+  "bbq": "Separate preparation tray and bare grate, 12 dedicated skewer drawings shared through cooking/warming/eating, external heat controls; daily coins/membership unchanged",
+  "four_shop_refinements": "distinct cups/ice/toppings/milk cap; real pot surface, served-only dining and free reheating; breakfast pan/plate and recipe retention; edible bowls with six-item serving window; mobile ingredient shortcuts",
+  "food_status": "Persistent names and whole-skewer state at handles, current face, turn/ready/burned/warming; hotpot local names and doneness; breakfast double-sided state; names inside dining bowls",
+  "bbq_motion": "Continuous browning/marks/shrink, oil bubbles/gloss/juice/vapour/embers, target-only tongs and turning, seasoning shaker and grains, placing motion; pause/offscreen/reduced-motion support; native browser recording",
+  "bbq_interaction": "Automatically heats on grill; tap to flip anytime; names and simple doneness only; no front/back modes or percentage management",
+  "direct_food_interaction": "Tea cup makes/shakes/drinks; hotpot shelf adds, pot takes, bowl reheats/eats; pancake starts/flips, fillings auto-plate, pancake folds/bites; malatang priced open serves directly; rapid-tap payment dedup and cancellation refunds verified",
+  "kitchen_motion": "Layered cup/liquid/milk/ice/pearls/straw shake; nine staggered broth bubbles/rings and steam, floating ingredients; stationary pan with spatula and independently flipping pancake, continuous browning; pause/hidden/offscreen/reduced-motion controls verified; three actual production browser recordings",
+  "malatang_motion": "Original food SVGs travel from shelf to illustrated mini bowl; chopsticks lift tapped food, immediate persisted portions, six-item serving window, warm steam until empty; bounded overlays, no additional steps; motion off/reduced/offscreen and synchronous burst protection verified; actual production browser recording",
+  "interaction_audit": "Paused hotpot eating and BBQ serving blocked; same-position260ms touch burst protection without delaying first tap; dynamic dock clearance;44px mobile controls and horizontal categories; compact six-serving bowl; consistent resume/ingredients/results/finished feedback; busy payment focus retained",
+  "build": "Vite8.3.4;2 hashed JS with vendor modulepreload;1 hashed CSS;gzip_static;fixed package lock",
+  "cache": "HTTP2;hashed assets immutable365d retained in shared/assets;HTML revalidate;WebP1d;warm code transfer0 verified",
+  "backend": "Player static build independent of API, no bootstrap request or technical warning; management backend unavailable",
+  "pwa": "Not included, per explicit user preference",
+  "styles": "Single styles/index.css entry: tokens,base,components,pages,outings,motion; centralized global z-index; one hashed CSS in production",
+  "recommendations": "Dock entry replaces hovering handle; mounted only when open; scroll lock/focus trap/Escape/backdrop;44px targets; no drag activation; selection replacement explicit and free",
+  "share": "Native SVG1200x630PNG/share-cover-v2.png; OG/Twitter/canonical/sitemap point to fandazi.oneplums.cn; meal PNG generated locally; third-party WeChat card not tested",
+  "legacy_domain": "malatang.oneplums.cn",
+  "last_feature_release": "20261104T081907Z",
+  "outing": "Budget/taste defaults with immediate editable recommendation; three original companions wan/lin/wang; existing direct food play; one optional saved PNG receipt after eating; last meal kept in local browser",
+  "domain_migration": "Both HTTPS origins serve same release; old-site explicit transfer via origin/source/nonce checked postMessage; fresh destination only; no redirects that discard local saves",
+  "performance_historical": {
+    "before": {
+      "home": {
+        "fcp_ms_median": 2108,
+        "requests": 37,
+        "js_gzip_bytes": 233761,
+        "css_gzip_bytes": 33805,
+        "nodes": 265,
+        "foods": 0,
+        "protocol": "http/1.1"
+      },
+      "malatang": {
+        "fcp_ms_median": 2064,
+        "requests": 39,
+        "js_gzip_bytes": 233761,
+        "css_gzip_bytes": 33805,
+        "nodes": 2960,
+        "foods": 120,
+        "protocol": "http/1.1"
+      }
+    },
+    "after": {
+      "home": {
+        "fcp_ms_median": 1288,
+        "requests": 6,
+        "js_gzip_bytes": 144625,
+        "css_gzip_bytes": 20364,
+        "nodes": 260,
+        "foods": 0,
+        "protocol": "h2"
+      },
+      "malatang": {
+        "fcp_ms_median": 1348,
+        "requests": 7,
+        "js_gzip_bytes": 144625,
+        "css_gzip_bytes": 20364,
+        "nodes": 847,
+        "foods": 18,
+        "protocol": "h2"
+      }
+    }
+  },
+  "eating_motion": "A bite visibly lifts from dish to chosen companion, portrait chews, then portion updates and final receipt appears; tea lifts/tilts before level drops; pancake morsel/crumbs before bite mask; immediate durable count with680ms visual settle; burst lock; reduced-motion/off bypass wait",
+  "eating_verification": "44 unit tests;8 preview viewports40 paid flows;390/1280 preview and primary-domain five-game motion12cases including reduced/off; all5 recommended receipts downloaded and true document reload retained; native CDP touch burst/drag regression"
+}
