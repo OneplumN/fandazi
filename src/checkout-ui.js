@@ -1,3 +1,4 @@
+import {isolateModal} from "./modal-isolation.js";
 import {lockPageScroll} from "./scroll-lock.js";
 import {useDockClearance} from "./games/experience.js";
 import {PickBowl} from "./games/malatang-motion.js";
@@ -10,21 +11,25 @@ const h = React.createElement;
 export function Modal({ title, className = "", panelId, onClose, children }) {
   const ref = React.useRef(null);
   const headingId = React.useId();
+  const closeRef = React.useRef(onClose);
+  closeRef.current = onClose;
   React.useEffect(() => {
     const previous = document.activeElement;
     const unlock=lockPageScroll();
     const panel = ref.current;
+    const isolation = isolateModal(panel.parentElement);
     const focusable = () =>
       [
         ...panel.querySelectorAll(
-          'button:not(:disabled), summary, input, [tabindex="0"]',
+          'button:not(:disabled), a[href], summary, input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])',
         ),
-      ].filter((el) => el.getClientRects().length);
+      ].filter((el) => el.getClientRects().length && !el.closest("[inert]"));
     (focusable()[0] || panel).focus();
     const keyboard = (event) => {
+      if (!isolation.isTop()) return;
       if (event.key === "Escape") {
         event.preventDefault();
-        onClose();
+        closeRef.current();
       }
       if (event.key !== "Tab") return;
       const elements = focusable(),
@@ -35,20 +40,26 @@ export function Modal({ title, className = "", panelId, onClose, children }) {
         panel.focus();
       } else if (
         event.shiftKey &&
-        (document.activeElement === first || document.activeElement === panel)
+        (document.activeElement === first || !elements.includes(document.activeElement))
       ) {
         event.preventDefault();
         last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
+      } else if (!event.shiftKey && (document.activeElement === last || !elements.includes(document.activeElement))) {
         event.preventDefault();
         first.focus();
       }
     };
-    panel.addEventListener("keydown", keyboard);
+    const containFocus = (event) => {
+      if (isolation.isTop() && !panel.contains(event.target)) (focusable()[0] || panel).focus({preventScroll:true});
+    };
+    document.addEventListener("keydown", keyboard, true);
+    document.addEventListener("focusin", containFocus);
     return () => {
-      panel.removeEventListener("keydown", keyboard);
+      document.removeEventListener("keydown", keyboard, true);
+      document.removeEventListener("focusin", containFocus);
+      isolation.release();
       unlock();
-      if (previous?.isConnected) previous.focus({preventScroll:true});
+      if (previous?.isConnected && !previous.closest("[inert]")) previous.focus({preventScroll:true});
     };
   }, []);
   return h(
