@@ -362,7 +362,7 @@ function VerdictCard({ verdict, Avatar, label }) {
 }
 
 export function CheckoutView({
-  runId,companionId,storeId,
+  runId,companionId,storeId,onOrderLock,
   entries,
   byId,
   settings,
@@ -425,7 +425,7 @@ export function CheckoutView({
           h(FoodRows, { entries, byId, settings, api }),
         ),
       ),
-      h(MealCheckout, {id:mealId,amount:Math.max(1,Math.ceil(totals.price))}),
+      h(MealCheckout, {id:mealId,storeId,onOrderLock,amount:Math.max(1,Math.ceil(totals.price))}),
 
       h(
         "section",

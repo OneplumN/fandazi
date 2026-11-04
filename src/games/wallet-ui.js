@@ -1,3 +1,4 @@
+import {storeTerms,resolveStoreId} from '../content-client.js';
 import {DEV_TOOLS} from '../runtime.js';
 import { X as React } from "../../vendor/react-runtime.js";
 import { SHOP_ITEMS, MEMBERS, membership, localDay } from "./economy.js";
@@ -83,17 +84,18 @@ export function MealReceipt({runId}) {
     h("b",null,order?`本餐消费 ${order.amount} 金币 · ${order.status === "refunded"?"已退款":"已记入会员成长"}`:"随心做，慢慢吃"),
     h("p",null,`余额 ${wallet.balance} 金币 · ${membership(wallet.spent).name}`));
 }
-export function MealCheckout({id,amount}) {
+export function MealCheckout({id,amount,storeId,onOrderLock}) {
   const {wallet}=useWallet(),[busy,setBusy]=React.useState(false),[message,setMessage]=React.useState("");
   const order=wallet.orders[id],paid=order?.status === "completed";
   return h("section",{className:"coin-receipt"},
     h("b",null,paid?`这一盆已下单 · ${order.amount} 金币`:`这一盆 ${amount} 金币 · 余额 ${wallet.balance}`),
     h("p",null,paid?"下单已扣币，点碗里的食材慢慢吃；同一盆不会重复扣币。":"称重和点评免费查看；整盆金币价按模拟金额向上取整，确认开吃后扣币并累计会员成长。"),
     !paid && h("button",{className:"btn btn--primary",disabled:busy || wallet.balance<amount,onClick:async()=>{
-      setBusy(true); try { const r=await payMeal({id,amount,label:"麻辣烫用餐"});
+      if(storeTerms(storeId||resolveStoreId('malatang')).status==='closed'){setMessage('老板准备收摊了，今天去隔壁尝尝吧。');return;}
+      onOrderLock?.(true);setBusy(true); try { const r=await payMeal({id,amount,label:"麻辣烫用餐"});
       if(r.status === "paid") {await finishMeal(id);setMessage("开吃啦！消费已记入会员成长。");}
       else setMessage("余额不足，请调整食材或明天再来领100金币。");
-      } catch {setMessage("本次操作未完成，请重试。");} finally {setBusy(false);}
+      } catch {setMessage("本次操作未完成，请重试。");} finally {onOrderLock?.(false);setBusy(false);}
     }},wallet.balance<amount?"金币不足，减少食材再试试":`确认开吃 · ${amount} 金币`),
     h("p",{role:"status"},message));
 }

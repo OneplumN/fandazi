@@ -1628,14 +1628,14 @@ function summarizeReviews(verdicts) {
  return {star:ranked[0],harshest:ranked.at(-1),summary:'口味各有偏爱，喜欢这一口就好。'};
 }
 import {CharacterAvatar} from './art/avatar.js';
-function BowlCheckout({entries, byId, settings, spice, budget, onClose, onRestart, runId,companionId,storeId}) {
+function BowlCheckout({entries, byId, settings, spice, budget, onClose, onRestart, runId,companionId,storeId,onOrderLock}) {
   const result = X.useMemo(() => {
     const totals = summarizeBowl(entries, byId, settings);
     const features = analyzeBowl(entries, byId, totals, spice, budget);
     const verdicts = buildCharacterReviews(features, spice).sort((a,b) => b.affinity-a.affinity);
     return {totals, verdicts, summary: summarizeReviews(verdicts)};
   }, [entries, byId, settings, spice, budget]);
-  return i.jsx(CheckoutView, {entries, byId, settings, budget, onClose, onRestart, runId,companionId,storeId, ...result,
+  return i.jsx(CheckoutView, {entries, byId, settings, budget, onClose, onRestart, runId,companionId,storeId,onOrderLock, ...result,
     api: {Icon: FoodIllustration, Avatar: CharacterAvatar, Face:FoodFace, money: formatPrice, weight: portionWeight, price: portionPrice}});
 }
 function MalatangGame({
@@ -1671,6 +1671,7 @@ function MalatangGame({
     I = T || E || G || recommendations;
   X.useEffect(()=>{if(D.outingPlan?.token)consumeOuting(D.outingPlan.token);},[D.runId]);
   const orderLock=X.useRef(false),pickSource=X.useRef(null);
+  const handleOrderLock=value=>{orderLock.current=value;if(value)freezeDiscount(storeDiscount);else if(!Object.entries(walletSnapshot().wallet.orders).some(([id,o])=>id.startsWith(D.runId+':')&&o.status!=='refunded'))freezeDiscount(null);};
   const addToBowl=(id,event)=>{
     if(orderLock.current)return;
     const node=event?.currentTarget,rect=(node?.querySelector('.goods-icon')||node)?.getBoundingClientRect();
@@ -1750,7 +1751,7 @@ function MalatangGame({
           onApply: (ol) => {if(!orderLock.current){pickSource.current=null;_({ type: "apply", entries: ol });setRecommendations(false);}},
         }),
         i.jsx(BasketSummary, {
-          runId:D.runId,pickSource,onRecommendations:()=>setRecommendations(true),recommendationsOpen:recommendations,storeId,onOrderLock:value=>{orderLock.current=value;if(value)freezeDiscount(storeDiscount);else if(!Object.entries(walletSnapshot().wallet.orders).some(([id,o])=>id.startsWith(D.runId+':')&&o.status!=='refunded'))freezeDiscount(null);},
+          runId:D.runId,pickSource,onRecommendations:()=>setRecommendations(true),recommendationsOpen:recommendations,storeId,onOrderLock:handleOrderLock,
           entries: D.entries,
           byId: K,
           settings: d,
@@ -1774,7 +1775,7 @@ function MalatangGame({
           }),
         G &&
           i.jsx(BowlCheckout, {
-            runId: D.runId,companionId:D.companionId,storeId,
+            runId: D.runId,companionId:D.companionId,storeId,onOrderLock:handleOrderLock,
             entries: D.entries,
             byId: K,
             settings: d,

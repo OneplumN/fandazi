@@ -2,7 +2,7 @@ import {validStoreId} from '../content-model.js';
 export const CONSUMER_KEY='dazi.consumer.v1';
 export const emptyConsumer=()=>({version:1,completed:{},meals:[],reviews:{},favorites:[],notes:{}});
 const games=['breakfast','hotpot','tea','malatang','bbq'];
-const safeId=id=>typeof id==='string'&&id.length>0&&id.length<180&&!['__proto__','constructor','prototype'].includes(id);
+const safeId=id=>typeof id==='string'&&id.length>0&&id.length<=8192&&!['__proto__','constructor','prototype'].includes(id);
 const validMeal=meal=>meal&&safeId(meal.id)&&games.includes(meal.game)&&(meal.storeId===undefined||validStoreId(meal.storeId))&&Number.isFinite(meal.at)&&typeof meal.store==='string'&&Number.isFinite(meal.amount)&&meal.amount>=0&&typeof meal.line==='string'&&plain(meal.recipe)&&Array.isArray(meal.items)&&meal.items.length<=160&&meal.items.every(i=>i&&typeof i.name==='string'&&Number.isFinite(i.qty)&&i.qty>=0);
 const plain=v=>v&&typeof v==='object'&&!Array.isArray(v);
 export function cleanConsumer(raw){
