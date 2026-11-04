@@ -21,3 +21,5 @@
 @media(prefers-reduced-motion:reduce){.review-stars button,.favorite-store{transition:none;animation:none}}
 
 .review-share{display:flex!important;align-items:center;gap:10px;min-height:44px}.review-share input{width:22px;height:22px;flex-shrink:0;accent-color:#9b7047}
+
+.complimentary-side{display:flex;align-items:center;gap:12px;min-height:60px;padding:8px 14px;border:1px solid #c4ac8b;border-radius:18px;background:#fffbef;color:#654632;font:inherit;cursor:pointer;touch-action:manipulation}.complimentary-side svg{max-width:50%;height:auto}
