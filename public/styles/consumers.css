@@ -19,3 +19,5 @@
 .favorite-store:focus-visible,.store-enter:focus-visible,.review-stars button:focus-visible,.meal-review textarea:focus-visible,.receipt-note textarea:focus-visible{outline:3px solid #9b7047;outline-offset:3px}
 @media(max-width:400px){.meal-review{padding:14px}.regular-welcome{margin:8px 12px;padding:12px}.review-stars{gap:0}.review-stars button{font-size:28px}.store-card-bottom{flex-wrap:wrap;gap:8px}}
 @media(prefers-reduced-motion:reduce){.review-stars button,.favorite-store{transition:none;animation:none}}
+
+.review-share{display:flex!important;align-items:center;gap:10px;min-height:44px}.review-share input{width:22px;height:22px;flex-shrink:0;accent-color:#9b7047}

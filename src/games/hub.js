@@ -80,8 +80,11 @@ function CollectionContents({ api, Malatang }) {
   const previousRoute=React.useRef(current);
   const priorOrders=React.useRef(new Set(Object.keys(wallet.orders)));
   if(previousRoute.current!==current){entered.current=null;priorOrders.current=new Set(Object.keys(wallet.orders));previousRoute.current=current;}
-  const selected=stores.find(s=>s.id===current);
-  if(selected&&!entered.current&&Object.entries(wallet.orders).some(([id,o])=>!priorOrders.current.has(id)&&id.startsWith(current+':')&&o.status!=='refunded'))entered.current=current;
+  const allStores=[...stores,...content.stores.filter(s=>!stores.some(base=>base.id===s.id)).map(s=>({...stores.find(base=>base.id===s.kind),...s}))];
+  const storeId=current.startsWith('store/')?current.slice(6):current;
+  const selected=allStores.find(s=>s.id===storeId);
+  const activeGame=selected?.kind;
+  if(selected&&!entered.current&&Object.entries(wallet.orders).some(([id,o])=>!priorOrders.current.has(id)&&id.startsWith(activeGame+':')&&o.status!=='refunded'))entered.current=current;
   React.useEffect(() => {
     const change = () => {
       setCurrent(route());
@@ -95,7 +98,7 @@ function CollectionContents({ api, Malatang }) {
     };
   }, []);
   React.useEffect(() => {
-    const item = stores.find((item) => item.id === current);
+    const item=selected;
     document.title =
       current === "receipt" ? "今天的小票 · 搭子小馆" : current === "move-in" ? "接回存档 · 搭子小馆" : current === "shop"
         ? "小馆装扮铺 · 搭子小馆"
@@ -105,13 +108,13 @@ function CollectionContents({ api, Malatang }) {
     if (DEV_TOOLS && !item && current !== "shop")
       window.render_game_to_text = () =>
         JSON.stringify({ game: "home", stores: stores.map((item) => item.id) });
-  }, [current]);
+  }, [current,content]);
   if(current === "reviews")return h(ReviewsPage);
-  if(selected&&storeTerms(current).status==='closed'&&entered.current!==current)return h('main',{className:'game-shell'},h('a',{href:'#home',className:'game-back'},'← 小馆首页'),h('h1',null,`${selected.name}今天歇歇`),h('p',null,'搭子：老板说今天先收摊，我们去隔壁闻闻香味吧。'));
+  if(selected&&storeTerms(storeId).status==='closed'&&entered.current!==current)return h('main',{className:'game-shell'},h('a',{href:'#home',className:'game-back'},'← 小馆首页'),h('h1',null,`${selected.name}今天歇歇`),h('p',null,'搭子：老板说今天先收摊，我们去隔壁闻闻香味吧。'));
   if(current === "move-in")return h(MoveIn);
   if(current === "receipt")return h("main",{className:"game-shell receipt-page"},h("a",{href:"#home",className:"game-back"},"← 小馆首页"),profile.lastMeal?h(MealMemento,{saved:profile.lastMeal,api}):h("p",null,"先和搭子吃一顿，再来留张小票。"));
   if (current === "shop") return h(ShopPage, { api });
-  if (current === "malatang")
+  if (activeGame === "malatang")
     return h(
       React.Fragment,
       null,
@@ -121,13 +124,13 @@ function CollectionContents({ api, Malatang }) {
         h("a", { href: "#home" }, "← 小馆首页"),
         h(WalletBadge, {}),
       ),
-      h(RegularWelcome,{game:current,buddyId:profile.buddyId}),
-      h(Malatang),
+      h(RegularWelcome,{game:storeId,name:storeTerms(storeId).name||selected.name,buddyId:profile.buddyId}),
+      h(Malatang,{key:storeId}),
     );
-  if (current === "bbq") return h(React.Fragment,null,h(RegularWelcome,{game:current,buddyId:profile.buddyId}),h(BBQ, { api }));
-  if (current === "tea") return h(React.Fragment,null,h(RegularWelcome,{game:current,buddyId:profile.buddyId}),h(MilkTea, { api }));
-  if (current === "hotpot") return h(React.Fragment,null,h(RegularWelcome,{game:current,buddyId:profile.buddyId}),h(Hotpot, { api }));
-  if (current === "breakfast") return h(React.Fragment,null,h(RegularWelcome,{game:current,buddyId:profile.buddyId}),h(Breakfast, { api }));
+  if (activeGame === "bbq") return h(React.Fragment,null,h(RegularWelcome,{game:storeId,name:storeTerms(storeId).name||selected.name,buddyId:profile.buddyId}),h(BBQ, { api:{...api,storeId},key:storeId }));
+  if (activeGame === "tea") return h(React.Fragment,null,h(RegularWelcome,{game:storeId,name:storeTerms(storeId).name||selected.name,buddyId:profile.buddyId}),h(MilkTea, { api:{...api,storeId},key:storeId }));
+  if (activeGame === "hotpot") return h(React.Fragment,null,h(RegularWelcome,{game:storeId,name:storeTerms(storeId).name||selected.name,buddyId:profile.buddyId}),h(Hotpot, { api:{...api,storeId},key:storeId }));
+  if (activeGame === "breakfast") return h(React.Fragment,null,h(RegularWelcome,{game:storeId,name:storeTerms(storeId).name||selected.name,buddyId:profile.buddyId}),h(Breakfast, { api:{...api,storeId},key:storeId }));
   return h(
     "main",
     { className: "game-shell game-home" },
@@ -156,12 +159,12 @@ function CollectionContents({ api, Malatang }) {
     h(
       "section",
       { className: "store-grid" },
-      [...stores].sort((a,b)=>Number(consumer.favorites.includes(b.id))-Number(consumer.favorites.includes(a.id))).map((store, index) =>
+      [...allStores].sort((a,b)=>Number(consumer.favorites.includes(b.id))-Number(consumer.favorites.includes(a.id))).map((store, index) =>
         h(
           "article",
           {
             key: store.id,
-            className: `store-card store-${store.id}`,
+            className: `store-card store-${store.kind}`,
           },
           h(
             "div",
@@ -174,7 +177,7 @@ function CollectionContents({ api, Malatang }) {
             "div",
             { className: "store-card-copy" },
             h("h2", null, storeTerms(store.id).name||store.name),
-            h(FavoriteButton,{game:store.id}),
+            h(FavoriteButton,{game:store.id,name:storeTerms(store.id).name||store.name}),
             storeTerms(store.id).seasonal&&h("p",{className:"street-chat"},`丸丸：听说这里上了${storeTerms(store.id).seasonal}，有空来尝尝。`),
             storeTerms(store.id).discount<1&&h("p",{className:"street-chat"},`老王：今天是${Number((storeTerms(store.id).discount*10).toFixed(2))}折，结账也按这个算。`),
             regularStatus(consumer,store.id).regular&&h("small",null,regularStatus(consumer,store.id).side?"熟客 · 老板请小菜":"这里的常客"),
@@ -187,11 +190,11 @@ function CollectionContents({ api, Malatang }) {
               h(
                 "span",
                 null,
-                store.id === "malatang"
+                store.kind === "malatang"
                   ? `${api.menu.filter(f=>f.enabled!==false).length} 种食材`
                   : "随心搭配 · 不限时",
               ),
-              h("a",{href:storeTerms(store.id).status==='closed'?undefined:`#${store.id}`,className:"store-enter","aria-disabled":storeTerms(store.id).status==='closed'},storeTerms(store.id).status==='closed'?"今天歇歇":"进店吃 →"),
+              h("a",{href:storeTerms(store.id).status==='closed'?undefined:`#${stores.some(s=>s.id===store.id)?store.id:'store/'+store.id}`,className:"store-enter","aria-disabled":storeTerms(store.id).status==='closed'},storeTerms(store.id).status==='closed'?"今天歇歇":"进店吃 →"),
             ),
           ),
         ),
