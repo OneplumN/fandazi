@@ -1,3 +1,4 @@
+import {FavoriteButton} from './consumer-ui.js';
 import {quotedDiscount} from "./meal-pricing.js";
 import {isolateModal} from "../modal-isolation.js";
 import {DEV_TOOLS} from "../runtime.js";
@@ -347,6 +348,7 @@ export function GameFrame({
           },
           "← 小馆首页",
         ),
+        h(FavoriteButton,{game:state.storeId||id}),
         h(WalletBadge, {
           onClick: (event) => {
             if(state.paymentPending){event.preventDefault();return;}

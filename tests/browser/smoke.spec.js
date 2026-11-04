@@ -37,6 +37,7 @@ test('recommendation → payment → eating → receipt PNG → document reload'
 test('BBQ starts with one payment click, then serves and records every bite',async({page})=>{
  await page.goto('/play/#bbq');
  const wallet=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('dazi.wallet.v1')));
+ await expect.poll(wallet).not.toBeNull();
  const before=await wallet();
  await page.locator('.game-food-grid button').first().click();
  await page.getByRole('button',{name:'开始烤制',exact:true}).click();

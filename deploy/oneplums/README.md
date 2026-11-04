@@ -1,3 +1,5 @@
+当前最新：20261104T101204Z。安全片段需同时部署fandazi-encoding.conf到http级conf.d以及security/precompressed到snippets；内容服务与Node22配置见评审落实文档。以下为历史记录。
+
 当前最新：20261104T084355Z，开吃动作已精修，详见 ../../docs/开吃动作精修.md。以下为此前记录。
 
 ## 当前状态：2026-11-04
@@ -10,7 +12,7 @@
 
 ## 当前状态
 
-已部署到120.55.170.173，独立Nginx虚拟主机为malatang.oneplums.cn。服务器本机及公网指定Host访问HTTP返回200。30个发布文件SHA-256校验通过；公网浏览器通过主机解析覆盖进行390px/1280px测试，120种食材、增加份数、¥1.98结算和20位评价均正常，未发现页面JavaScript异常。该验证不代表公共DNS已生效。
+已部署到SERVER_IPV4，独立Nginx虚拟主机为malatang.oneplums.cn。服务器本机及公网指定Host访问HTTP返回200。30个发布文件SHA-256校验通过；公网浏览器通过主机解析覆盖进行390px/1280px测试，120种食材、增加份数、¥1.98结算和20位评价均正常，未发现页面JavaScript异常。该验证不代表公共DNS已生效。
 
 检查时malatang.oneplums.cn的A记录不存在。主域名oneplums.cn仍指向原服务器101.43.54.131，未改动。既有regex站点返回200，Zabbix容器保持运行。
 
@@ -23,14 +25,14 @@
 | 记录类型 | A |
 | 主机记录 | malatang |
 | 解析线路 | 默认 |
-| 记录值 | 120.55.170.173 |
+| 记录值 | SERVER_IPV4 |
 | TTL | 600秒 / 10分钟 |
 
 主机记录只填写malatang，不填写完整域名；保留现有@和www记录。阿里云官方说明：https://www.alibabacloud.com/help/en/dns/pubz-add-parsing-record
 
 ## HTTPS
 
-服务器已安装malatang-https-bootstrap.timer，每两分钟检查一次域名IPv4地址。确认只解析到120.55.170.173后，使用已有生产ACME账号申请证书，验证Nginx配置后启用443和HTTP→HTTPS跳转。成功后该初始化定时器自动停用；证书续期由原有snap.certbot.renew.timer处理。当前尚未签发该域名证书，也未完成真实HTTPS访问验证。
+服务器已安装malatang-https-bootstrap.timer，每两分钟检查一次域名IPv4地址。确认只解析到SERVER_IPV4后，使用已有生产ACME账号申请证书，验证Nginx配置后启用443和HTTP→HTTPS跳转。成功后该初始化定时器自动停用；证书续期由原有snap.certbot.renew.timer处理。当前尚未签发该域名证书，也未完成真实HTTPS访问验证。
 
 申请失败至少间隔3小时再试，避免高频请求；如有人修改了本站HTTP配置，脚本会拒绝覆盖。无需更改现有站点证书。
 

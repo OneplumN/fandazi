@@ -128,6 +128,7 @@ function CollectionContents({ api, Malatang }) {
         "nav",
         { className: "malatang-game-nav" },
         h("a", { href: "#home" }, "← 小馆首页"),
+        h(FavoriteButton,{game:storeId,name:selected?.name}),
         h(WalletBadge, {}),
       ),
       h(RegularWelcome,{game:storeId,name:storeTerms(storeId).name||selected.name,buddyId:profile.buddyId}),

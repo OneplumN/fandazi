@@ -1,3 +1,4 @@
+import {storeTerms,resolveStoreId} from './content-client.js';
 import {isolateModal} from "./modal-isolation.js";
 import {lockPageScroll} from "./scroll-lock.js";
 import {useDockClearance} from "./games/experience.js";
@@ -163,7 +164,7 @@ function FoodRows({ entries, byId, settings, api, onAdd, onRemove }) {
 }
 
 export function BasketDock({
-  runId,onOrderLock,pickSource,onRecommendations,recommendationsOpen,
+  runId,storeId,onOrderLock,pickSource,onRecommendations,recommendationsOpen,
   entries,
   byId,
   settings,
@@ -176,10 +177,13 @@ export function BasketDock({
   onWeigh,
   api,
 }) {
+  const {wallet}=useWallet();
   const dockRef=React.useRef(null);useDockClearance(dockRef,".app");
   const busy=React.useRef(false),[ordering,setOrdering]=React.useState(false),[message,setMessage]=React.useState("");
   const order=async()=>{
     if(busy.current||!entries.length)return;
+    const expectedId=`${runId}:${entries.map(e=>JSON.stringify(e)).join("|")}:${Math.ceil(price)}`;
+    if(storeTerms(storeId||resolveStoreId('malatang')).status==='closed'&&!wallet.orders[expectedId]){setMessage('老板准备收摊了，今天去隔壁尝尝吧。');return;}
     busy.current=true;setOrdering(true);onOrderLock?.(true);setMessage("");
     try {
       const id=`${runId}:${entries.map(e=>JSON.stringify(e)).join("|")}:${Math.ceil(price)}`;
@@ -333,7 +337,7 @@ export function BasketDock({
 }
 
 function VerdictCard({ verdict, Avatar, label }) {
-  const { character, score, line, band } = verdict;
+  const { character, line, band } = verdict;
   return h(
     "article",
     { className: `verdict verdict--${band}` },
@@ -351,7 +355,6 @@ function VerdictCard({ verdict, Avatar, label }) {
         "div",
         { className: "verdict-name" },
         h("b", null, character.name),
-        h("i", null, `${score}分`),
       ),
       h("p", null, line),
     ),
@@ -359,7 +362,7 @@ function VerdictCard({ verdict, Avatar, label }) {
 }
 
 export function CheckoutView({
-  runId,companionId,
+  runId,companionId,storeId,
   entries,
   byId,
   settings,
@@ -388,7 +391,7 @@ export function CheckoutView({
     h(
       "div",
       { className: "result-body" },
-      wallet.orders[mealId]?.status === "completed" && h(DiningTable,{key:mealId,game:"malatang",mealId,state:{entries,companionId},api:{...api,Food:api.Icon,menu:[...byId.values()]}}),
+      wallet.orders[mealId]?.status === "completed" && h(DiningTable,{key:mealId,game:"malatang",mealId,state:{entries,companionId,storeId},api:{...api,Food:api.Icon,menu:[...byId.values()]}}),
       h("details",{open:mealPaid?undefined:true,className:"meal-notes"},h("summary",null,"账单与点评"),
       h(
         "section",
@@ -433,10 +436,9 @@ export function CheckoutView({
           h(
             "div",
             null,
-            h("small", null, "综合评分"),
+            h("small", null, "街坊闲聊"),
             h("h3", null, summary.summary),
           ),
-          h("strong", null, summary.average, h("small", null, "分")),
         ),
         h(
           "div",

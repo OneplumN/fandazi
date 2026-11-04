@@ -1,1027 +1,21 @@
+import {LegacyDialog} from './legacy-dialog.js';
+import {assetUrl,basePath,isAdminPath} from './runtime.js';
+import {getStoreDiscount,resolveStoreId,useStreet} from './content-client.js';
+import {walletSnapshot} from './games/wallet-store.js';
 import {readOuting,peekOuting,consumeOuting} from "./games/outing-store.js";
 import {buddyById,companionLine} from "./games/outing-model.js";
 import {LazyRack} from "./lazy-rack.js";
 import { newRunId } from "./games/economy.js";
-import { GameCollection } from "./games/hub.js";
-import { createExtraFoodIcons } from "./extra-food-icons.js";
 import { BasketDock, CheckoutView, Modal } from "./checkout-ui.js";
-import { extraIngredients } from "./extra-ingredients.js";
-import { X, i, Hm } from "../vendor/react-runtime.js";
+import { X, i } from "../vendor/react-runtime.js";
 
-const vu = {
-    leaf: "绿叶菜",
-    mushroom: "菌藻",
-    root: "根茎瓜果",
-    tofu: "豆制品",
-    meat: "丸滑海鲜",
-    staple: "主食粉面",
-    egg: "蛋与杂项",
-  },
-  Wi = ["leaf", "mushroom", "root", "tofu", "meat", "staple", "egg"],
-  M2 = {
-    shopName: "楼下那家麻辣烫",
-    pricePerJin: 19.8,
-    budgetDefault: 25,
-    separatePricing: !1,
-    priceGroups: { veg: 19.8, meat: 26.8, ball: 24.8, staple: 19.8 },
-  },
-  Bm = [
-    [
-      "spinach",
-      "菠菜",
-      "leaf",
-      "leaf",
-      "#5FA85B",
-      "把",
-      35,
-      28,
-      0.25,
-      ["fiber", "leafy"],
-      "veg",
-      !0,
-    ],
-    [
-      "lettuce",
-      "生菜",
-      "leaf",
-      "leaf",
-      "#7CC46A",
-      "把",
-      30,
-      15,
-      0.2,
-      ["fiber", "leafy"],
-      "veg",
-      !0,
-    ],
-    [
-      "youmaicai",
-      "油麦菜",
-      "leaf",
-      "leaf",
-      "#6FB35C",
-      "把",
-      35,
-      20,
-      0.25,
-      ["fiber", "leafy"],
-      "veg",
-    ],
-    [
-      "tonghao",
-      "茼蒿",
-      "leaf",
-      "leaf",
-      "#83B85A",
-      "把",
-      30,
-      25,
-      0.25,
-      ["fiber", "leafy"],
-      "veg",
-    ],
-    [
-      "xiaobaicai",
-      "小白菜",
-      "leaf",
-      "leaf",
-      "#9CCB79",
-      "把",
-      35,
-      18,
-      0.25,
-      ["fiber", "leafy"],
-      "veg",
-    ],
-    [
-      "wawacai",
-      "娃娃菜",
-      "leaf",
-      "leaf",
-      "#C8DE9B",
-      "片",
-      40,
-      16,
-      0.3,
-      ["fiber", "leafy"],
-      "veg",
-    ],
-    [
-      "kongxincai",
-      "空心菜",
-      "leaf",
-      "leaf",
-      "#4E9E55",
-      "把",
-      35,
-      22,
-      0.25,
-      ["fiber", "leafy"],
-      "veg",
-    ],
-    [
-      "wandouxian",
-      "豌豆尖",
-      "leaf",
-      "leaf",
-      "#8FCB6B",
-      "把",
-      25,
-      30,
-      0.2,
-      ["fiber", "leafy"],
-      "veg",
-    ],
-    [
-      "xiangcai",
-      "香菜",
-      "leaf",
-      "leaf",
-      "#57A05A",
-      "把",
-      10,
-      33,
-      0.2,
-      ["fiber", "leafy"],
-      "veg",
-    ],
-    [
-      "jiucai",
-      "韭菜",
-      "leaf",
-      "leaf",
-      "#5E9E48",
-      "把",
-      30,
-      26,
-      0.25,
-      ["fiber", "leafy"],
-      "veg",
-    ],
-    [
-      "muercai",
-      "木耳菜",
-      "leaf",
-      "leaf",
-      "#6AAE63",
-      "把",
-      35,
-      20,
-      0.3,
-      ["fiber", "leafy"],
-      "veg",
-    ],
-    [
-      "kuju",
-      "苦菊",
-      "leaf",
-      "leaf",
-      "#8FBE72",
-      "把",
-      30,
-      17,
-      0.2,
-      ["fiber", "leafy"],
-      "veg",
-    ],
-    [
-      "jinzhengu",
-      "金针菇",
-      "mushroom",
-      "cap",
-      "#E8D7A8",
-      "朵",
-      20,
-      32,
-      0.3,
-      ["fiber"],
-      "veg",
-      !0,
-    ],
-    [
-      "xianggu",
-      "香菇",
-      "mushroom",
-      "cap",
-      "#9C7A4E",
-      "朵",
-      15,
-      26,
-      0.35,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "pinggu",
-      "平菇",
-      "mushroom",
-      "cap",
-      "#C8B79A",
-      "朵",
-      20,
-      24,
-      0.3,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "xingbaogu",
-      "杏鲍菇",
-      "mushroom",
-      "cap",
-      "#DCCBB0",
-      "片",
-      25,
-      35,
-      0.4,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "haixiangu",
-      "海鲜菇",
-      "mushroom",
-      "cap",
-      "#EADFC8",
-      "朵",
-      18,
-      30,
-      0.3,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "muer",
-      "木耳",
-      "mushroom",
-      "cap",
-      "#5C4B47",
-      "片",
-      8,
-      27,
-      0.25,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "haidaijie",
-      "海带结",
-      "mushroom",
-      "knot",
-      "#4F7A52",
-      "结",
-      12,
-      13,
-      0.5,
-      ["fiber"],
-      "veg",
-      !0,
-    ],
-    [
-      "qundaicai",
-      "裙带菜",
-      "mushroom",
-      "leaf",
-      "#5F8B57",
-      "把",
-      20,
-      15,
-      0.35,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "yiner",
-      "银耳",
-      "mushroom",
-      "cap",
-      "#F0E8DA",
-      "朵",
-      25,
-      26,
-      0.2,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "tudoupian",
-      "土豆片",
-      "root",
-      "disc",
-      "#E3C079",
-      "片",
-      12,
-      77,
-      0.75,
-      ["carb"],
-      "veg",
-      !0,
-    ],
-    [
-      "oupian",
-      "藕片",
-      "root",
-      "disc",
-      "#F0E2C8",
-      "片",
-      12,
-      73,
-      0.75,
-      ["carb"],
-      "veg",
-    ],
-    [
-      "shanyao",
-      "山药",
-      "root",
-      "disc",
-      "#EFE6D2",
-      "片",
-      15,
-      57,
-      0.7,
-      ["carb"],
-      "veg",
-    ],
-    [
-      "donggua",
-      "冬瓜",
-      "root",
-      "cube",
-      "#BFD9B4",
-      "片",
-      20,
-      12,
-      0.55,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "nangua",
-      "南瓜",
-      "root",
-      "cube",
-      "#EFA24E",
-      "块",
-      25,
-      26,
-      0.6,
-      ["carb"],
-      "veg",
-    ],
-    [
-      "bailuobo",
-      "白萝卜",
-      "root",
-      "disc",
-      "#F4F1E4",
-      "片",
-      15,
-      16,
-      0.55,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "huluobo",
-      "胡萝卜",
-      "root",
-      "disc",
-      "#E8894A",
-      "片",
-      10,
-      39,
-      0.6,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "wosun",
-      "莴笋",
-      "root",
-      "disc",
-      "#A9CE7E",
-      "片",
-      15,
-      15,
-      0.55,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "huanggua",
-      "黄瓜",
-      "root",
-      "disc",
-      "#9FCF7A",
-      "片",
-      10,
-      16,
-      0.4,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "fanqie",
-      "番茄",
-      "root",
-      "cube",
-      "#E4664F",
-      "块",
-      25,
-      20,
-      0.5,
-      ["fiber"],
-      "veg",
-    ],
-    [
-      "yumi",
-      "玉米段",
-      "root",
-      "cube",
-      "#F2C94C",
-      "段",
-      40,
-      112,
-      0.8,
-      ["carb"],
-      "veg",
-    ],
-    [
-      "doupi",
-      "豆皮",
-      "tofu",
-      "strip",
-      "#EFD9A8",
-      "张",
-      20,
-      409,
-      0.5,
-      ["protein"],
-      "veg",
-    ],
-    [
-      "fuzhu",
-      "腐竹",
-      "tofu",
-      "strip",
-      "#E4C98E",
-      "段",
-      15,
-      461,
-      0.55,
-      ["protein"],
-      "veg",
-    ],
-    [
-      "youdoufu",
-      "油豆腐",
-      "tofu",
-      "cube",
-      "#E2B266",
-      "块",
-      12,
-      244,
-      0.45,
-      ["protein", "processed"],
-      "veg",
-      !0,
-    ],
-    [
-      "dongdoufu",
-      "冻豆腐",
-      "tofu",
-      "cube",
-      "#F1E4C8",
-      "块",
-      30,
-      92,
-      0.4,
-      ["protein"],
-      "veg",
-    ],
-    [
-      "doupao",
-      "豆泡",
-      "tofu",
-      "cube",
-      "#DDB271",
-      "个",
-      10,
-      245,
-      0.45,
-      ["protein", "processed"],
-      "veg",
-    ],
-    [
-      "qianzhang",
-      "千张",
-      "tofu",
-      "strip",
-      "#F3E3BC",
-      "张",
-      20,
-      262,
-      0.5,
-      ["protein"],
-      "veg",
-    ],
-    [
-      "dougan",
-      "豆干",
-      "tofu",
-      "cube",
-      "#D9B583",
-      "块",
-      20,
-      140,
-      0.55,
-      ["protein"],
-      "veg",
-    ],
-    [
-      "suji",
-      "素鸡",
-      "tofu",
-      "strip",
-      "#E7CB9E",
-      "块",
-      25,
-      192,
-      0.6,
-      ["protein"],
-      "veg",
-    ],
-    [
-      "doufu",
-      "豆腐",
-      "tofu",
-      "cube",
-      "#F7F1E2",
-      "盒",
-      80,
-      82,
-      0.6,
-      ["protein"],
-      "veg",
-    ],
-    [
-      "doujie",
-      "豆结",
-      "tofu",
-      "knot",
-      "#E8CE9B",
-      "结",
-      10,
-      180,
-      0.5,
-      ["protein"],
-      "veg",
-    ],
-    [
-      "niurouwan",
-      "牛肉丸",
-      "meat",
-      "ball",
-      "#B4715A",
-      "颗",
-      18,
-      220,
-      0.85,
-      ["protein", "processed", "indulgent"],
-      "ball",
-      !0,
-    ],
-    [
-      "yuwan",
-      "鱼丸",
-      "meat",
-      "ball",
-      "#E8E3D6",
-      "颗",
-      15,
-      107,
-      0.8,
-      ["protein", "processed"],
-      "ball",
-    ],
-    [
-      "xiawan",
-      "虾丸",
-      "meat",
-      "ball",
-      "#F0B7A0",
-      "颗",
-      15,
-      120,
-      0.8,
-      ["protein", "processed"],
-      "ball",
-    ],
-    [
-      "niaoniaoniurou",
-      "撒尿牛丸",
-      "meat",
-      "ball",
-      "#A96852",
-      "颗",
-      20,
-      230,
-      0.85,
-      ["protein", "processed", "indulgent"],
-      "ball",
-    ],
-    [
-      "wucanrou",
-      "午餐肉",
-      "meat",
-      "cube",
-      "#D98E86",
-      "片",
-      15,
-      229,
-      0.8,
-      ["protein", "processed", "indulgent"],
-      "ball",
-      !0,
-    ],
-    [
-      "huotuichang",
-      "火腿肠",
-      "meat",
-      "strip",
-      "#D8766B",
-      "根",
-      30,
-      212,
-      0.8,
-      ["protein", "processed"],
-      "ball",
-    ],
-    [
-      "peigen",
-      "培根",
-      "meat",
-      "strip",
-      "#C4665C",
-      "片",
-      10,
-      181,
-      0.7,
-      ["protein", "processed"],
-      "ball",
-    ],
-    [
-      "jixiongrou",
-      "鸡胸肉",
-      "meat",
-      "strip",
-      "#F0D3B4",
-      "片",
-      25,
-      133,
-      0.7,
-      ["protein"],
-      "meat",
-    ],
-    [
-      "feiniujuan",
-      "肥牛卷",
-      "meat",
-      "strip",
-      "#C4645C",
-      "卷",
-      20,
-      250,
-      0.75,
-      ["protein", "indulgent"],
-      "meat",
-    ],
-    [
-      "yaxue",
-      "鸭血",
-      "meat",
-      "cube",
-      "#8E4A46",
-      "块",
-      25,
-      108,
-      0.7,
-      ["protein"],
-      "meat",
-    ],
-    [
-      "maodu",
-      "毛肚",
-      "meat",
-      "strip",
-      "#C8A79E",
-      "片",
-      20,
-      72,
-      0.6,
-      ["protein"],
-      "meat",
-    ],
-    [
-      "xiahua",
-      "虾滑",
-      "meat",
-      "ball",
-      "#F2B9A8",
-      "勺",
-      25,
-      95,
-      0.6,
-      ["protein"],
-      "ball",
-    ],
-    [
-      "xiaosurou",
-      "小酥肉",
-      "meat",
-      "cube",
-      "#D9A05C",
-      "块",
-      20,
-      300,
-      0.7,
-      ["protein", "processed", "indulgent"],
-      "meat",
-    ],
-    [
-      "yudoufu",
-      "鱼豆腐",
-      "meat",
-      "cube",
-      "#F0DCA8",
-      "块",
-      15,
-      130,
-      0.75,
-      ["protein", "processed"],
-      "ball",
-    ],
-    [
-      "xieban",
-      "蟹棒",
-      "meat",
-      "strip",
-      "#E8796A",
-      "根",
-      12,
-      125,
-      0.7,
-      ["protein", "processed"],
-      "ball",
-    ],
-    [
-      "kuanfen",
-      "宽粉",
-      "staple",
-      "strip",
-      "#EFE3C6",
-      "卷",
-      50,
-      340,
-      0.85,
-      ["carb"],
-      "staple",
-      !0,
-    ],
-    [
-      "xifen",
-      "细粉",
-      "staple",
-      "strip",
-      "#F2E9CF",
-      "卷",
-      40,
-      330,
-      0.85,
-      ["carb"],
-      "staple",
-    ],
-    [
-      "fangbianmian",
-      "方便面",
-      "staple",
-      "cube",
-      "#F0D27A",
-      "块",
-      70,
-      470,
-      0.9,
-      ["carb", "processed"],
-      "staple",
-    ],
-    [
-      "wudongmian",
-      "乌冬面",
-      "staple",
-      "strip",
-      "#F5EEDC",
-      "份",
-      80,
-      137,
-      0.85,
-      ["carb"],
-      "staple",
-    ],
-    [
-      "niangao",
-      "年糕",
-      "staple",
-      "disc",
-      "#F6EDD8",
-      "片",
-      20,
-      154,
-      0.9,
-      ["carb"],
-      "staple",
-    ],
-    [
-      "fensi",
-      "粉丝",
-      "staple",
-      "strip",
-      "#F7F1E0",
-      "把",
-      30,
-      335,
-      0.8,
-      ["carb"],
-      "staple",
-    ],
-    [
-      "moyusi",
-      "魔芋丝",
-      "staple",
-      "strip",
-      "#E9E3D2",
-      "把",
-      40,
-      7,
-      0.5,
-      ["fiber"],
-      "staple",
-    ],
-    [
-      "mifen",
-      "米粉",
-      "staple",
-      "strip",
-      "#F4EEDD",
-      "份",
-      60,
-      350,
-      0.85,
-      ["carb"],
-      "staple",
-    ],
-    [
-      "youtiao",
-      "油条",
-      "staple",
-      "strip",
-      "#DDB25F",
-      "根",
-      40,
-      388,
-      0.6,
-      ["carb", "processed"],
-      "staple",
-    ],
-    [
-      "anchundan",
-      "鹌鹑蛋",
-      "egg",
-      "egg",
-      "#F4E7C8",
-      "颗",
-      8,
-      160,
-      0.8,
-      ["protein"],
-      "ball",
-    ],
-    [
-      "jidan",
-      "鸡蛋",
-      "egg",
-      "egg",
-      "#F6E3B0",
-      "个",
-      50,
-      143,
-      0.8,
-      ["protein"],
-      "ball",
-    ],
-    [
-      "zhishiniangao",
-      "芝士年糕",
-      "egg",
-      "cube",
-      "#F5D98A",
-      "块",
-      25,
-      250,
-      0.85,
-      ["carb", "indulgent"],
-      "staple",
-    ],
-    [
-      "xiaomahua",
-      "小麻花",
-      "egg",
-      "knot",
-      "#D9A85C",
-      "个",
-      15,
-      440,
-      0.7,
-      ["carb", "processed"],
-      "staple",
-    ],
-  ],
-  qm = Bm.map((s, f) => ({
-    id: s[0],
-    name: s[1],
-    category: s[2],
-    shape: s[3],
-    color: s[4],
-    unitLabel: s[5],
-    unitWeightG: s[6],
-    kcalPer100g: s[7],
-    density: s[8],
-    tags: s[9],
-    priceGroup: s[10],
-    popular: s[11] ?? !1,
-    note: s[12] ?? "",
-    imageUrl: null,
-    enabled: !0,
-    sortOrder: f,
-  })).concat(extraIngredients),
-  Gm = [
-    {
-      title: "网传「青菜垫底再压别的会轻一点」，我们拿电子秤试了 3 盆",
-      summary:
-        "结论：秤上的数字一点没变。变的是你能往盆里塞多少——叶菜蓬松，先垫底会让盆「看起来满了」得更快。",
-      body: `编辑部按三种摆法各装了一盆：叶菜垫底、叶菜铺顶、全部混着放，三盆食材完全相同。三次称重误差都在 2 克以内——电子秤测的是总重，和你先放什么、放中间还是放边缘毫无关系。
+import {CATEGORY_LABELS,CATEGORY_ORDER,DEFAULT_SETTINGS,MENU,INITIAL_NEWS} from './data/menu.js';
 
-那为什么有人觉得「垫底更划算」？因为盆的容量是固定的。先放蓬松的绿叶菜，盆满得快，后面能塞进去的土豆片、宽粉、丸子就少了，总重自然低。这是「体积占位」，不是「称重变轻」。
-
-真正影响重量的是另外两件事：一是带水，泡在水里的食材和刚喷过水的菜，抖两下能少好几十克；二是密度，冻豆腐、藕片、宽粉、丸子这类东西体积小、分量足，才是账单主力。`,
-      sourceUrl: "https://news.qq.com/rain/a/20260916V01NEM00",
-      publishedAt: "2026-09-16",
-    },
-    {
-      title: "「不压秤」清单：这 8 样看着多，称起来轻",
-      summary:
-        "叶菜、菌菇、豆芽、海带结……它们的共同点是体积大、含水少、密度低。",
-      body: `被反复点名的有：菠菜、生菜、茼蒿、油麦菜、豆芽、金针菇、海带结、木耳。共同特征是「抓一大把也没多少克」。
-
-反过来，冻豆腐、豆泡、面筋、藕片、土豆片、宽粉、各类丸子体积小、密度高，是让账单突然变贵的主力。`,
-      sourceUrl: "https://www.sohu.com/a/764305859_121119045",
-      publishedAt: "2026-09-01",
-    },
-    {
-      title: "「2.88 元/50 克」到底是什么价？换算完我沉默了",
-      summary: "50 克计价是行业惯例，但它把 28.8 元/斤写得像 2.88 元。",
-      body: `很多门店的价签按 50 克标价，比如绿豆芽 2.88 元/50 克——换算成斤就是 28.8 元/斤。看到价签先做一次乘法，能省下不少心理落差。
-
-也有个别门店把「斤」当「公斤」录入系统，一顿吃出九十多元，事后解释为员工操作失误。称重前扫一眼秤上的单位，不吃亏。`,
-      sourceUrl: "https://post.smzdm.com/p/ak8pg67e/",
-      publishedAt: "2026-05-01",
-    },
-    {
-      title: "“去皮”那点事：那口盆值多少钱",
-      summary: "多家门店被曝出去皮不干净，单店能差 20–50 克，折合每单 1–2 元。",
-      body: `监管部门的专项检查里，「空盆未完全去皮」是最常见的问题。20–50 克的差看起来很小，但按 20 元/斤算，每单就是一块多。
-
-能做的很简单：称重时看一眼秤是否归零、盆是不是同一个。`,
-      sourceUrl:
-        "http://www.zgnt.net/jhwbszb/pc/c/202305/30/content_137548.html",
-      publishedAt: "2026-05-30",
-    },
-    {
-      title: "健身博主带火的「54321」搭配法，被做成了菜单",
-      summary:
-        "5 种蔬菜、4 种蛋白、3 种碳水、2 种菌藻、1 种汤底——听着复杂，其实就是别只夹丸子。",
-      body: `这套比例来自健身博主帕梅拉的日常选菜习惯，后来被连锁品牌做成了「轻盈碗」。
-
-它解决的是「吃多少种」而不是「花多少钱」：蔬菜给纤维和体积，蛋白给饱腹，菌藻凑口感和微量元素，碳水压轴。照这个比例夹，一般不会难吃，也不容易饿。`,
-      sourceUrl: "https://m.163.com/dy/article/LADRAMI905527AC6.html",
-      publishedAt: "2026-10-29",
-    },
-  ];
-async function Ji(s, f, d = 4e3) {
+async function requestJson(s, f, d = 4e3) {
   const r = new AbortController(),
     S = setTimeout(() => r.abort(), d);
   try {
-    const g = await fetch(s, {
+    const g = await fetch(assetUrl(s), {
         ...f,
         credentials: "same-origin",
         signal: r.signal,
@@ -1038,31 +32,31 @@ async function Ji(s, f, d = 4e3) {
     clearTimeout(S);
   }
 }
-const Wl = {
-  get: (s) => Ji(s),
-  post: (s, f) => Ji(s, { method: "POST", body: JSON.stringify(f ?? {}) }),
-  patch: (s, f) => Ji(s, { method: "PATCH", body: JSON.stringify(f ?? {}) }),
-  del: (s) => Ji(s, { method: "DELETE" }),
+const apiClient = {
+  get: (s) => requestJson(s),
+  post: (s, f) => requestJson(s, { method: "POST", body: JSON.stringify(f ?? {}) }),
+  patch: (s, f) => requestJson(s, { method: "PATCH", body: JSON.stringify(f ?? {}) }),
+  del: (s) => requestJson(s, { method: "DELETE" }),
 };
 const STATIC_MODE = typeof __DAZI_STATIC__ !== "undefined" && __DAZI_STATIC__;
-function builtInBootstrap(){return {ingredients:qm,news:Gm.map((s,f)=>({...s,id:f+1})),settings:M2,offline:true};}
-async function Ym() {
+function builtInBootstrap(){return {ingredients:MENU,news:INITIAL_NEWS.map((s,f)=>({...s,id:f+1})),settings:DEFAULT_SETTINGS,offline:true};}
+async function loadBootstrap() {
   if(STATIC_MODE)return builtInBootstrap();
   try {
-    const s = await Wl.get("/api/bootstrap");
+    const s = await apiClient.get("/api/bootstrap");
     if (!s.ingredients?.length) throw new Error("empty");
     return { ...s, offline: !1 };
   } catch {
     return {
-      ingredients: qm,
-      news: Gm.map((s, f) => ({ ...s, id: f + 1 })),
-      settings: M2,
+      ingredients: MENU,
+      news: INITIAL_NEWS.map((s, f) => ({ ...s, id: f + 1 })),
+      settings: DEFAULT_SETTINGS,
       offline: !0,
     };
   }
 }
-const Yt = (s) => Math.max(0, Math.min(1, s));
-function C2(s, f, d, r, S) {
+const clampUnit = (s) => Math.max(0, Math.min(1, s));
+function analyzeBowl(s, f, d, r, S) {
   const g = d.weightG || 1,
     O = ["leaf", "mushroom", "root"];
   let D = 0,
@@ -1112,26 +106,26 @@ function C2(s, f, d, r, S) {
     leafKinds: rl.size,
     colorVariety: K.size,
     avgDensity: G / g,
-    spiceFit: Yt(1 - Math.abs(Rl - Z)),
+    spiceFit: clampUnit(1 - Math.abs(Rl - Z)),
     budgetRatio: S > 0 ? d.price / S : 0,
   };
 }
-function Zm(s) {
+function describeBowl(s) {
   return {
-    veg: Yt(s.vegShare),
-    protein: Yt(s.proteinShare / 0.35),
-    carb: Yt(s.carbShare / 0.45),
-    variety: Yt(s.categories / 7),
-    processed: Yt(s.processedShare),
-    indulgent: Yt(s.indulgentShare / 0.5),
-    kcal: Yt(s.kcal / 900),
-    price: Yt(s.price / 35),
-    density: Yt(s.avgDensity),
-    spicy: Yt(s.spiceFit),
-    looks: Yt(s.colorVariety / 7),
+    veg: clampUnit(s.vegShare),
+    protein: clampUnit(s.proteinShare / 0.35),
+    carb: clampUnit(s.carbShare / 0.45),
+    variety: clampUnit(s.categories / 7),
+    processed: clampUnit(s.processedShare),
+    indulgent: clampUnit(s.indulgentShare / 0.5),
+    kcal: clampUnit(s.kcal / 900),
+    price: clampUnit(s.price / 35),
+    density: clampUnit(s.avgDensity),
+    spicy: clampUnit(s.spiceFit),
+    looks: clampUnit(s.colorVariety / 7),
   };
 }
-const wm = [
+const RECOMMENDATION_PRESETS = [
   {
     id: "save",
     name: "省钱狂魔",
@@ -1165,7 +159,7 @@ const wm = [
     bias: { indulgent: 1, protein: 0.4, cheap: 0.1 },
   },
 ];
-function Xm(s, f) {
+function recommendationWeight(s, f) {
   let d = 0;
   return (
     f.light && (d += f.light * (1 - s.density)),
@@ -1184,14 +178,14 @@ function Xm(s, f) {
     d
   );
 }
-function Vm(s, f, d = Math.random) {
+function buildRecommendation(s, f, d = Math.random) {
   const r = f.filter((O) => O.enabled !== !1),
     S = [],
     g = new Set();
   for (const [O, D] of Object.entries(s.plan)) {
     const _ = r
       .filter((T) => T.category === O && !g.has(T.id))
-      .map((T) => ({ i: T, s: Xm(T, s.bias) + d() * 0.35 }))
+      .map((T) => ({ i: T, s: recommendationWeight(T, s.bias) + d() * 0.35 }))
       .sort((T, A) => A.s - T.s);
     for (let T = 0; T < D; T += 1) {
       const A = _.filter((I) => !g.has(I.i.id));
@@ -1205,22 +199,22 @@ function Vm(s, f, d = Math.random) {
   }
   return { preset: s, entries: S };
 }
-function z2(s, f = Math.random) {
-  return wm.map((d) => Vm(d, s, f));
+function buildRecommendations(s, f = Math.random) {
+  return RECOMMENDATION_PRESETS.map((d) => buildRecommendation(d, s, f));
 }
-function km(s, f) {
+function priceRate(s, f) {
   return f.separatePricing ? f.priceGroups[s.priceGroup] : f.pricePerJin;
 }
-function jn(s, f) {
+function portionWeight(s, f) {
   return s.unitWeightG * f;
 }
-function Fi(s, f, d) {
-  return (jn(s, f) / 500) * km(s, d);
+function portionPrice(s, f, d) {
+  return (portionWeight(s, f) / 500) * priceRate(s, d);
 }
-function Km(s, f) {
-  return (jn(s, f) / 100) * s.kcalPer100g;
+function portionCalories(s, f) {
+  return (portionWeight(s, f) / 100) * s.kcalPer100g;
 }
-function Zf(s, f, d) {
+function summarizeBowl(s, f, d) {
   let r = 0,
     S = 0,
     g = 0,
@@ -1231,21 +225,21 @@ function Zf(s, f, d) {
     !T ||
       T.enabled === !1 ||
       _.qty <= 0 ||
-      ((r += jn(T, _.qty)),
-      (S += Fi(T, _.qty, d)),
-      (g += Km(T, _.qty)),
+      ((r += portionWeight(T, _.qty)),
+      (S += portionPrice(T, _.qty, d)),
+      (g += portionCalories(T, _.qty)),
       (O += _.qty),
       (D += 1));
   }
   return { weightG: r, price: S, kcal: g, portions: O, itemCount: D };
 }
-const Jm = 9;
-function Wm(s, f) {
+const MAX_PORTIONS = 9;
+function bowlReducer(s, f) {
   switch (f.type) {
     case "add": {
       const d = s.entries.find((r) => r.id === f.id);
       return d
-        ? d.qty >= Jm
+        ? d.qty >= MAX_PORTIONS
           ? s
           : {
               ...s,
@@ -1284,7 +278,7 @@ function Wm(s, f) {
       return s;
   }
 }
-function Fm(s) {
+function initialBowl(s) {
   let f = null;
   try {
     const d = localStorage.getItem("malatang.budget");
@@ -1301,2190 +295,15 @@ function Fm(s) {
     query: "",
   };
 }
-const ot = "#3D2B23";
-function H(s, f) {
-  const d = parseInt(s.slice(1), 16),
-    r = Math.max(0, Math.min(255, ((d >> 16) & 255) + Math.round(255 * f))),
-    S = Math.max(0, Math.min(255, ((d >> 8) & 255) + Math.round(255 * f))),
-    g = Math.max(0, Math.min(255, (d & 255) + Math.round(255 * f)));
-  return `#${((r << 16) | (S << 8) | g).toString(16).padStart(6, "0")}`;
-}
-const z = {
-    stroke: ot,
-    strokeWidth: 2.4,
-    strokeLinejoin: "round",
-    strokeLinecap: "round",
-  },
-  B = {
-    stroke: ot,
-    strokeWidth: 1.6,
-    strokeLinejoin: "round",
-    strokeLinecap: "round",
-    fill: "none",
-  };
-function Tl({ cx: s, cy: f, rx: d = 4, ry: r = 2.6 }) {
-  return i.jsx("ellipse", {
-    cx: s,
-    cy: f,
-    rx: d,
-    ry: r,
-    fill: "#fff",
-    opacity: "0.42",
-  });
-}
-function L({ x: s = 32, y: f = 36, mood: d = 0, scale: r = 1, eye: S = 2.4 }) {
-  const g = 6.2 * r,
-    O = s - g,
-    D = s + g;
-  return d === 2
-    ? i.jsxs("g", {
-        transform: `translate(${s} ${f}) scale(${r}) translate(${-s} ${-f})`,
-        children: [
-          i.jsx("path", {
-            d: `M${O - 2} ${f} q2 -3 4 0`,
-            ...B,
-            strokeWidth: 1.9,
-          }),
-          i.jsx("path", {
-            d: `M${D - 2} ${f} q2 -3 4 0`,
-            ...B,
-            strokeWidth: 1.9,
-          }),
-          i.jsx("path", {
-            d: `M${s - 1.6} ${f + 5} q1.6 2 3.2 0`,
-            ...B,
-            strokeWidth: 1.5,
-          }),
-        ],
-      })
-    : i.jsxs("g", {
-        transform: `translate(${s} ${f}) scale(${r}) translate(${-s} ${-f})`,
-        children: [
-          i.jsx("ellipse", { cx: O, cy: f, rx: S, ry: S * 1.32, fill: ot }),
-          i.jsx("ellipse", { cx: D, cy: f, rx: S, ry: S * 1.32, fill: ot }),
-          i.jsx("circle", { cx: O + 0.9, cy: f - 1.2, r: 0.9, fill: "#fff" }),
-          i.jsx("circle", { cx: D + 0.9, cy: f - 1.2, r: 0.9, fill: "#fff" }),
-          d === 0
-            ? i.jsx("path", {
-                d: `M${s - 3} ${f + 5.4} q3 2.8 6 0`,
-                ...B,
-                strokeWidth: 1.5,
-              })
-            : i.jsx("path", {
-                d: `M${s - 3} ${f + 6} q1.5 -2 3 0 q1.5 2 3 0`,
-                ...B,
-                strokeWidth: 1.4,
-              }),
-        ],
-      });
-}
-const $m = {
-    anchundan: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M32 10 C41 10 46 24 46 34 C46 44 40 51 32 51 C24 51 18 44 18 34 C18 24 23 10 32 10 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsxs("g", {
-            fill: H(s, -0.24),
-            opacity: "0.7",
-            children: [
-              i.jsx("ellipse", { cx: "26", cy: "26", rx: "2", ry: "1.4" }),
-              i.jsx("ellipse", { cx: "38", cy: "32", rx: "1.8", ry: "1.3" }),
-              i.jsx("ellipse", { cx: "30", cy: "42", rx: "1.6", ry: "1.2" }),
-              i.jsx("ellipse", { cx: "39", cy: "20", rx: "1.4", ry: "1" }),
-            ],
-          }),
-          i.jsx(Tl, { cx: 26, cy: 20, rx: 3.4, ry: 2.4 }),
-          i.jsx(L, { x: 32, y: 32, mood: f, scale: 0.66 }),
-        ],
-      }),
-    jidan: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M32 8 C43 8 49 24 49 35 C49 46 42 54 32 54 C22 54 15 46 15 35 C15 24 21 8 32 8 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx(Tl, { cx: 25, cy: 22, rx: 4.6, ry: 3.2 }),
-          i.jsx("path", {
-            d: "M20 36 Q24 44 30 47",
-            ...B,
-            strokeWidth: 1.6,
-            stroke: "#fff",
-            opacity: "0.5",
-          }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.72 }),
-        ],
-      }),
-    zhishiniangao: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "13",
-            y: "16",
-            width: "38",
-            height: "34",
-            rx: "9",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M20 22 Q32 18 44 22",
-            ...B,
-            strokeWidth: 1.4,
-            stroke: "#fff",
-            opacity: "0.5",
-          }),
-          i.jsx("path", {
-            d: "M24 30 Q32 24 40 30 Q40 40 32 44 Q24 40 24 30 Z",
-            fill: "#F6C453",
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx("path", {
-            d: "M28 33 Q32 30 36 33",
-            ...B,
-            strokeWidth: 1.2,
-            stroke: "#fff",
-            opacity: "0.7",
-          }),
-          i.jsx(L, { x: 32, y: 30, mood: f, scale: 0.55, eye: 2 }),
-        ],
-      }),
-    xiaomahua: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M18 46 C26 40 24 30 32 26 C40 22 38 14 46 12",
-            fill: "none",
-            stroke: s,
-            strokeWidth: "11",
-            strokeLinecap: "round",
-          }),
-          i.jsx("path", {
-            d: "M18 46 C26 40 24 30 32 26 C40 22 38 14 46 12",
-            fill: "none",
-            stroke: ot,
-            strokeWidth: "2.2",
-            strokeLinecap: "round",
-          }),
-          i.jsxs("g", {
-            stroke: H(s, -0.22),
-            strokeWidth: "1.5",
-            strokeLinecap: "round",
-            children: [
-              i.jsx("path", { d: "M22 42 L26 38" }),
-              i.jsx("path", { d: "M27 34 L31 30" }),
-              i.jsx("path", { d: "M34 24 L38 20" }),
-            ],
-          }),
-          i.jsx(L, { x: 32, y: 32, mood: f, scale: 0.54, eye: 2 }),
-        ],
-      }),
-  },
-  Im = {
-    spinach: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", { d: "M32 53 L32 44", ...B, strokeWidth: 2.6 }),
-          i.jsx("path", {
-            d: "M32 44 C22 37 20 22 28 13 C36 22 38 37 32 44 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M32 44 C24 41 16 33 16 24 C26 25 31 34 32 44 Z",
-            fill: H(s, -0.12),
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M32 44 C40 41 48 33 48 24 C38 25 33 34 32 44 Z",
-            fill: H(s, -0.12),
-            ...z,
-          }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "52",
-            rx: "3.4",
-            ry: "4.2",
-            fill: "#C4574C",
-            ...z,
-          }),
-          i.jsx(L, { x: 32, y: 29, mood: f, scale: 0.85 }),
-        ],
-      }),
-    lettuce: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsxs("g", {
-            fill: s,
-            ...z,
-            children: [
-              i.jsx("circle", { cx: "32", cy: "33", r: "14" }),
-              i.jsx("circle", { cx: "20", cy: "26", r: "7" }),
-              i.jsx("circle", { cx: "44", cy: "26", r: "7" }),
-              i.jsx("circle", { cx: "21", cy: "42", r: "7.5" }),
-              i.jsx("circle", { cx: "43", cy: "42", r: "7.5" }),
-              i.jsx("circle", { cx: "32", cy: "17", r: "7" }),
-            ],
-          }),
-          i.jsx(Tl, { cx: 24, cy: 27, rx: 4.4, ry: 2.8 }),
-          i.jsx(L, { x: 32, y: 35, mood: f, scale: 0.9 }),
-        ],
-      }),
-    youmaicai: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          [
-            { x: 22, r: -10 },
-            { x: 32, r: 0 },
-            { x: 42, r: 10 },
-          ].map(({ x: d, r }) =>
-            i.jsx(
-              "path",
-              {
-                d: `M${d} 52 C${d - 4} 42 ${d - 4} 22 ${d} 13 C${d + 4} 22 ${d + 4} 42 ${d} 52 Z`,
-                fill: d === 32 ? s : H(s, -0.1),
-                ...z,
-                transform: `rotate(${r} ${d} 52)`,
-              },
-              d,
-            ),
-          ),
-          i.jsx(L, { x: 32, y: 37, mood: f, scale: 0.8 }),
-        ],
-      }),
-    tonghao: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", { d: "M32 55 L32 15", ...B, strokeWidth: 2.4 }),
-          [45, 38, 22, 15].map((d) =>
-            i.jsxs(
-              "g",
-              {
-                children: [
-                  i.jsx("ellipse", {
-                    cx: "23",
-                    cy: d,
-                    rx: "6.2",
-                    ry: "2.8",
-                    fill: s,
-                    ...z,
-                    transform: `rotate(-22 23 ${d})`,
-                  }),
-                  i.jsx("ellipse", {
-                    cx: "41",
-                    cy: d,
-                    rx: "6.2",
-                    ry: "2.8",
-                    fill: s,
-                    ...z,
-                    transform: `rotate(22 41 ${d})`,
-                  }),
-                ],
-              },
-              d,
-            ),
-          ),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "12",
-            rx: "3.6",
-            ry: "4.4",
-            fill: s,
-            ...z,
-          }),
-          i.jsx(L, { x: 32, y: 31, mood: f, scale: 0.75 }),
-        ],
-      }),
-    xiaobaicai: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M25 50 Q32 44 39 50 L37 58 L27 58 Z",
-            fill: "#F3EFDC",
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M32 46 C20 42 16 28 22 17 C31 21 34 34 32 46 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M32 46 C44 42 48 28 42 17 C33 21 30 34 32 46 Z",
-            fill: H(s, -0.1),
-            ...z,
-          }),
-          i.jsx("path", { d: "M32 46 L32 24", ...B, strokeWidth: 1.4 }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.8 }),
-        ],
-      }),
-    wawacai: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M32 56 C20 52 15 34 19 16 C26 11 38 11 45 16 C49 34 44 52 32 56 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M32 54 C26 48 24 32 26 18 C30 16 34 16 38 18 C40 32 38 48 32 54 Z",
-            fill: "#FBF4E0",
-            ...z,
-            strokeWidth: 1.6,
-          }),
-          i.jsx("path", { d: "M22 26 L22 40", ...B, strokeWidth: 1.2 }),
-          i.jsx("path", { d: "M42 26 L42 40", ...B, strokeWidth: 1.2 }),
-          i.jsx(L, { x: 32, y: 33, mood: f, scale: 0.78 }),
-        ],
-      }),
-    kongxincai: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M30 58 C29 44 29 30 31 14",
-            ...B,
-            strokeWidth: 2.6,
-          }),
-          i.jsx("ellipse", {
-            cx: "30",
-            cy: "58",
-            rx: "4.4",
-            ry: "3",
-            fill: "#F3EFDC",
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M31 14 C40 18 45 26 43 34 C35 32 31 24 31 14 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M31 22 C24 26 20 33 22 40 C29 37 31 30 31 22 Z",
-            fill: H(s, -0.1),
-            ...z,
-          }),
-          i.jsx("path", { d: "M31 30 L31 44", ...B, strokeWidth: 1.2 }),
-          i.jsx(L, { x: 31, y: 46, mood: f, scale: 0.72 }),
-        ],
-      }),
-    wandouxian: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M32 58 C32 48 32 40 33 32",
-            ...B,
-            strokeWidth: 2.4,
-          }),
-          i.jsx("path", {
-            d: "M33 32 C40 28 44 20 40 14 C34 18 32 25 33 32 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M32 36 C25 33 20 25 23 18 C29 22 32 29 32 36 Z",
-            fill: H(s, -0.1),
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M33 32 C37 22 44 17 50 18 C47 24 41 29 33 32",
-            ...B,
-            strokeWidth: 1.8,
-          }),
-          i.jsx(L, { x: 32, y: 48, mood: f, scale: 0.7 }),
-        ],
-      }),
-    xiangcai: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M32 58 C31 46 31 34 32 24",
-            ...B,
-            strokeWidth: 2,
-          }),
-          [
-            { x: 32, y: 16, r: 0 },
-            { x: 21, y: 24, r: -40 },
-            { x: 43, y: 24, r: 40 },
-            { x: 25, y: 34, r: -70 },
-            { x: 39, y: 34, r: 70 },
-          ].map(({ x: d, y: r, r: S }) =>
-            i.jsx(
-              "g",
-              {
-                transform: `rotate(${S} ${d} ${r})`,
-                children: i.jsx("ellipse", {
-                  cx: d,
-                  cy: r,
-                  rx: "4.6",
-                  ry: "7",
-                  fill: s,
-                  ...z,
-                  strokeWidth: 2,
-                }),
-              },
-              `${d}-${r}`,
-            ),
-          ),
-          i.jsx(L, { x: 32, y: 47, mood: f, scale: 0.7 }),
-        ],
-      }),
-    jiucai: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          [-12, -4, 4, 12].map((d, r) =>
-            i.jsx(
-              "path",
-              {
-                d: `M${32 + d} 56 L${32 + d} 20 L${32 + d + 2.6} 13 L${32 + d + 2.6} 56 Z`,
-                fill: r % 2 ? H(s, 0.34) : H(s, 0.12),
-                ...z,
-                strokeWidth: 2,
-              },
-              d,
-            ),
-          ),
-          i.jsx("path", { d: "M18 53 L46 53", ...B, strokeWidth: 2.8 }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.66 }),
-        ],
-      }),
-    muercai: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", { d: "M32 56 L32 44", ...B, strokeWidth: 2.6 }),
-          i.jsx("path", {
-            d: "M32 44 C18 40 12 26 20 15 C29 11 40 16 44 26 C47 36 40 43 32 44 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", { d: "M32 44 L30 20", ...B, strokeWidth: 1.3 }),
-          i.jsx("path", { d: "M31 34 L21 28", ...B, strokeWidth: 1.2 }),
-          i.jsx("path", { d: "M31 30 L41 23", ...B, strokeWidth: 1.2 }),
-          i.jsx(Tl, { cx: 24, cy: 24, rx: 3.6, ry: 2.4 }),
-          i.jsx(L, { x: 33, y: 35, mood: f, scale: 0.78 }),
-        ],
-      }),
-    kuju: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", { d: "M32 56 L32 46", ...B, strokeWidth: 2.6 }),
-          i.jsx("path", {
-            d: "M32 46 L20 40 L24 35 L14 30 L22 25 L16 19 L26 18 L26 10 L32 14 L38 10 L38 18 L48 19 L42 25 L50 30 L40 35 L44 40 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx(L, { x: 32, y: 28, mood: f, scale: 0.78 }),
-        ],
-      }),
-  },
-  Pm = {
-    niurouwan: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("circle", { cx: "32", cy: "34", r: "18", fill: s, ...z }),
-          i.jsxs("g", {
-            stroke: H(s, -0.26),
-            strokeWidth: "1.7",
-            strokeLinecap: "round",
-            children: [
-              i.jsx("path", { d: "M20 26 Q24 34 20 42" }),
-              i.jsx("path", { d: "M32 18 Q36 26 32 34" }),
-              i.jsx("path", { d: "M44 26 Q40 34 44 42" }),
-            ],
-          }),
-          i.jsx(Tl, { cx: 24, cy: 25, rx: 4, ry: 2.6 }),
-          i.jsx(L, { x: 32, y: 35, mood: f, scale: 0.7 }),
-        ],
-      }),
-    yuwan: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("circle", { cx: "31", cy: "34", r: "17", fill: s, ...z }),
-          i.jsx("path", {
-            d: "M46 34 L55 26 L52 34 L55 42 Z",
-            fill: H(s, -0.12),
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx(Tl, { cx: 24, cy: 26, rx: 4.4, ry: 2.8 }),
-          i.jsx(L, { x: 31, y: 35, mood: f, scale: 0.72 }),
-        ],
-      }),
-    xiawan: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("circle", { cx: "32", cy: "34", r: "18", fill: s, ...z }),
-          i.jsx("path", {
-            d: "M32 20 C40 22 44 30 40 38 C36 45 26 45 22 38",
-            fill: "none",
-            stroke: H(s, -0.2),
-            strokeWidth: "2",
-            strokeLinecap: "round",
-          }),
-          i.jsx(Tl, { cx: 24, cy: 26, rx: 4, ry: 2.6 }),
-          i.jsx(L, { x: 32, y: 35, mood: f, scale: 0.7 }),
-        ],
-      }),
-    niaoniaoniurou: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("circle", { cx: "32", cy: "35", r: "18", fill: s, ...z }),
-          i.jsx("path", {
-            d: "M26 19 Q32 12 38 19 Q34 22 30 21 Z",
-            fill: "#F2A65A",
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx("path", {
-            d: "M32 12 L32 7",
-            ...B,
-            strokeWidth: 2,
-            stroke: "#F2A65A",
-          }),
-          i.jsxs("g", {
-            stroke: H(s, -0.24),
-            strokeWidth: "1.6",
-            strokeLinecap: "round",
-            children: [
-              i.jsx("path", { d: "M21 30 Q26 36 22 44" }),
-              i.jsx("path", { d: "M43 30 Q38 36 42 44" }),
-            ],
-          }),
-          i.jsx(L, { x: 32, y: 38, mood: f, scale: 0.66 }),
-        ],
-      }),
-    wucanrou: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M14 24 L38 18 L50 26 L26 32 Z",
-            fill: H(s, 0.12),
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M14 24 L26 32 L26 46 L14 38 Z",
-            fill: H(s, -0.12),
-            ...z,
-          }),
-          i.jsx("path", { d: "M26 32 L50 26 L50 40 L26 46 Z", fill: s, ...z }),
-          i.jsxs("g", {
-            fill: H(s, -0.28),
-            opacity: "0.6",
-            children: [
-              i.jsx("circle", { cx: "33", cy: "36", r: "1.4" }),
-              i.jsx("circle", { cx: "41", cy: "33", r: "1.2" }),
-              i.jsx("circle", { cx: "38", cy: "42", r: "1.3" }),
-            ],
-          }),
-          i.jsx(L, { x: 37, y: 38, mood: f, scale: 0.56, eye: 2 }),
-        ],
-      }),
-    huotuichang: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M20 16 Q32 10 44 16 L44 50 Q32 56 20 50 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M20 22 Q32 28 44 22",
-            ...B,
-            strokeWidth: 1.4,
-            opacity: "0.5",
-          }),
-          i.jsx("path", { d: "M25 12 L27 18", ...B, strokeWidth: 2 }),
-          i.jsx("path", { d: "M39 12 L37 18", ...B, strokeWidth: 2 }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "50",
-            rx: "12",
-            ry: "4",
-            fill: H(s, -0.16),
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx(Tl, { cx: 26, cy: 28, rx: 3.4, ry: 5 }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.66 }),
-        ],
-      }),
-    peigen: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M10 36 Q18 24 26 34 Q34 44 42 32 Q48 24 54 30 L54 40 Q46 46 40 40 Q32 30 24 40 Q16 48 10 44 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M12 38 Q20 30 26 38",
-            ...B,
-            strokeWidth: 1.4,
-            stroke: "#F2E3D8",
-          }),
-          i.jsx("path", {
-            d: "M32 38 Q38 30 44 36",
-            ...B,
-            strokeWidth: 1.4,
-            stroke: "#F2E3D8",
-          }),
-          i.jsx(L, { x: 32, y: 37, mood: f, scale: 0.6, eye: 2 }),
-        ],
-      }),
-    jixiongrou: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M16 24 Q28 14 44 20 Q54 28 48 40 Q38 52 24 46 Q14 40 16 24 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsxs("g", {
-            stroke: H(s, -0.14),
-            strokeWidth: "1.4",
-            strokeLinecap: "round",
-            opacity: "0.8",
-            children: [
-              i.jsx("path", { d: "M22 30 Q30 26 36 30" }),
-              i.jsx("path", { d: "M22 38 Q32 34 40 39" }),
-            ],
-          }),
-          i.jsx(Tl, { cx: 26, cy: 24, rx: 3.6, ry: 2.2 }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.68 }),
-        ],
-      }),
-    feiniujuan: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M18 40 C12 32 18 20 30 18 C42 16 52 24 50 34 C48 44 36 48 28 44",
-            fill: "none",
-            stroke: s,
-            strokeWidth: "11",
-            strokeLinecap: "round",
-          }),
-          i.jsx("path", {
-            d: "M18 40 C12 32 18 20 30 18 C42 16 52 24 50 34 C48 44 36 48 28 44",
-            fill: "none",
-            stroke: ot,
-            strokeWidth: "2.2",
-            strokeLinecap: "round",
-          }),
-          i.jsx("path", {
-            d: "M22 28 Q30 24 38 28",
-            ...B,
-            strokeWidth: 1.6,
-            stroke: "#F5E1DA",
-          }),
-          i.jsx(L, { x: 32, y: 33, mood: f, scale: 0.6, eye: 2 }),
-        ],
-      }),
-    yaxue: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M14 22 L32 14 L50 22 L50 42 L32 50 L14 42 Z",
-            fill: H(s, -0.14),
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M14 22 L32 30 L32 50 L14 42 Z",
-            fill: H(s, -0.24),
-            ...z,
-          }),
-          i.jsx("path", { d: "M32 30 L50 22 L50 42 L32 50 Z", fill: s, ...z }),
-          i.jsx("path", {
-            d: "M20 26 L26 30",
-            ...B,
-            strokeWidth: 1.4,
-            stroke: "#fff",
-            opacity: "0.5",
-          }),
-          i.jsx(L, { x: 40, y: 36, mood: f, scale: 0.52, eye: 2 }),
-        ],
-      }),
-    maodu: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M12 30 L18 24 L24 30 L30 23 L36 30 L42 24 L48 30 L52 26 L52 42 L46 46 L40 40 L34 46 L28 40 L22 46 L16 42 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M18 36 L46 36",
-            ...B,
-            strokeWidth: 1.2,
-            opacity: "0.5",
-          }),
-          i.jsx(L, { x: 32, y: 36, mood: f, scale: 0.56, eye: 2 }),
-        ],
-      }),
-    xiahua: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M12 42 Q12 34 20 34 L46 34 Q52 34 52 42 Q52 48 44 48 L20 48 Q12 48 12 42 Z",
-            fill: "#D9D2C4",
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M20 34 Q22 18 32 16 Q42 18 44 34 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M24 28 Q32 22 40 28",
-            ...B,
-            strokeWidth: 1.3,
-            opacity: "0.6",
-          }),
-          i.jsx(Tl, { cx: 27, cy: 24, rx: 3.4, ry: 2.2 }),
-          i.jsx(L, { x: 32, y: 30, mood: f, scale: 0.62 }),
-        ],
-      }),
-    xiaosurou: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M16 30 Q14 20 24 17 Q32 12 40 18 Q50 20 49 30 Q53 40 43 44 Q34 50 26 45 Q15 43 16 30 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsxs("g", {
-            fill: H(s, 0.14),
-            opacity: "0.8",
-            children: [
-              i.jsx("circle", { cx: "25", cy: "24", r: "2" }),
-              i.jsx("circle", { cx: "37", cy: "22", r: "1.7" }),
-              i.jsx("circle", { cx: "42", cy: "34", r: "2" }),
-              i.jsx("circle", { cx: "28", cy: "40", r: "1.8" }),
-            ],
-          }),
-          i.jsx(L, { x: 32, y: 32, mood: f, scale: 0.66 }),
-        ],
-      }),
-    yudoufu: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "13",
-            y: "20",
-            width: "38",
-            height: "30",
-            rx: "8",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M13 28 Q32 34 51 28",
-            ...B,
-            strokeWidth: 1.4,
-            stroke: H(s, -0.28),
-            opacity: "0.7",
-          }),
-          i.jsx("path", {
-            d: "M17 20 Q32 13 47 20",
-            fill: H(s, 0.16),
-            ...z,
-            strokeWidth: 2.2,
-          }),
-          i.jsx(Tl, { cx: 22, cy: 26, rx: 3.4, ry: 2.2 }),
-          i.jsx(L, { x: 32, y: 36, mood: f, scale: 0.66 }),
-        ],
-      }),
-    xieban: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "16",
-            y: "18",
-            width: "32",
-            height: "32",
-            rx: "6",
-            fill: "#F7E9DE",
-            ...z,
-            transform: "rotate(-12 32 34)",
-          }),
-          i.jsxs("g", {
-            stroke: "#E8796A",
-            strokeWidth: "7",
-            strokeLinecap: "butt",
-            opacity: "0.95",
-            children: [
-              i.jsx("path", { d: "M18 24 L30 24" }),
-              i.jsx("path", { d: "M26 36 L38 36" }),
-              i.jsx("path", { d: "M34 48 L46 48" }),
-            ],
-          }),
-          i.jsx("rect", {
-            x: "16",
-            y: "18",
-            width: "32",
-            height: "32",
-            rx: "6",
-            fill: "none",
-            ...z,
-            transform: "rotate(-12 32 34)",
-          }),
-          i.jsx(L, { x: 32, y: 33, mood: f, scale: 0.6, eye: 2 }),
-        ],
-      }),
-  },
-  l3 = {
-    jinzhengu: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          [20, 26, 32, 38, 44].map((d, r) =>
-            i.jsxs(
-              "g",
-              {
-                children: [
-                  i.jsx("rect", {
-                    x: d - 2.8,
-                    y: "22",
-                    width: "5.6",
-                    height: "34",
-                    rx: "2.8",
-                    fill: "#F8F0D8",
-                    ...z,
-                    strokeWidth: 2,
-                  }),
-                  i.jsx("ellipse", {
-                    cx: d,
-                    cy: r === 2 ? 17 : 20,
-                    rx: "5",
-                    ry: "3.4",
-                    fill: s,
-                    ...z,
-                    strokeWidth: 2.2,
-                  }),
-                ],
-              },
-              d,
-            ),
-          ),
-          i.jsx(L, { x: 32, y: 42, mood: f, scale: 0.72 }),
-        ],
-      }),
-    xianggu: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M26 30 L26 50 Q32 54 38 50 L38 30",
-            fill: "#EBD9B4",
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M9 32 Q10 11 32 11 Q54 11 55 32 Q44 25 32 25 Q20 25 9 32 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", { d: "M22 19 L27 24", ...B, strokeWidth: 1.5 }),
-          i.jsx("path", { d: "M42 19 L37 24", ...B, strokeWidth: 1.5 }),
-          i.jsx("path", { d: "M32 15 L32 21", ...B, strokeWidth: 1.5 }),
-          i.jsx(Tl, { cx: 21, cy: 20, rx: 3.4, ry: 2.2 }),
-          i.jsx(L, { x: 32, y: 37, mood: f, scale: 0.75 }),
-        ],
-      }),
-    pinggu: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M28 40 L28 52 Q32 55 36 52 L36 40",
-            fill: "#E9DCC0",
-            ...z,
-            strokeWidth: 2.2,
-          }),
-          i.jsx("path", {
-            d: "M11 38 Q13 14 32 14 Q51 14 53 38 Q43 31 32 31 Q21 31 11 38 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", { d: "M20 33 Q24 22 30 17", ...B, strokeWidth: 1.4 }),
-          i.jsx("path", { d: "M32 31 Q32 22 32 15", ...B, strokeWidth: 1.4 }),
-          i.jsx("path", { d: "M44 33 Q40 22 34 17", ...B, strokeWidth: 1.4 }),
-          i.jsx(L, { x: 32, y: 42, mood: f, scale: 0.7 }),
-        ],
-      }),
-    xingbaogu: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "23",
-            y: "24",
-            width: "18",
-            height: "30",
-            rx: "8",
-            fill: "#EFE2C6",
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M14 26 Q16 14 32 14 Q48 14 50 26 Q41 22 32 22 Q23 22 14 26 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", { d: "M28 34 L28 48", ...B, strokeWidth: 1.3 }),
-          i.jsx("path", { d: "M36 34 L36 48", ...B, strokeWidth: 1.3 }),
-          i.jsx(L, { x: 32, y: 38, mood: f, scale: 0.72 }),
-        ],
-      }),
-    haixiangu: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          [24, 32, 40].map((d, r) =>
-            i.jsxs(
-              "g",
-              {
-                children: [
-                  i.jsx("rect", {
-                    x: d - 3.2,
-                    y: "18",
-                    width: "6.4",
-                    height: "38",
-                    rx: "3.2",
-                    fill: "#FBF6E6",
-                    ...z,
-                    strokeWidth: 2,
-                  }),
-                  i.jsx("ellipse", {
-                    cx: d,
-                    cy: r === 1 ? 14 : 17,
-                    rx: "6",
-                    ry: "4",
-                    fill: s,
-                    ...z,
-                    strokeWidth: 2.2,
-                  }),
-                ],
-              },
-              d,
-            ),
-          ),
-          i.jsx(L, { x: 32, y: 42, mood: f, scale: 0.7 }),
-        ],
-      }),
-    muer: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M15 45 C9 34 14 18 26 13 C37 8 49 15 51 27 C53 39 43 50 31 50 C25 50 19 48 15 45 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M22 40 C18 32 22 22 31 19 C40 16 45 22 45 30",
-            fill: "none",
-            stroke: H(s, 0.22),
-            strokeWidth: "2.4",
-            strokeLinecap: "round",
-          }),
-          i.jsx("path", {
-            d: "M26 44 C24 36 27 28 34 26",
-            fill: "none",
-            stroke: H(s, 0.22),
-            strokeWidth: "1.8",
-            strokeLinecap: "round",
-          }),
-          i.jsx(Tl, { cx: 24, cy: 22, rx: 4, ry: 2.4 }),
-          i.jsx(L, { x: 32, y: 33, mood: f, scale: 0.72 }),
-        ],
-      }),
-    haidaijie: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: `M20 18 C30 12 44 16 47 26 C50 36 42 44 32 44 C22 44 14 36 17 26 C18 22 19 20 20 18 Z
-           M32 26 C28 26 25 29 25 33 C25 37 28 40 32 40 C36 40 39 37 39 33 C39 29 36 26 32 26 Z`,
-            fill: s,
-            ...z,
-            fillRule: "evenodd",
-          }),
-          i.jsx("path", {
-            d: "M20 20 C26 26 30 30 32 36",
-            ...B,
-            strokeWidth: 1.5,
-            stroke: H(s, 0.2),
-          }),
-          i.jsx("path", {
-            d: "M44 20 C38 26 34 30 32 36",
-            ...B,
-            strokeWidth: 1.5,
-            stroke: H(s, 0.2),
-          }),
-          i.jsx(L, { x: 32, y: 33, mood: f, scale: 0.62 }),
-        ],
-      }),
-    qundaicai: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M22 56 C14 47 24 37 18 27 C14 19 20 12 28 10 C36 8 44 13 43 21 C42 29 34 33 37 41 C40 49 32 54 27 56 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M26 14 C24 24 30 32 26 46",
-            ...B,
-            strokeWidth: 1.4,
-            stroke: H(s, 0.2),
-          }),
-          i.jsx("path", {
-            d: "M36 15 C34 25 39 33 35 47",
-            ...B,
-            strokeWidth: 1.4,
-            stroke: H(s, 0.2),
-          }),
-          i.jsx(Tl, { cx: 26, cy: 22, rx: 3.2, ry: 2 }),
-          i.jsx(L, { x: 31, y: 33, mood: f, scale: 0.66 }),
-        ],
-      }),
-    yiner: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsxs("g", {
-            fill: s,
-            ...z,
-            strokeWidth: 2.2,
-            children: [
-              i.jsx("ellipse", { cx: "32", cy: "20", rx: "9", ry: "7" }),
-              i.jsx("ellipse", {
-                cx: "19",
-                cy: "30",
-                rx: "8.5",
-                ry: "6.5",
-                transform: "rotate(-25 19 30)",
-              }),
-              i.jsx("ellipse", {
-                cx: "45",
-                cy: "30",
-                rx: "8.5",
-                ry: "6.5",
-                transform: "rotate(25 45 30)",
-              }),
-              i.jsx("ellipse", {
-                cx: "24",
-                cy: "43",
-                rx: "8",
-                ry: "6",
-                transform: "rotate(15 24 43)",
-              }),
-              i.jsx("ellipse", {
-                cx: "40",
-                cy: "43",
-                rx: "8",
-                ry: "6",
-                transform: "rotate(-15 40 43)",
-              }),
-            ],
-          }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "32",
-            rx: "7",
-            ry: "6",
-            fill: H(s, 0.06),
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx(L, { x: 32, y: 32, mood: f, scale: 0.6 }),
-        ],
-      }),
-  },
-  t3 = {
-    tudoupian: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "34",
-            rx: "21",
-            ry: "15",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "34",
-            rx: "21",
-            ry: "15",
-            fill: "none",
-            stroke: H(s, -0.22),
-            strokeWidth: "4",
-            opacity: "0.55",
-          }),
-          i.jsxs("g", {
-            fill: H(s, -0.3),
-            opacity: "0.55",
-            children: [
-              i.jsx("circle", { cx: "22", cy: "27", r: "1.4" }),
-              i.jsx("circle", { cx: "41", cy: "31", r: "1.3" }),
-              i.jsx("circle", { cx: "30", cy: "42", r: "1.2" }),
-            ],
-          }),
-          i.jsx(Tl, { cx: 24, cy: 27, rx: 4.4, ry: 2.4 }),
-          i.jsx(L, { x: 33, y: 34, mood: f, scale: 0.72 }),
-        ],
-      }),
-    oupian: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("circle", { cx: "32", cy: "33", r: "20", fill: s, ...z }),
-          i.jsx("circle", {
-            cx: "32",
-            cy: "33",
-            r: "20",
-            fill: "none",
-            stroke: H(s, -0.16),
-            strokeWidth: "3.4",
-            opacity: "0.6",
-          }),
-          i.jsxs("g", {
-            fill: H(s, -0.34),
-            stroke: ot,
-            strokeWidth: "1.4",
-            children: [
-              i.jsx("ellipse", { cx: "32", cy: "25", rx: "3.2", ry: "3.8" }),
-              i.jsx("ellipse", { cx: "25", cy: "29", rx: "2.6", ry: "3" }),
-              i.jsx("ellipse", { cx: "39", cy: "29", rx: "2.6", ry: "3" }),
-              i.jsx("ellipse", { cx: "24", cy: "37", rx: "2.4", ry: "2.8" }),
-              i.jsx("ellipse", { cx: "40", cy: "37", rx: "2.4", ry: "2.8" }),
-              i.jsx("ellipse", { cx: "32", cy: "40", rx: "2.6", ry: "2.8" }),
-            ],
-          }),
-          i.jsx(L, { x: 32, y: 33, mood: f, scale: 0.52, eye: 2 }),
-        ],
-      }),
-    shanyao: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "18",
-            y: "14",
-            width: "28",
-            height: "38",
-            rx: "14",
-            fill: s,
-            ...z,
-            transform: "rotate(-8 32 33)",
-          }),
-          i.jsxs("g", {
-            stroke: H(s, -0.2),
-            strokeWidth: "1.4",
-            strokeLinecap: "round",
-            children: [
-              i.jsx("path", { d: "M24 22 L22 30" }),
-              i.jsx("path", { d: "M32 18 L30 26" }),
-              i.jsx("path", { d: "M40 22 L38 30" }),
-              i.jsx("path", { d: "M26 44 L24 50" }),
-              i.jsx("path", { d: "M38 44 L40 50" }),
-            ],
-          }),
-          i.jsx(Tl, { cx: 25, cy: 24, rx: 3.6, ry: 2.2 }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.74 }),
-        ],
-      }),
-    donggua: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M12 44 Q12 16 32 16 Q52 16 52 44 Q32 52 12 44 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M12 44 Q32 52 52 44 L52 38 Q32 46 12 38 Z",
-            fill: "#4E7A45",
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx("path", {
-            d: "M20 24 Q26 30 24 42",
-            ...B,
-            strokeWidth: 1.3,
-            stroke: "#fff",
-          }),
-          i.jsx(Tl, { cx: 24, cy: 26, rx: 3.4, ry: 2.2 }),
-          i.jsx(L, { x: 32, y: 33, mood: f, scale: 0.72 }),
-        ],
-      }),
-    nangua: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M14 42 Q14 18 32 18 Q50 18 50 42 Q32 50 14 42 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M24 20 Q22 32 24 46",
-            ...B,
-            strokeWidth: 1.4,
-            stroke: H(s, -0.28),
-          }),
-          i.jsx("path", {
-            d: "M40 20 Q42 32 40 46",
-            ...B,
-            strokeWidth: 1.4,
-            stroke: H(s, -0.28),
-          }),
-          i.jsx("path", {
-            d: "M32 18 L32 46",
-            ...B,
-            strokeWidth: 1.2,
-            stroke: H(s, -0.2),
-          }),
-          i.jsx("path", {
-            d: "M32 18 Q35 12 40 13",
-            ...B,
-            strokeWidth: 2.2,
-            stroke: "#5C8A4A",
-          }),
-          i.jsx(L, { x: 32, y: 32, mood: f, scale: 0.7 }),
-        ],
-      }),
-    bailuobo: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M24 12 Q32 8 40 12 L42 30 Q40 48 32 54 Q24 48 22 30 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", { d: "M30 50 Q26 52 26 56", ...B, strokeWidth: 1.6 }),
-          i.jsx("path", { d: "M34 50 Q38 52 38 56", ...B, strokeWidth: 1.6 }),
-          i.jsx("path", {
-            d: "M32 14 L32 20",
-            ...B,
-            strokeWidth: 1.6,
-            stroke: "#6B9E58",
-          }),
-          i.jsx("path", {
-            d: "M32 14 Q27 10 24 11",
-            ...B,
-            strokeWidth: 1.6,
-            stroke: "#6B9E58",
-          }),
-          i.jsx("path", {
-            d: "M32 14 Q37 10 40 11",
-            ...B,
-            strokeWidth: 1.6,
-            stroke: "#6B9E58",
-          }),
-          i.jsx(Tl, { cx: 27, cy: 24, rx: 3.2, ry: 4 }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.7 }),
-        ],
-      }),
-    huluobo: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M32 56 Q22 40 24 18 Q32 14 40 18 Q42 40 32 56 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsxs("g", {
-            stroke: H(s, -0.26),
-            strokeWidth: "1.5",
-            strokeLinecap: "round",
-            children: [
-              i.jsx("path", { d: "M26 26 L33 24" }),
-              i.jsx("path", { d: "M26 34 L34 32" }),
-              i.jsx("path", { d: "M27 42 L33 41" }),
-            ],
-          }),
-          i.jsx("path", {
-            d: "M32 16 C28 10 24 8 21 9 C25 13 28 15 32 16 Z",
-            fill: "#5C8A4A",
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx("path", {
-            d: "M32 16 C36 10 40 8 43 9 C39 13 36 15 32 16 Z",
-            fill: "#5C8A4A",
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx(L, { x: 32, y: 32, mood: f, scale: 0.68 }),
-        ],
-      }),
-    wosun: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "20",
-            y: "10",
-            width: "24",
-            height: "44",
-            rx: "11",
-            fill: s,
-            ...z,
-          }),
-          i.jsxs("g", {
-            stroke: H(s, -0.2),
-            strokeWidth: "1.4",
-            strokeLinecap: "round",
-            children: [
-              i.jsx("path", { d: "M26 18 L26 46" }),
-              i.jsx("path", { d: "M32 16 L32 48" }),
-              i.jsx("path", { d: "M38 18 L38 46" }),
-            ],
-          }),
-          i.jsx("path", {
-            d: "M20 20 Q14 16 13 10",
-            ...B,
-            strokeWidth: 2,
-            stroke: "#5C8A4A",
-          }),
-          i.jsx("path", {
-            d: "M44 20 Q50 16 51 10",
-            ...B,
-            strokeWidth: 2,
-            stroke: "#5C8A4A",
-          }),
-          i.jsx(L, { x: 32, y: 33, mood: f, scale: 0.7 }),
-        ],
-      }),
-    huanggua: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "16",
-            y: "14",
-            width: "32",
-            height: "40",
-            rx: "16",
-            fill: s,
-            ...z,
-            transform: "rotate(-12 32 34)",
-          }),
-          i.jsxs("g", {
-            fill: H(s, -0.3),
-            opacity: "0.7",
-            children: [
-              i.jsx("circle", { cx: "25", cy: "24", r: "1.3" }),
-              i.jsx("circle", { cx: "33", cy: "30", r: "1.3" }),
-              i.jsx("circle", { cx: "27", cy: "38", r: "1.2" }),
-              i.jsx("circle", { cx: "39", cy: "42", r: "1.2" }),
-              i.jsx("circle", { cx: "22", cy: "32", r: "1.1" }),
-            ],
-          }),
-          i.jsx(Tl, { cx: 25, cy: 23, rx: 3.4, ry: 2.2 }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.7 }),
-        ],
-      }),
-    fanqie: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("circle", { cx: "32", cy: "35", r: "19", fill: s, ...z }),
-          i.jsx("path", {
-            d: "M32 17 L24 12 L27 19 L20 19 L27 23 Z",
-            fill: "#5C8A4A",
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx("path", {
-            d: "M32 17 L40 12 L37 19 L44 19 L37 23 Z",
-            fill: "#5C8A4A",
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx("path", {
-            d: "M32 17 L32 25",
-            ...B,
-            strokeWidth: 2.4,
-            stroke: "#5C8A4A",
-          }),
-          i.jsx(Tl, { cx: 24, cy: 28, rx: 4.6, ry: 3 }),
-          i.jsx(L, { x: 32, y: 36, mood: f, scale: 0.78 }),
-        ],
-      }),
-    yumi: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "18",
-            y: "14",
-            width: "28",
-            height: "40",
-            rx: "13",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("g", {
-            fill: H(s, 0.16),
-            opacity: "0.9",
-            children: [24, 33, 42].flatMap((d) =>
-              [24, 32, 40].map((r) =>
-                i.jsx("circle", { cx: r, cy: d, r: "2.6" }, `${r}-${d}`),
-              ),
-            ),
-          }),
-          i.jsx("path", {
-            d: "M18 18 Q10 16 10 26 Q10 34 18 32",
-            fill: "#6B9E58",
-            ...z,
-            strokeWidth: 2.2,
-          }),
-          i.jsx("path", {
-            d: "M46 18 Q54 16 54 26 Q54 34 46 32",
-            fill: "#6B9E58",
-            ...z,
-            strokeWidth: 2.2,
-          }),
-          i.jsx(L, { x: 32, y: 32, mood: f, scale: 0.66 }),
-        ],
-      }),
-  },
-  e3 = {
-    kuanfen: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M12 40 C12 24 20 16 32 16 C44 16 52 24 52 40 C52 48 44 52 32 52 C20 52 12 48 12 40 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M20 26 Q32 20 44 26",
-            ...B,
-            strokeWidth: 1.4,
-            stroke: "#fff",
-            opacity: "0.55",
-          }),
-          i.jsx("path", {
-            d: "M18 34 Q32 28 46 34",
-            ...B,
-            strokeWidth: 1.2,
-            stroke: H(s, -0.14),
-            opacity: "0.6",
-          }),
-          i.jsx(L, { x: 32, y: 38, mood: f, scale: 0.66 }),
-        ],
-      }),
-    xifen: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          [18, 23, 28, 33, 38, 43, 48].map((d, r) =>
-            i.jsx(
-              "path",
-              {
-                d: `M${d} 54 C${d - 4} 42 ${d + 4} 30 ${d} 18`,
-                fill: "none",
-                stroke: r % 2 ? H(s, -0.1) : s,
-                strokeWidth: "4.6",
-                strokeLinecap: "round",
-              },
-              d,
-            ),
-          ),
-          i.jsxs("g", {
-            fill: "none",
-            stroke: ot,
-            strokeWidth: "1.6",
-            strokeLinecap: "round",
-            opacity: "0.75",
-            children: [
-              i.jsx("path", { d: "M18 50 C15 38 20 28 18 20" }),
-              i.jsx("path", { d: "M48 50 C45 38 51 28 48 20" }),
-            ],
-          }),
-          i.jsx(L, { x: 32, y: 38, mood: f, scale: 0.6, eye: 2 }),
-        ],
-      }),
-    fangbianmian: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("circle", {
-            cx: "32",
-            cy: "34",
-            r: "19",
-            fill: H(s, 0.1),
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M17 30 Q24 20 32 30 Q40 40 47 30",
-            fill: "none",
-            stroke: H(s, -0.2),
-            strokeWidth: "3",
-            strokeLinecap: "round",
-          }),
-          i.jsx("path", {
-            d: "M16 38 Q24 28 32 38 Q40 48 48 38",
-            fill: "none",
-            stroke: H(s, -0.2),
-            strokeWidth: "3",
-            strokeLinecap: "round",
-          }),
-          i.jsx(Tl, { cx: 24, cy: 24, rx: 4, ry: 2.6 }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.56, eye: 2 }),
-        ],
-      }),
-    wudongmian: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          [20, 32, 44].map((d, r) =>
-            i.jsx(
-              "path",
-              {
-                d: `M${d} 54 C${d - 8} 42 ${d + 8} 30 ${d} 18`,
-                fill: "none",
-                stroke: r === 1 ? s : H(s, -0.06),
-                strokeWidth: "9.5",
-                strokeLinecap: "round",
-              },
-              d,
-            ),
-          ),
-          i.jsxs("g", {
-            fill: "none",
-            stroke: ot,
-            strokeWidth: "2",
-            strokeLinecap: "round",
-            children: [
-              i.jsx("path", { d: "M20 52 C13 41 26 31 20 19" }),
-              i.jsx("path", { d: "M44 52 C51 41 38 31 44 19" }),
-            ],
-          }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.58, eye: 2 }),
-        ],
-      }),
-    niangao: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "40",
-            rx: "19",
-            ry: "10",
-            fill: H(s, -0.14),
-            ...z,
-          }),
-          i.jsx("rect", {
-            x: "13",
-            y: "22",
-            width: "38",
-            height: "18",
-            fill: s,
-            ...z,
-            strokeWidth: 2.4,
-          }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "22",
-            rx: "19",
-            ry: "10",
-            fill: H(s, 0.1),
-            ...z,
-          }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "22",
-            rx: "11",
-            ry: "5.5",
-            fill: "#fff",
-            opacity: "0.35",
-          }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.6, eye: 2 }),
-        ],
-      }),
-    fensi: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M14 22 Q32 14 50 22",
-            ...B,
-            strokeWidth: 2,
-            stroke: H(s, -0.3),
-          }),
-          [20, 25, 30, 35, 40, 45].map((d, r) =>
-            i.jsx(
-              "path",
-              {
-                d: `M${d} 22 L${d - 2} 52`,
-                fill: "none",
-                stroke: r % 2 ? H(s, -0.05) : s,
-                strokeWidth: "2.4",
-                strokeLinecap: "round",
-                opacity: "0.9",
-              },
-              d,
-            ),
-          ),
-          i.jsx(L, { x: 32, y: 38, mood: f, scale: 0.6, eye: 2 }),
-        ],
-      }),
-    moyusi: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          [-10, 0, 10].map((d, r) =>
-            i.jsx(
-              "rect",
-              {
-                x: 31 + d - 4,
-                y: "16",
-                width: "9",
-                height: "38",
-                rx: "4",
-                fill: r === 1 ? s : H(s, -0.08),
-                opacity: "0.92",
-                ...z,
-                strokeWidth: 2,
-                transform: `rotate(${d / 4} ${31 + d} 34)`,
-              },
-              d,
-            ),
-          ),
-          i.jsx("path", {
-            d: "M22 26 L42 26",
-            ...B,
-            strokeWidth: 1.2,
-            stroke: "#fff",
-            opacity: "0.6",
-          }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.56, eye: 2 }),
-        ],
-      }),
-    mifen: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M20 18 Q32 24 44 18",
-            ...B,
-            strokeWidth: 2.2,
-            stroke: H(s, -0.24),
-          }),
-          [-12, -6, 0, 6, 12].map((d, r) =>
-            i.jsx(
-              "path",
-              {
-                d: `M${32 + d / 4} 20 Q${32 + d} 36 ${32 + d * 1.2} 52`,
-                fill: "none",
-                stroke: r % 2 ? H(s, -0.06) : s,
-                strokeWidth: "3.2",
-                strokeLinecap: "round",
-              },
-              d,
-            ),
-          ),
-          i.jsx(L, { x: 32, y: 36, mood: f, scale: 0.56, eye: 2 }),
-        ],
-      }),
-    youtiao: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M14 40 Q14 20 26 20 Q38 20 38 40 Z",
-            fill: s,
-            ...z,
-            transform: "rotate(-8 26 30)",
-          }),
-          i.jsx("path", {
-            d: "M28 44 Q28 24 40 24 Q52 24 52 44 Z",
-            fill: H(s, -0.1),
-            ...z,
-            transform: "rotate(6 40 34)",
-          }),
-          i.jsxs("g", {
-            fill: H(s, 0.18),
-            opacity: "0.75",
-            children: [
-              i.jsx("circle", { cx: "22", cy: "28", r: "1.6" }),
-              i.jsx("circle", { cx: "30", cy: "34", r: "1.5" }),
-              i.jsx("circle", { cx: "40", cy: "32", r: "1.6" }),
-              i.jsx("circle", { cx: "46", cy: "38", r: "1.4" }),
-            ],
-          }),
-          i.jsx(L, { x: 31, y: 34, mood: f, scale: 0.5, eye: 2 }),
-        ],
-      }),
-  },
-  a3 = {
-    doupi: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M14 22 Q32 14 50 22 L50 44 Q32 52 14 44 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", { d: "M14 22 Q20 30 18 44", ...B, strokeWidth: 1.4 }),
-          i.jsx("path", {
-            d: "M24 20 Q28 28 26 46",
-            ...B,
-            strokeWidth: 1.2,
-            opacity: "0.6",
-          }),
-          i.jsx("path", {
-            d: "M50 22 Q44 28 46 42 Q48 46 50 44",
-            fill: H(s, -0.12),
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx(L, { x: 33, y: 33, mood: f, scale: 0.7 }),
-        ],
-      }),
-    fuzhu: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M18 50 L18 22 Q18 12 28 12 L36 12 Q46 12 46 22 L46 50",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "16",
-            rx: "10",
-            ry: "5",
-            fill: H(s, -0.18),
-            ...z,
-            strokeWidth: 2,
-          }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "16",
-            rx: "4.6",
-            ry: "2.2",
-            fill: "#F7EEDB",
-            ...z,
-            strokeWidth: 1.4,
-          }),
-          i.jsx("path", {
-            d: "M24 24 L24 46",
-            ...B,
-            strokeWidth: 1.2,
-            stroke: H(s, -0.16),
-          }),
-          i.jsx(L, { x: 32, y: 36, mood: f, scale: 0.66 }),
-        ],
-      }),
-    youdoufu: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "13",
-            y: "18",
-            width: "38",
-            height: "32",
-            rx: "9",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M22 18 Q32 11 42 18",
-            fill: H(s, 0.12),
-            ...z,
-            strokeWidth: 2.2,
-          }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "33",
-            rx: "7",
-            ry: "8",
-            fill: H(s, -0.16),
-            opacity: "0.5",
-          }),
-          i.jsx(Tl, { cx: 21, cy: 26, rx: 3.6, ry: 2.2 }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.68 }),
-        ],
-      }),
-    dongdoufu: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "13",
-            y: "18",
-            width: "38",
-            height: "32",
-            rx: "7",
-            fill: s,
-            ...z,
-          }),
-          i.jsxs("g", {
-            fill: H(s, -0.16),
-            stroke: ot,
-            strokeWidth: "1.1",
-            opacity: "0.75",
-            children: [
-              i.jsx("circle", { cx: "22", cy: "26", r: "2.6" }),
-              i.jsx("circle", { cx: "31", cy: "24", r: "3" }),
-              i.jsx("circle", { cx: "41", cy: "27", r: "2.4" }),
-              i.jsx("circle", { cx: "25", cy: "36", r: "2.2" }),
-              i.jsx("circle", { cx: "36", cy: "34", r: "2.6" }),
-              i.jsx("circle", { cx: "44", cy: "38", r: "2" }),
-            ],
-          }),
-          i.jsx(L, { x: 31, y: 43, mood: f, scale: 0.56, eye: 2 }),
-        ],
-      }),
-    doupao: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("circle", { cx: "32", cy: "34", r: "19", fill: s, ...z }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "27",
-            rx: "9",
-            ry: "6",
-            fill: H(s, -0.2),
-            opacity: "0.55",
-            ...z,
-            strokeWidth: 1.6,
-          }),
-          i.jsx("path", { d: "M26 24 Q32 30 38 24", ...B, strokeWidth: 1.2 }),
-          i.jsx(Tl, { cx: 22, cy: 30, rx: 3.4, ry: 2.2 }),
-          i.jsx(L, { x: 32, y: 38, mood: f, scale: 0.68 }),
-        ],
-      }),
-    qianzhang: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M12 40 L32 30 L52 40 L32 50 Z",
-            fill: H(s, -0.1),
-            ...z,
-          }),
-          i.jsx("path", { d: "M12 32 L32 22 L52 32 L32 42 Z", fill: s, ...z }),
-          i.jsx("path", {
-            d: "M12 24 L32 14 L52 24 L32 34 Z",
-            fill: H(s, 0.1),
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M20 22 Q26 26 24 30",
-            ...B,
-            strokeWidth: 1.1,
-            opacity: "0.5",
-          }),
-          i.jsx(L, { x: 32, y: 24, mood: f, scale: 0.6, eye: 2 }),
-        ],
-      }),
-    dougan: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "14",
-            y: "20",
-            width: "36",
-            height: "30",
-            rx: "6",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M18 26 L46 26",
-            ...B,
-            strokeWidth: 1.3,
-            stroke: H(s, -0.2),
-          }),
-          i.jsx("path", {
-            d: "M18 33 L46 33",
-            ...B,
-            strokeWidth: 1.3,
-            stroke: H(s, -0.2),
-          }),
-          i.jsx("path", {
-            d: "M18 40 L46 40",
-            ...B,
-            strokeWidth: 1.3,
-            stroke: H(s, -0.2),
-          }),
-          i.jsx(Tl, { cx: 22, cy: 24, rx: 3.2, ry: 2 }),
-          i.jsx(L, { x: 32, y: 34, mood: f, scale: 0.66 }),
-        ],
-      }),
-    suji: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "44",
-            rx: "17",
-            ry: "8",
-            fill: H(s, -0.16),
-            ...z,
-          }),
-          i.jsx("rect", {
-            x: "15",
-            y: "20",
-            width: "34",
-            height: "24",
-            fill: s,
-            ...z,
-            strokeWidth: 2.4,
-          }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "20",
-            rx: "17",
-            ry: "8",
-            fill: H(s, 0.1),
-            ...z,
-          }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "20",
-            rx: "9",
-            ry: "4",
-            fill: H(s, -0.14),
-            opacity: "0.6",
-          }),
-          i.jsx(L, { x: 32, y: 32, mood: f, scale: 0.62, eye: 2 }),
-        ],
-      }),
-    doufu: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "14",
-            y: "19",
-            width: "36",
-            height: "31",
-            rx: "7",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M14 26 Q32 32 50 26",
-            ...B,
-            strokeWidth: 1.2,
-            stroke: "#fff",
-            opacity: "0.7",
-          }),
-          i.jsx("path", {
-            d: "M50 30 Q46 36 49 42",
-            ...B,
-            strokeWidth: 1.6,
-            stroke: "#fff",
-            opacity: "0.6",
-          }),
-          i.jsx(Tl, { cx: 22, cy: 25, rx: 4, ry: 2.4 }),
-          i.jsx(L, { x: 32, y: 35, mood: f, scale: 0.68 }),
-        ],
-      }),
-    doujie: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M20 24 C14 30 16 42 24 46 C30 49 38 47 42 42 C46 36 44 28 38 25 C32 22 26 22 20 24 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M24 26 L32 34 L40 26",
-            ...B,
-            strokeWidth: 1.6,
-            opacity: "0.6",
-          }),
-          i.jsx("path", {
-            d: "M20 22 Q14 16 18 12 Q24 12 26 18",
-            fill: H(s, -0.1),
-            ...z,
-            strokeWidth: 2.2,
-          }),
-          i.jsx("path", {
-            d: "M44 22 Q50 16 46 12 Q40 12 38 18",
-            fill: H(s, -0.1),
-            ...z,
-            strokeWidth: 2.2,
-          }),
-          i.jsx(L, { x: 32, y: 36, mood: f, scale: 0.62 }),
-        ],
-      }),
-  },
-  N2 = {
-    ball: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("circle", { cx: "32", cy: "34", r: "17.5", fill: s, ...z }),
-          i.jsx(Tl, { cx: 25, cy: 26, rx: 5, ry: 3 }),
-          i.jsx(L, { x: 32, y: 35, mood: f, scale: 0.72 }),
-        ],
-      }),
-    disc: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "35",
-            rx: "19.5",
-            ry: "13.5",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("ellipse", {
-            cx: "32",
-            cy: "35",
-            rx: "13",
-            ry: "8",
-            fill: "#fff",
-            opacity: "0.24",
-          }),
-          i.jsxs("g", {
-            fill: H(s, -0.24),
-            stroke: ot,
-            strokeWidth: "1.1",
-            children: [
-              i.jsx("circle", { cx: "25", cy: "31", r: "1.9" }),
-              i.jsx("circle", { cx: "35", cy: "31", r: "1.9" }),
-              i.jsx("circle", { cx: "30", cy: "38", r: "1.9" }),
-            ],
-          }),
-          i.jsx(L, { x: 32, y: 35, mood: f, scale: 0.62, eye: 2 }),
-        ],
-      }),
-    cube: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("rect", {
-            x: "13",
-            y: "18",
-            width: "38",
-            height: "31",
-            rx: "8",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M22 18 Q32 12 42 18",
-            fill: s,
-            stroke: ot,
-            strokeWidth: "2.2",
-          }),
-          i.jsx(Tl, { cx: 22, cy: 26, rx: 3.4, ry: 2.2 }),
-          i.jsx(L, { x: 32, y: 35, mood: f, scale: 0.68 }),
-        ],
-      }),
-    cap: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M11 33 Q11 11 32 11 Q53 11 53 33 Q41 28 32 28 Q23 28 11 33 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx("path", {
-            d: "M24 31 L24 47 Q32 51 40 47 L40 31",
-            fill: s,
-            ...z,
-          }),
-          i.jsxs("g", {
-            fill: "#fff",
-            opacity: "0.4",
-            children: [
-              i.jsx("circle", { cx: "24", cy: "23", r: "2.6" }),
-              i.jsx("circle", { cx: "36", cy: "20", r: "2" }),
-            ],
-          }),
-          i.jsx(L, { x: 32, y: 38, mood: f, scale: 0.62, eye: 2 }),
-        ],
-      }),
-    leaf: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M32 47 L32 55",
-            stroke: ot,
-            strokeWidth: "2.6",
-            strokeLinecap: "round",
-          }),
-          [-52, 0, 52].map((d, r) =>
-            i.jsx(
-              "g",
-              {
-                transform: `rotate(${d} 32 47)`,
-                children: i.jsx("ellipse", {
-                  cx: "32",
-                  cy: "31",
-                  rx: "8.4",
-                  ry: "13.6",
-                  fill: r === 0 ? H(s, -0.1) : s,
-                  stroke: ot,
-                  strokeWidth: "2.3",
-                }),
-              },
-              d,
-            ),
-          ),
-          i.jsx(L, { x: 32, y: 32, mood: f, scale: 0.6, eye: 2 }),
-        ],
-      }),
-    strip: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M15 26 Q25 14 33 25 Q41 36 49 24 L49 36 Q41 48 33 37 Q25 26 15 38 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx(Tl, { cx: 24, cy: 24, rx: 4, ry: 2.4 }),
-          i.jsx(L, { x: 32, y: 30, mood: f, scale: 0.55, eye: 2 }),
-        ],
-      }),
-    egg: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("path", {
-            d: "M32 11 C42 11 48 26 48 36 C48 46 41 53 32 53 C23 53 16 46 16 36 C16 26 22 11 32 11 Z",
-            fill: s,
-            ...z,
-          }),
-          i.jsx(Tl, { cx: 25, cy: 24, rx: 4, ry: 2.6 }),
-          i.jsx(L, { x: 32, y: 35, mood: f, scale: 0.7 }),
-        ],
-      }),
-    knot: (s, f) =>
-      i.jsxs(i.Fragment, {
-        children: [
-          i.jsx("circle", { cx: "32", cy: "33", r: "18", fill: s, ...z }),
-          i.jsx("circle", {
-            cx: "32",
-            cy: "33",
-            r: "7",
-            fill: "#FFF8F0",
-            stroke: ot,
-            strokeWidth: "2.2",
-          }),
-          i.jsx(L, { x: 32, y: 33, mood: f, scale: 0.55, eye: 2 }),
-        ],
-      }),
-  },
-  A2 = { ...Im, ...l3, ...t3, ...a3, ...Pm, ...e3, ...$m,
-    ...createExtraFoodIcons({Face: L, Shine: Tl, shade: H, outline: z, line: B}) };
-function n3(s) {
-  let f = 0;
-  for (let d = 0; d < s.length; d += 1) f = (f * 31 + s.charCodeAt(d)) >>> 0;
-  return f % 3;
-}
-Object.keys(A2).length;
-function Ca({ id: s, shape: f, color: d, size: r = 56, seed: S }) {
-  const O = n3(S ?? s ?? f),
-    D = (s ? A2[s] : void 0) ?? N2[f] ?? N2.ball;
-  return i.jsx("svg", {
-    width: r,
-    height: r,
-    viewBox: "0 0 64 64",
-    role: "img",
-    "aria-hidden": "true",
-    children: i.jsx("g", {
-      transform: "translate(-5.5 -5.5) scale(1.22)",
-      children: D(d, O),
-    }),
-  });
-}
-const u3 = 18;
-function i3(s) {
+import {FoodIllustration,FoodFace} from './art/foods.js';
+const BOWL_VISIBLE_LIMIT = 18;
+function bowlSeed(s) {
   let f = 0;
   for (let d = 0; d < s.length; d += 1) f = (f * 31 + s.charCodeAt(d)) >>> 0;
   return f;
 }
-const qf = (s, f, d) => Math.max(f, Math.min(d, s));
-function c3(s) {
+const clampRange = (s, f, d) => Math.max(f, Math.min(d, s));
+function expandBowlItems(s) {
   if (s <= 0) return [];
   if (s <= 3) return [s];
   if (s <= 5) return [s - 1, 1];
@@ -3497,7 +316,7 @@ function c3(s) {
   }
   return f;
 }
-function s3(s, f = u3) {
+function layoutBowlItems(s, f = BOWL_VISIBLE_LIMIT) {
   const d = [],
     r = [...s]
       .filter((T) => T.qty > 0)
@@ -3507,7 +326,7 @@ function s3(s, f = u3) {
       d.push({ id: T.id, key: `${T.id}-${A}` });
   const S = d.length,
     g = d.slice(0, f),
-    O = c3(g.length),
+    O = expandBowlItems(g.length),
     D = [];
   let _ = 0;
   return (
@@ -3518,17 +337,17 @@ function s3(s, f = u3) {
       for (let Z = 0; Z < T; Z += 1) {
         const I = g[_];
         if (!I) break;
-        const K = i3(I.key),
+        const K = bowlSeed(I.key),
           rl = ((K >>> 5) % 11) - 5,
           Rl = ((K >>> 11) % 9) - 4,
           Fl = T > 1 ? 50 - E / 2 + Z * Q : 50;
         (D.push({
           key: I.key,
           id: I.id,
-          x: qf(Fl + rl * 0.45 + G * 0.6, 29, 71),
-          y: qf(47 - A * 10 + Rl * 0.5, 24, 52),
+          x: clampRange(Fl + rl * 0.45 + G * 0.6, 29, 71),
+          y: clampRange(47 - A * 10 + Rl * 0.5, 24, 52),
           rot: ((K >>> 3) % 25) - 12,
-          scale: qf(
+          scale: clampRange(
             0.96 +
               (((K >>> 7) % 7) - 3) * 0.02 -
               Math.max(0, g.length - 8) * 0.022,
@@ -3544,14 +363,14 @@ function s3(s, f = u3) {
     { tokens: D, overflow: Math.max(0, S - g.length), total: S }
   );
 }
-function f3({
+function BowlDrawing({
   entries: s,
   byId: f,
   settings: d,
   onRemove: r,
   compact: S = !1,
 }) {
-  const { tokens: g, overflow: O } = X.useMemo(() => s3(s), [s]),
+  const { tokens: g, overflow: O } = X.useMemo(() => layoutBowlItems(s), [s]),
     D = S ? 34 : 62;
   return i.jsxs("div", {
     className: `bowl${S ? " bowl--compact" : ""}`,
@@ -3627,7 +446,7 @@ function f3({
         children: g.map((_) => {
           const T = f.get(_.id);
           if (!T) return null;
-          const A = `${T.name}，一份约 ${Math.round(jn(T, 1))} 克，${Fi(T, 1, d).toFixed(2)} 元，点一下拿掉一份`;
+          const A = `${T.name}，一份约 ${Math.round(portionWeight(T, 1))} 克，${portionPrice(T, 1, d).toFixed(2)} 元，点一下拿掉一份`;
           return i.jsx(
             "button",
             {
@@ -3642,7 +461,7 @@ function f3({
               onClick: () => r(_.id),
               title: `${T.name} · 点一下拿掉一份`,
               "aria-label": A,
-              children: i.jsx(Ca, {
+              children: i.jsx(FoodIllustration, {
                 id: T.id,
                 shape: T.shape,
                 color: T.color,
@@ -3670,8 +489,8 @@ function f3({
     ],
   });
 }
-const At = (s) => `¥${s.toFixed(2)}`;
-function o3({
+const formatPrice = (s) => `¥${s.toFixed(2)}`;
+function WeightDisplay({
   settings: s,
   price: f,
   budget: d,
@@ -3753,12 +572,12 @@ function o3({
       r &&
         i.jsxs("div", {
           className: "overbar",
-          children: ["⚠️ 超了 ", At(f - d), "，麻姐在看你 —— 但没说不让你夹"],
+          children: ["⚠️ 超了 ", formatPrice(f - d), "，麻姐在看你 —— 但没说不让你夹"],
         }),
     ],
   });
 }
-function r3({
+function BasketPanel({
   entries: s,
   byId: f,
   settings: d,
@@ -3807,7 +626,7 @@ function r3({
                     {
                       className: "basket-row",
                       children: [
-                        i.jsx(Ca, {
+                        i.jsx(FoodIllustration, {
                           id: T.id,
                           shape: T.shape,
                           color: T.color,
@@ -3825,9 +644,9 @@ function r3({
                         i.jsxs("span", {
                           className: "basket-num",
                           children: [
-                            Math.round(jn(T, _.qty)),
+                            Math.round(portionWeight(T, _.qty)),
                             "g",
-                            i.jsx("i", { children: At(Fi(T, _.qty, d)) }),
+                            i.jsx("i", { children: formatPrice(portionPrice(T, _.qty, d)) }),
                           ],
                         }),
                         i.jsx("button", {
@@ -3871,17 +690,17 @@ function r3({
               i.jsxs("b", { children: [Math.round(r), "g"] }),
             ],
           }),
-          i.jsx("span", { className: "basket-total", children: At(S) }),
+          i.jsx("span", { className: "basket-total", children: formatPrice(S) }),
         ],
       }),
     ],
   });
 }
-function d3(props) {
-  return i.jsx(BasketDock, { ...props, api: { Icon: Ca, Face:L, money: At, weight: jn, price: Fi } });
+function BasketSummary(props) {
+  return i.jsx(BasketDock, { ...props, api: { Icon: FoodIllustration, Face:FoodFace, money: formatPrice, weight: portionWeight, price: portionPrice } });
 }
-function h3({ news: s, onClose: f }) {
-  return i.jsx("div", {
+function NewsDrawer({ news: s, onClose: f }) {
+  return i.jsx(LegacyDialog, {
     className: "overlay",
     role: "dialog",
     "aria-modal": "true",
@@ -3953,13 +772,13 @@ function h3({ news: s, onClose: f }) {
     }),
   });
 }
-function m3(s) {
+function loadRecommendations(s) {
   let f = s >>> 0;
   return () => ((f = (f * 1664525 + 1013904223) >>> 0), f / 4294967295);
 }
-function y3({ ingredients: s, settings: f, byId: d, onApply: r, hasSelection }) {
+function RecommendationList({ ingredients: s, settings: f, byId: d, onApply: r, hasSelection }) {
   const [S, g] = X.useState(1),
-    O = X.useMemo(() => z2(s, m3(S)), [s, S]);
+    O = X.useMemo(() => buildRecommendations(s, loadRecommendations(S)), [s, S]);
   return i.jsxs("section", {
     className: "reco",
     children: [
@@ -3978,7 +797,7 @@ function y3({ ingredients: s, settings: f, byId: d, onApply: r, hasSelection }) 
       i.jsx("div", {
         className: "reco-list",
         children: O.map(({ preset: D, entries: _ }) => {
-          const T = Zf(_, d, f),
+          const T = summarizeBowl(_, d, f),
             A = _.slice(0, 4);
           return i.jsxs(
             "div",
@@ -3990,7 +809,7 @@ function y3({ ingredients: s, settings: f, byId: d, onApply: r, hasSelection }) 
                   children: [
                     i.jsx("span", { children: D.emoji }),
                     i.jsx("b", { children: D.name }),
-                    i.jsx("i", { children: At(T.price) }),
+                    i.jsx("i", { children: formatPrice(T.price) }),
                   ],
                 }),
                 i.jsx("p", { className: "reco-blurb", children: D.blurb }),
@@ -4001,7 +820,7 @@ function y3({ ingredients: s, settings: f, byId: d, onApply: r, hasSelection }) 
                       const Q = d.get(E.id);
                       return Q
                         ? i.jsx(
-                            Ca,
+                            FoodIllustration,
                             {
                               id: Q.id,
                               shape: Q.shape,
@@ -4039,13 +858,13 @@ function y3({ ingredients: s, settings: f, byId: d, onApply: r, hasSelection }) 
     ],
   });
 }
-function g3({ingredients,settings,byId,onApply,open,onClose,hasSelection}) {
-  return open ? i.jsx(Modal,{title:"推荐搭配",panelId:"recommendations-dialog",className:"recommendation-overlay",onClose,children:i.jsx("div",{className:"detail-body",children:i.jsx(y3,{ingredients,settings,byId,onApply,hasSelection})})}) : null;
+function RecommendationDrawer({ingredients,settings,byId,onApply,open,onClose,hasSelection}) {
+  return open ? i.jsx(Modal,{title:"推荐搭配",panelId:"recommendations-dialog",className:"recommendation-overlay",onClose,children:i.jsx("div",{className:"detail-body",children:i.jsx(RecommendationList,{ingredients,settings,byId,onApply,hasSelection})})}) : null;
 }
-function v3({ settings: s, onSave: f, onClose: d }) {
+function SettingsDialog({ settings: s, onSave: f, onClose: d }) {
   const [r, S] = X.useState(s),
     g = (O, D) => S((_) => ({ ..._, [O]: D }));
-  return i.jsx("div", {
+  return i.jsx(LegacyDialog, {
     className: "overlay",
     role: "dialog",
     "aria-modal": "true",
@@ -4169,7 +988,7 @@ function v3({ settings: s, onSave: f, onClose: d }) {
     }),
   });
 }
-const x3 = {
+const CATEGORY_EMOJI = {
   leaf: "🥬",
   mushroom: "🍄",
   root: "🥕",
@@ -4178,11 +997,11 @@ const x3 = {
   staple: "🍜",
   egg: "🥚",
 };
-function p3(s, f) {
+function foodPriceLabel(s, f) {
   const d = f.separatePricing ? f.priceGroups[s.priceGroup] : f.pricePerJin;
   return (s.unitWeightG / 500) * d;
 }
-function j3({ ing: s, settings: f, qty: d, size: r, onAdd: S }) {
+function IngredientButton({ ing: s, settings: f, qty: d, size: r, onAdd: S }) {
   return i.jsxs("button", {
     type: "button",
     className: `goods${d > 0 ? " goods--picked" : ""}`,
@@ -4191,7 +1010,7 @@ function j3({ ing: s, settings: f, qty: d, size: r, onAdd: S }) {
     children: [
       i.jsx("span", {
         className: "goods-icon",
-        children: i.jsx(Ca, {
+        children: i.jsx(FoodIllustration, {
           id: s.id,
           shape: s.shape,
           color: s.color,
@@ -4205,14 +1024,14 @@ function j3({ ing: s, settings: f, qty: d, size: r, onAdd: S }) {
           i.jsxs("i", {
             children: ["1", s.unitLabel, "≈", s.unitWeightG, "g"],
           }),
-          i.jsxs("em", { children: [p3(s, f).toFixed(1), "元"] }),
+          i.jsxs("em", { children: [foodPriceLabel(s, f).toFixed(1), "元"] }),
         ],
       }),
       d > 0 && i.jsxs("span", { className: "goods-badge", children: ["×", d] }),
     ],
   });
 }
-function b3({
+function IngredientShelf({
   ingredients: s,
   settings: f,
   qtyOf: d,
@@ -4235,7 +1054,7 @@ function b3({
     }, [s, g]),
     T = X.useMemo(
       () =>
-        Wi.filter((G) => (S === "all" ? !0 : G === S)).map((G) => ({
+        CATEGORY_ORDER.filter((G) => (S === "all" ? !0 : G === S)).map((G) => ({
           category: G,
           items: _.filter((Z) => Z.category === G),
         })),
@@ -4260,14 +1079,14 @@ function b3({
                 onClick: () => O("all"),
                 children: "全部",
               }),
-              Wi.map((G) =>
+              CATEGORY_ORDER.map((G) =>
                 i.jsx(
                   "button",
                   {
                     type: "button",
                     className: `tab${S === G ? " tab--on" : ""}`,
                     onClick: () => O(G),
-                    children: vu[G],
+                    children: CATEGORY_LABELS[G],
                   },
                   G,
                 ),
@@ -4298,7 +1117,7 @@ function b3({
                   className: "popular-chip",
                   onClick: () => r(G.id),
                   children: [
-                    i.jsx(Ca, {
+                    i.jsx(FoodIllustration, {
                       id: G.id,
                       shape: G.shape,
                       color: G.color,
@@ -4315,7 +1134,7 @@ function b3({
       i.jsxs("div", {
         className: "racks",
         children: [
-          T.map(({category:G,items:Z},index)=>Z.length?i.jsx(LazyRack,{category:G,items:Z,label:vu[G],emoji:x3[G],big:E,defer:S==="all"&&!g&&index>0,Food:j3,settings:f,qtyOf:d,onAdd:r,size:Q},G):null),
+          T.map(({category:G,items:Z},index)=>Z.length?i.jsx(LazyRack,{category:G,items:Z,label:CATEGORY_LABELS[G],emoji:CATEGORY_EMOJI[G],big:E,defer:S==="all"&&!g&&index>0,Food:IngredientButton,settings:f,qtyOf:d,onAdd:r,size:Q},G):null),
           T.every((G) => G.items.length === 0) &&
             i.jsx("p", {
               className: "empty",
@@ -4326,7 +1145,7 @@ function b3({
     ],
   });
 }
-const S3 = [
+const REVIEW_CHARACTERS = [
     {
       id: "jian",
       name: "养生阿健",
@@ -4760,8 +1579,8 @@ const S3 = [
       specials: { overBudget: "亲，检测到预算超支，已为您自动（假装）处理～" },
     },
   ],
-  E3 = (s, f, d) => Math.max(f, Math.min(d, s));
-function N3(s, f) {
+  clampReview = (s, f, d) => Math.max(f, Math.min(d, s));
+function reviewAffinity(s, f) {
   const d = [];
   return (
     s.portions === 0 && d.push("empty"),
@@ -4775,20 +1594,20 @@ function N3(s, f) {
     d
   );
 }
-function T3(s) {
+function reviewBand(s) {
   return s >= 75 ? "hi" : s >= 45 ? "mid" : "lo";
 }
-function M3(s, f) {
+function reviewSentence(s, f) {
   let d = 0;
   for (const [r, S] of Object.entries(s.weights)) d += (S ?? 0) * (f[r] ?? 0);
-  return Math.round(E3(50 + 55 * d, 5, 99));
+  return Math.round(clampReview(50 + 55 * d, 5, 99));
 }
-function C3(s, f, d = Math.random) {
-  const r = Zm(s),
-    S = N3(s, f);
-  return S3.map((g) => {
-    const O = M3(g, r),
-      D = T3(O);
+function buildCharacterReviews(s, f, d = Math.random) {
+  const r = describeBowl(s),
+    S = reviewAffinity(s, f);
+  return REVIEW_CHARACTERS.map((g) => {
+    const O = reviewSentence(g, r),
+      D = reviewBand(O);
     let _ = "";
     for (const T of S) {
       const A = g.specials?.[T];
@@ -4801,57 +1620,25 @@ function C3(s, f, d = Math.random) {
       const T = g.lines[D];
       _ = T[Math.floor(d() * T.length) % T.length] ?? T[0];
     }
-    return { character: g, score: O, band: D, line: _ };
+    return { character: g, affinity: O, band: D, line: _ };
   });
 }
-function z3(s) {
-  if (s.length === 0)
-    return { average: 0, star: s[0], harshest: s[0], summary: "" };
-  const f = Math.round(s.reduce((O, D) => O + D.score, 0) / s.length),
-    d = [...s].sort((O, D) => D.score - O.score),
-    r = d[0],
-    S = d[d.length - 1],
-    g =
-      f >= 75
-        ? `全场 ${f} 分，${r.character.name}站起来鼓掌了`
-        : f >= 55
-          ? `全场 ${f} 分，及格线上下横跳`
-          : `全场 ${f} 分，${S.character.name}已经把盆推回去了`;
-  return { average: f, star: r, harshest: S, summary: g };
+function summarizeReviews(verdicts) {
+ const ranked=[...verdicts].sort((a,b)=>b.affinity-a.affinity);
+ return {star:ranked[0],harshest:ranked.at(-1),summary:'口味各有偏爱，喜欢这一口就好。'};
 }
-function Gf({ id: s, name: f, size: d = 72, color: r = "#FF6B6B" }) {
-  const [S, g] = X.useState(!1),
-    O = { width: d, height: d, background: `${r}22` };
-  return S
-    ? i.jsx("div", {
-        className: "avatar avatar--fallback",
-        style: O,
-        children: f.slice(0, 1),
-      })
-    : i.jsx("div", {
-        className: "avatar",
-        style: O,
-        children: i.jsx("img", {
-          src: `/art/char/${s}.webp`,
-          alt: f,
-          width: d,
-          height: d,
-          loading: "lazy",
-          onError: () => g(!0),
-        }),
-      });
-}
-function A3({entries, byId, settings, spice, budget, onClose, onRestart, runId,companionId}) {
+import {CharacterAvatar} from './art/avatar.js';
+function BowlCheckout({entries, byId, settings, spice, budget, onClose, onRestart, runId,companionId,storeId}) {
   const result = X.useMemo(() => {
-    const totals = Zf(entries, byId, settings);
-    const features = C2(entries, byId, totals, spice, budget);
-    const verdicts = C3(features, spice).sort((a,b) => b.score-a.score);
-    return {totals, verdicts, summary: z3(verdicts)};
+    const totals = summarizeBowl(entries, byId, settings);
+    const features = analyzeBowl(entries, byId, totals, spice, budget);
+    const verdicts = buildCharacterReviews(features, spice).sort((a,b) => b.affinity-a.affinity);
+    return {totals, verdicts, summary: summarizeReviews(verdicts)};
   }, [entries, byId, settings, spice, budget]);
-  return i.jsx(CheckoutView, {entries, byId, settings, budget, onClose, onRestart, runId,companionId, ...result,
-    api: {Icon: Ca, Avatar: Gf, Face:L, money: At, weight: jn, price: Fi}});
+  return i.jsx(CheckoutView, {entries, byId, settings, budget, onClose, onRestart, runId,companionId,storeId, ...result,
+    api: {Icon: FoodIllustration, Avatar: CharacterAvatar, Face:FoodFace, money: formatPrice, weight: portionWeight, price: portionPrice}});
 }
-function O3({
+function MalatangGame({
   ingredients: s,
   news: f,
   settings: d,
@@ -4859,15 +1646,20 @@ function O3({
   onSettings: S,
   onAdmin: g,
 }) {
+  const [storeId]=X.useState(()=>resolveStoreId('malatang'));
+  useStreet();
+  const rawSettings=d,[frozenDiscount,freezeDiscount]=X.useState(null),storeDiscount=frozenDiscount??getStoreDiscount('malatang');
+  d=X.useMemo(()=>({...rawSettings,pricePerJin:rawSettings.pricePerJin*storeDiscount,priceGroups:Object.fromEntries(Object.entries(rawSettings.priceGroups).map(([key,value])=>[key,value*storeDiscount]))}),[rawSettings,storeDiscount]);
+
   const O =
       window.location.pathname.replace(/\/+$/, "").endsWith("/demo") ||
       new URLSearchParams(window.location.search).get("demo") === "1",
-    [D, _] = X.useReducer(Wm, d, (ol) => {
-      const el = Fm(ol.budgetDefault),plan=peekOuting("malatang");
+    [D, _] = X.useReducer(bowlReducer, d, (ol) => {
+      const el = initialBowl(ol.budgetDefault),plan=peekOuting("malatang");
       el.companionId=plan?.buddyId||readOuting().buddyId;
       if(plan){el.entries=plan.recipe.entries;el.budget=plan.budget;el.spice=plan.recipe.spice;el.outingPlan=plan;}
       if (!O) return el;
-      const dl = z2(s, () => 0.5)[1];
+      const dl = buildRecommendations(s, () => 0.5)[1];
       return dl ? { ...el, entries: dl.entries } : el;
     }),
     [T, A] = X.useState(!1),
@@ -4893,9 +1685,9 @@ function O3({
     [I],
   );
   const K = X.useMemo(() => new Map(s.map((ol) => [ol.id, ol])), [s]),
-    rl = X.useMemo(() => Zf(D.entries, K, d), [D.entries, K, d]),
+    rl = X.useMemo(() => summarizeBowl(D.entries, K, d), [D.entries, K, d]),
     Rl = X.useMemo(
-      () => C2(D.entries, K, rl, D.spice, D.budget),
+      () => analyzeBowl(D.entries, K, rl, D.spice, D.budget),
       [D.entries, K, rl, D.spice, D.budget],
     ),
     Fl = rl.price > D.budget && D.budget > 0,
@@ -4915,7 +1707,7 @@ function O3({
     i.jsxs("div", {
       className: "app",
       children: [
-        i.jsx(o3, {
+        i.jsx(WeightDisplay, {
           settings: d,
           price: rl.price,
           budget: D.budget,
@@ -4933,13 +1725,13 @@ function O3({
         i.jsxs("div", {
           className: "tipbar",
           children: [
-            i.jsx(Gf, { id:buddy.id,name:buddy.name,size:30,color:buddy.color }),
+            i.jsx(CharacterAvatar, { id:buddy.id,name:buddy.name,size:30,color:buddy.color }),
             i.jsx("span", { children: Dl }),
           ],
         }),
         i.jsx("main", {
           className: "stage",
-          children: i.jsx(b3, {
+          children: i.jsx(IngredientShelf, {
             ingredients: s,
             settings: d,
             qtyOf: vl,
@@ -4950,15 +1742,15 @@ function O3({
             onQuery: (ol) => _({ type: "query", value: ol }),
           }),
         }),
-        i.jsx(g3, {
+        i.jsx(RecommendationDrawer, {
           open:recommendations,onClose:()=>setRecommendations(false),hasSelection:D.entries.length>0,
           ingredients: s,
           settings: d,
           byId: K,
           onApply: (ol) => {if(!orderLock.current){pickSource.current=null;_({ type: "apply", entries: ol });setRecommendations(false);}},
         }),
-        i.jsx(d3, {
-          runId:D.runId,pickSource,onRecommendations:()=>setRecommendations(true),recommendationsOpen:recommendations,onOrderLock:value=>{orderLock.current=value;},
+        i.jsx(BasketSummary, {
+          runId:D.runId,pickSource,onRecommendations:()=>setRecommendations(true),recommendationsOpen:recommendations,storeId,onOrderLock:value=>{orderLock.current=value;if(value)freezeDiscount(storeDiscount);else if(!Object.entries(walletSnapshot().wallet.orders).some(([id,o])=>id.startsWith(D.runId+':')&&o.status!=='refunded'))freezeDiscount(null);},
           entries: D.entries,
           byId: K,
           settings: d,
@@ -4968,28 +1760,28 @@ function O3({
           canWeigh: D.entries.length > 0,
           onRemove: (ol) => !orderLock.current && _({ type: "removeOne", id: ol }),
           onAdd: addToBowl,
-          onClear: () => !orderLock.current && _({ type: "clear" }),
+          onClear: () => {if(!orderLock.current){freezeDiscount(null);_({type:"clear"});}},
           onWeigh: () => Z(!0),
         }),
-        T && i.jsx(h3, { news: f, onClose: () => A(!1) }),
+        T && i.jsx(NewsDrawer, { news: f, onClose: () => A(!1) }),
         E &&
-          i.jsx(v3, {
-            settings: d,
+          i.jsx(SettingsDialog, {
+            settings: rawSettings,
             onClose: () => Q(!1),
             onSave: (ol) => {
               (S(ol), Q(!1));
             },
           }),
         G &&
-          i.jsx(A3, {
-            runId: D.runId,companionId:D.companionId,
+          i.jsx(BowlCheckout, {
+            runId: D.runId,companionId:D.companionId,storeId,
             entries: D.entries,
             byId: K,
             settings: d,
             spice: D.spice,
             budget: D.budget,
             onClose: () => Z(!1),
-            onRestart: () => {
+            onRestart: () => {freezeDiscount(null);
               (_({ type: "clear" }), Z(!1));
             },
           }),
@@ -5107,7 +1899,7 @@ function L3({ onExit: s }) {
     [r, S] = X.useState("ingredients");
   return (
     X.useEffect(() => {
-      Wl.get("/api/auth/me")
+      apiClient.get("/api/auth/me")
         .then(d)
         .catch(() => d(null));
     }, []),
@@ -5145,7 +1937,7 @@ function L3({ onExit: s }) {
                         type: "button",
                         className: "btn btn--ghost",
                         onClick: async () => {
-                          (await Wl.post("/api/auth/logout"), d(null));
+                          (await apiClient.post("/api/auth/logout"), d(null));
                         },
                         children: "退出",
                       }),
@@ -5195,7 +1987,7 @@ function Q3({ onDone: s, onExit: f }) {
       onSubmit: async (A) => {
         (A.preventDefault(), T(!0), D(""));
         try {
-          const E = await Wl.post("/api/auth/login", {
+          const E = await apiClient.post("/api/auth/login", {
             username: d,
             password: S,
           });
@@ -5258,7 +2050,7 @@ function H3() {
     [S, g] = X.useState(""),
     O = X.useCallback(async () => {
       try {
-        f(await Wl.get("/api/admin/ingredients"));
+        f(await apiClient.get("/api/admin/ingredients"));
       } catch (T) {
         g(T.message);
       }
@@ -5270,8 +2062,8 @@ function H3() {
       g("");
       try {
         (T.id
-          ? await Wl.patch(`/api/admin/ingredients/${T.id}`, T)
-          : await Wl.post("/api/admin/ingredients", T),
+          ? await apiClient.patch(`/api/admin/ingredients/${T.id}`, T)
+          : await apiClient.post("/api/admin/ingredients", T),
           r(null),
           await O());
       } catch (A) {
@@ -5280,7 +2072,7 @@ function H3() {
     },
     _ = async (T) => {
       confirm("下架这个食材？（玩家端会立刻看不到）") &&
-        (await Wl.del(`/api/admin/ingredients/${T}`), await O());
+        (await apiClient.del(`/api/admin/ingredients/${T}`), await O());
     };
   return i.jsxs("div", {
     className: "admin-body",
@@ -5327,7 +2119,7 @@ function H3() {
                       children: i.jsxs("span", {
                         className: "cell-food",
                         children: [
-                          i.jsx(Ca, {
+                          i.jsx(FoodIllustration, {
                             id: T.id,
                             shape: T.shape,
                             color: T.color,
@@ -5338,7 +2130,7 @@ function H3() {
                         ],
                       }),
                     }),
-                    i.jsx("td", { children: vu[T.category] }),
+                    i.jsx("td", { children: CATEGORY_LABELS[T.category] }),
                     i.jsxs("td", {
                       children: [T.unitWeightG, "g / ", T.unitLabel],
                     }),
@@ -5376,7 +2168,7 @@ function H3() {
 }
 function B3({ item: s, onChange: f, onSave: d, onCancel: r }) {
   const S = (g, O) => f({ ...s, [g]: O });
-  return i.jsx("div", {
+  return i.jsx(LegacyDialog, {
     className: "overlay",
     role: "dialog",
     "aria-modal": "true",
@@ -5423,8 +2215,8 @@ function B3({ item: s, onChange: f, onSave: d, onCancel: r }) {
                     const O = g.target.value;
                     f({ ...s, ...O2(O), id: s.id, name: s.name });
                   },
-                  children: Wi.map((g) =>
-                    i.jsx("option", { value: g, children: vu[g] }, g),
+                  children: CATEGORY_ORDER.map((g) =>
+                    i.jsx("option", { value: g, children: CATEGORY_LABELS[g] }, g),
                   ),
                 }),
               ],
@@ -5520,7 +2312,7 @@ function B3({ item: s, onChange: f, onSave: d, onCancel: r }) {
                       type: "button",
                       className: s.shape === g ? "on" : "",
                       onClick: () => S("shape", g),
-                      children: i.jsx(Ca, {
+                      children: i.jsx(FoodIllustration, {
                         shape: g,
                         color: s.color,
                         size: 40,
@@ -5645,7 +2437,7 @@ function q3() {
   const [s, f] = X.useState([]),
     [d, r] = X.useState(null),
     S = X.useCallback(async () => {
-      f(await Wl.get("/api/admin/news"));
+      f(await apiClient.get("/api/admin/news"));
     }, []);
   return (
     X.useEffect(() => {
@@ -5691,7 +2483,7 @@ function q3() {
                         type: "button",
                         className: "link-btn danger",
                         onClick: async () => {
-                          (await Wl.del(`/api/admin/news/${g.id}`), await S());
+                          (await apiClient.del(`/api/admin/news/${g.id}`), await S());
                         },
                         children: "删除",
                       }),
@@ -5704,7 +2496,7 @@ function q3() {
           ),
         }),
         d &&
-          i.jsx("div", {
+          i.jsx(LegacyDialog, {
             className: "overlay",
             role: "dialog",
             "aria-modal": "true",
@@ -5778,8 +2570,8 @@ function q3() {
                   className: "btn btn--primary btn--block",
                   onClick: async () => {
                     (d.id
-                      ? await Wl.patch(`/api/admin/news/${d.id}`, d)
-                      : await Wl.post("/api/admin/news", d),
+                      ? await apiClient.patch(`/api/admin/news/${d.id}`, d)
+                      : await apiClient.post("/api/admin/news", d),
                       r(null),
                       await S());
                   },
@@ -5798,7 +2590,7 @@ function G3({ me: s }) {
     [g, O] = X.useState(""),
     [D, _] = X.useState(""),
     T = X.useCallback(async () => {
-      d(await Wl.get("/api/admin/accounts"));
+      d(await apiClient.get("/api/admin/accounts"));
     }, []);
   return (
     X.useEffect(() => {
@@ -5812,7 +2604,7 @@ function G3({ me: s }) {
           onSubmit: async (A) => {
             (A.preventDefault(), _(""));
             try {
-              (await Wl.post("/api/admin/accounts", {
+              (await apiClient.post("/api/admin/accounts", {
                 username: r,
                 password: g,
                 role: "admin",
@@ -5876,7 +2668,7 @@ function G3({ me: s }) {
                             type: "button",
                             className: "link-btn danger",
                             onClick: async () => {
-                              (await Wl.del(`/api/admin/accounts/${A.id}`),
+                              (await apiClient.del(`/api/admin/accounts/${A.id}`),
                                 await T());
                             },
                             children: "删除",
@@ -5901,7 +2693,7 @@ function Y3({ me: s }) {
     [D, _] = X.useState("");
   return (
     X.useEffect(() => {
-      Wl.get("/api/bootstrap")
+      apiClient.get("/api/bootstrap")
         .then((T) => d(T.settings))
         .catch(() => S("读取失败"));
     }, []),
@@ -5965,7 +2757,7 @@ function Y3({ me: s }) {
               type: "button",
               className: "btn btn--primary",
               onClick: async () => {
-                (await Wl.patch("/api/admin/settings", f), S("已保存"));
+                (await apiClient.patch("/api/admin/settings", f), S("已保存"));
               },
               children: "保存门店设置",
             }),
@@ -5976,7 +2768,7 @@ function Y3({ me: s }) {
               onSubmit: async (T) => {
                 T.preventDefault();
                 try {
-                  (await Wl.post("/api/auth/password", { current: g, next: D }),
+                  (await apiClient.post("/api/auth/password", { current: g, next: D }),
                     O(""),
                     _(""),
                     S("密码已更新"));
@@ -6010,40 +2802,40 @@ function Y3({ me: s }) {
       : i.jsx("div", { className: "admin-body", children: "加载中…" })
   );
 }
-const _2 = "malatang.settings";
-function Z3() {
+const SETTINGS_KEY = "malatang.settings";
+function readSettings() {
   try {
-    const s = localStorage.getItem(_2);
+    const s = localStorage.getItem(SETTINGS_KEY);
     return s ? JSON.parse(s) : {};
   } catch {
     return {};
   }
 }
-function w3() {
+function MalatangApp() {
   const [s, f] = X.useState(() => STATIC_MODE?builtInBootstrap():null),
-    [d, r] = X.useState(Z3),
+    [d, r] = X.useState(readSettings),
     [S, g] = X.useState(() =>
-      window.location.pathname.startsWith("/admin") ? "admin" : "play",
+      isAdminPath() ? "admin" : "play",
     );
   (X.useEffect(() => {
-    Ym().then(f);
+    loadBootstrap().then(f);
   }, []),
     X.useEffect(() => {
       const T = () =>
-        g(window.location.pathname.startsWith("/admin") ? "admin" : "play");
+        g(isAdminPath() ? "admin" : "play");
       return (
         window.addEventListener("popstate", T),
         () => window.removeEventListener("popstate", T)
       );
     }, []));
   const O = X.useCallback((T) => {
-      const A = T === "admin" ? "/admin" : "/#malatang";
+      const A = T === "admin" ? assetUrl("admin") : basePath+"#malatang";
       (window.history.pushState({}, "", A), g(T));
     }, []),
     D = X.useCallback((T) => {
       r(T);
       try {
-        localStorage.setItem(_2, JSON.stringify(T));
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(T));
       } catch {}
     }, []);
   if (!s)
@@ -6054,10 +2846,10 @@ function w3() {
         i.jsx("p", { children: "正在热锅…" }),
       ],
     });
-  const _ = { ...M2, ...s.settings, ...d };
+  const _ = { ...DEFAULT_SETTINGS, ...s.settings, ...d };
   return S === "admin"
     ? i.jsx(L3, { onExit: () => O("play") })
-    : i.jsx(O3, {
+    : i.jsx(MalatangGame, {
         ingredients: s.ingredients,
         news: s.news,
         settings: _,
@@ -6066,6 +2858,5 @@ function w3() {
         onAdmin: () => O("admin"),
       });
 }
-Hm.createRoot(document.getElementById("root")).render(
-  i.jsx(X.StrictMode, { children: i.jsx(GameCollection, {api: {Food: Ca, Avatar: Gf, Face: L, menu: qm,settings:M2}, Malatang: w3}) }),
-);
+
+export {MalatangApp};

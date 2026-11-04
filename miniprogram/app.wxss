@@ -1,0 +1,1 @@
+page{background:#fff8f0;color:#3d2b23;font-family:-apple-system,"PingFang SC",sans-serif}button{font-size:30rpx;border-radius:22rpx;min-height:88rpx;background:#ffcf69;color:#3d2b23}button::after{border-color:#3d2b23}view{box-sizing:border-box}

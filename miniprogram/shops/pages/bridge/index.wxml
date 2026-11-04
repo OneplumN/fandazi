@@ -1,0 +1,1 @@
+<view class="bridge"><view>{{message}}</view><button bindtap="back">回小馆</button></view>

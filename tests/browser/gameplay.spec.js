@@ -32,7 +32,7 @@ test('saved sound off remains off with keyboard and synthetic keys never unlock 
 
 test('sound waits for a trusted gesture and a real keyboard action can unlock it',async({page})=>{
  await page.addInitScript(()=>{localStorage.removeItem('dazi.experience.v1');window.__audioCreated=0;window.AudioContext=class {constructor(){window.__audioCreated++;}};});
- await page.goto('/play/#tea');await page.evaluate(()=>{document.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));document.querySelector('button[aria-label="摇匀配方"]').click();});
+ await page.goto('/play/#tea');await page.getByRole('button',{name:'摇匀配方',exact:true}).waitFor();await page.evaluate(()=>{document.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));document.querySelector('button[aria-label="摇匀配方"]').click();});
  expect(await page.evaluate(()=>window.__audioCreated)).toBe(0);
  await page.getByRole('button',{name:'摇匀配方',exact:true}).focus();await page.keyboard.press('Enter');
  expect(await page.evaluate(()=>window.__audioCreated)).toBe(1);

@@ -1,22 +1,65 @@
-# 代码定位
+# 源码定位
 
-当前本地代码已包含用户要求的结算优化及新增食材；原始发布物在 `snapshots/`，REA静态证据对应修改前采集物。
+菜单数据在 `src/data/menu.js`，原食材SVG在 `src/art/foods.js`。以下为本次机械重命名映射；函数局部参数暂保留，外部API与字段名未变。
 
-| 文件 | 符号 | 行号 |
-|---|---|---:|
-| `src/app.js` | `jn` | 1205 |
-| `src/app.js` | `Fi` | 1208 |
-| `src/app.js` | `Zf` | 1214 |
-| `src/app.js` | `Wm` | 1234 |
-| `src/app.js` | `r3` | 3747 |
-| `src/app.js` | `d3` | 3866 |
-| `src/app.js` | `b3` | 4262 |
-| `src/app.js` | `C3` | 4872 |
-| `src/app.js` | `z3` | 4893 |
-| `src/app.js` | `A3` | 4930 |
-| `src/app.js` | `O3` | 4940 |
-| `src/checkout-ui.js` | `Modal` | 4 |
-| `src/checkout-ui.js` | `FoodRows` | 87 |
-| `src/checkout-ui.js` | `BasketDock` | 148 |
-| `src/checkout-ui.js` | `VerdictCard` | 307 |
-| `src/checkout-ui.js` | `CheckoutView` | 333 |
+|原符号|当前符号|
+|---|---|
+|`vu`|`CATEGORY_LABELS`|
+|`Wi`|`CATEGORY_ORDER`|
+|`M2`|`DEFAULT_SETTINGS`|
+|`Bm`|`INGREDIENT_ROWS`|
+|`qm`|`MENU`|
+|`Gm`|`INITIAL_NEWS`|
+|`Ji`|`requestJson`|
+|`Wl`|`apiClient`|
+|`Ym`|`loadBootstrap`|
+|`Yt`|`clampUnit`|
+|`C2`|`analyzeBowl`|
+|`Zm`|`describeBowl`|
+|`wm`|`RECOMMENDATION_PRESETS`|
+|`Xm`|`recommendationWeight`|
+|`Vm`|`buildRecommendation`|
+|`z2`|`buildRecommendations`|
+|`km`|`priceRate`|
+|`jn`|`portionWeight`|
+|`Fi`|`portionPrice`|
+|`Km`|`portionCalories`|
+|`Zf`|`summarizeBowl`|
+|`Jm`|`MAX_PORTIONS`|
+|`Wm`|`bowlReducer`|
+|`Fm`|`initialBowl`|
+|`Ca`|`FoodIllustration`|
+|`Tl`|`FoodShine`|
+|`L`|`FoodFace`|
+|`u3`|`BOWL_VISIBLE_LIMIT`|
+|`i3`|`bowlSeed`|
+|`qf`|`clampRange`|
+|`c3`|`expandBowlItems`|
+|`s3`|`layoutBowlItems`|
+|`f3`|`BowlDrawing`|
+|`At`|`formatPrice`|
+|`o3`|`WeightDisplay`|
+|`r3`|`BasketPanel`|
+|`d3`|`BasketSummary`|
+|`h3`|`NewsDrawer`|
+|`m3`|`loadRecommendations`|
+|`y3`|`RecommendationList`|
+|`g3`|`RecommendationDrawer`|
+|`v3`|`SettingsDialog`|
+|`x3`|`CATEGORY_EMOJI`|
+|`p3`|`foodPriceLabel`|
+|`j3`|`IngredientButton`|
+|`b3`|`IngredientShelf`|
+|`S3`|`REVIEW_CHARACTERS`|
+|`E3`|`clampReview`|
+|`N3`|`reviewAffinity`|
+|`T3`|`reviewBand`|
+|`M3`|`reviewSentence`|
+|`C3`|`buildCharacterReviews`|
+|`z3`|`summarizeReviews`|
+|`Gf`|`CharacterAvatar`|
+|`A3`|`BowlCheckout`|
+|`O3`|`MalatangGame`|
+|`_2`|`SETTINGS_KEY`|
+|`Z3`|`readSettings`|
+|`w3`|`MalatangApp`|

@@ -1588,3 +1588,7 @@ body.modal-open .offline-bar {
     grid-template-columns: repeat(2,1fr)
   }
 }
+
+.initial-loading{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#725541;background:#fff8f0;font-size:14px;line-height:1.8}
+
+.restore-note{display:flex;align-items:center;gap:16px;background:#fff1cf;border:1px solid #bda27e;margin:12px;padding:12px;border-radius:12px;color:#725541;font-size:13px;line-height:1.8}.restore-note button{min-width:64px;min-height:44px;border:1px solid #bda27e;border-radius:10px;background:#fffdf7;color:#3d2b23}

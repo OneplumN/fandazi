@@ -2,7 +2,7 @@
 """Enable this site's TLS once its A record reaches this server; leave other sites alone."""
 import re, fcntl, hashlib, pathlib, shutil, socket, subprocess, time
 DOMAIN='malatang.oneplums.cn'
-IP='120.55.170.173'
+IP='SERVER_IPV4'
 SITE=pathlib.Path('/etc/nginx/sites-available')/DOMAIN
 STATE=pathlib.Path('/var/lib/malatang-deploy')
 STATE.mkdir(mode=0o700,exist_ok=True)

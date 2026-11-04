@@ -1,3 +1,4 @@
+import {DEV_TOOLS} from '../runtime.js';
 import { X as React } from "../../vendor/react-runtime.js";
 import { SHOP_ITEMS, MEMBERS, membership, localDay } from "./economy.js";
 import { useWallet, claimDaily, payMeal, finishMeal, refundMeal, buyItem, equipItem } from "./wallet-store.js";
@@ -215,7 +216,7 @@ export function ShopPage({ api }) {
     [message, setMessage] = React.useState(""),
     [category, setCategory] = React.useState("all");
   React.useEffect(() => {
-    window.render_game_to_text = () =>
+    if(DEV_TOOLS) window.render_game_to_text = () =>
       JSON.stringify({
         game: "shop",
         balance: wallet.balance,

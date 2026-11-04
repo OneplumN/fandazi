@@ -1,0 +1,1 @@
+<web-view wx:if="{{src}}" src="{{src}}" bindmessage="receive" binderror="failed" bindload="loaded"></web-view><view wx:else class="loading">锅还在热，马上就好。</view>

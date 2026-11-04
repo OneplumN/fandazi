@@ -58,6 +58,7 @@ function transaction(operation) {
     walletCache = result.wallet;
     snapshot = { wallet: result.wallet, persistent: !memoryOnly };
     notify();
+    window.dispatchEvent(new Event('fandazi:save'));
     return { ...result, persistent: !memoryOnly };
   };
   const task = () =>

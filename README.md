@@ -4,6 +4,8 @@
 
 线上：https://fandazi.oneplums.cn/ 。本仓库包含可编辑前端源码、素材、测试及部署配置；当前工作树的变更是否发布需以部署记录为准。
 
+最新完整变更见 [评审落实与发布](docs/评审落实与发布.md)。街务入口 https://fandazi.oneplums.cn/ops.html ，小程序准备见 [WebView 工程](miniprogram/README.md)。CDN 与微信发布仍需用户账号条件，未声称已启用。
+
 ## 本地运行
 
 构建要求 Node.js `^20.19.0 || >=22.12.0`，建议 Node.js 22.12 或以上。

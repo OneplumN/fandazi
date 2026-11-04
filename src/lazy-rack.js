@@ -5,14 +5,14 @@ export function LazyRack({category,items,label,emoji,big,defer,Food,settings,qty
  React.useEffect(()=>{
   if(!defer){setSeen(true);return;}
   if(!window.IntersectionObserver){setSeen(true);return;}
-  let visible=false;
-  const update=()=>setSeen(visible||ref.current.contains(document.activeElement));
+  let visible=false,disposed=false;
+  const update=()=>{if(!disposed&&ref.current)setSeen(visible||ref.current.contains(document.activeElement));};
   const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;update();},{rootMargin:'300px 0px'});
   const blur=()=>queueMicrotask(update);const node=ref.current;node.addEventListener('focusout',blur);observer.observe(node);
-  return()=>{observer.disconnect();node.removeEventListener('focusout',blur);};
+  return()=>{disposed=true;observer.disconnect();node.removeEventListener('focusout',blur);};
  },[defer]);
  React.useLayoutEffect(()=>{
-  const measure=()=>{const node=body.current,style=getComputedStyle(node),columns=Math.max(1,style.gridTemplateColumns.split(' ').filter(Boolean).length),rows=Math.ceil(items.length/columns),rowHeight=parseFloat(style.gridAutoRows)||150;setHeight(show?node.getBoundingClientRect().height:rows*rowHeight);};
+  const measure=()=>{const node=body.current;if(!node)return;const style=getComputedStyle(node),columns=Math.max(1,style.gridTemplateColumns.split(' ').filter(Boolean).length),rows=Math.ceil(items.length/columns),rowHeight=parseFloat(style.gridAutoRows)||150;setHeight(show?node.getBoundingClientRect().height:rows*rowHeight);};
   measure();const observer=window.ResizeObserver?new ResizeObserver(measure):null;observer?.observe(body.current);return()=>observer?.disconnect();
  },[show,items.length]);
  return h('div',{className:`rack${big?' rack--big':''}`,ref,'data-category':category,'data-deferred':!show},

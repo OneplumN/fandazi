@@ -3,7 +3,7 @@ import {CONSUMER_KEY,emptyConsumer,cleanConsumer,completeMeal,reviewMeal,favorit
 let profile=emptyConsumer(),persistent=true;const listeners=new Set();
 try{profile=cleanConsumer(JSON.parse(localStorage.getItem(CONSUMER_KEY)));}catch{persistent=false;}
 let snapshot={profile,persistent};
-function publish(next){profile=next;try{localStorage.setItem(CONSUMER_KEY,JSON.stringify(profile));}catch{persistent=false;}snapshot={profile,persistent};listeners.forEach(f=>f());}
+function publish(next){profile=next;try{localStorage.setItem(CONSUMER_KEY,JSON.stringify(profile));}catch{persistent=false;}snapshot={profile,persistent};listeners.forEach(f=>f());window.dispatchEvent?.(new Event('fandazi:save'));}
 function sync(){if(!persistent)return;try{const raw=localStorage.getItem(CONSUMER_KEY);profile=raw?cleanConsumer(JSON.parse(raw)):emptyConsumer();}catch{}}
 function mutate(fn){const run=()=>{sync();publish(fn(profile));};if(globalThis.navigator?.locks?.request)return navigator.locks.request('dazi-consumer-write',run);run();return Promise.resolve();}
 export const useConsumer=()=>React.useSyncExternalStore(f=>{listeners.add(f);return()=>listeners.delete(f);},()=>snapshot);

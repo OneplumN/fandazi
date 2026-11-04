@@ -19,7 +19,7 @@ createServer(async(req,res)=>{
   else {
    const base=path.join(work,test?'test':'production');
    const relative=decodeURIComponent(test?url.pathname.slice(6):url.pathname).replace(/^\//,'');
-   file=path.resolve(base,relative||'index.html');
+   file=path.resolve(base,!relative||relative==='admin'?'index.html':relative);
    if(file!==base&&!file.startsWith(base+path.sep))throw Error('outside root');
   }
   const bytes=await readFile(file);res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':'no-store'});res.end(bytes);
