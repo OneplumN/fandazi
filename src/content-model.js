@@ -1,5 +1,6 @@
 export const STORE_IDS=['breakfast','hotpot','tea','malatang','bbq'];
-export const validStoreId=id=>typeof id==='string'&&/^[a-z][a-z0-9-]{0,39}$/.test(id);
+const RESERVED_STORE_IDS=new Set(['home','shop','reviews','receipt','move-in','store','admin','ops','constructor','prototype']);
+export const validStoreId=id=>typeof id==='string'&&/^[a-z][a-z0-9-]{0,39}$/.test(id)&&!RESERVED_STORE_IDS.has(id);
 export const DEFAULT_STREET={version:1,stores:STORE_IDS.map(id=>({id,status:'open'})),messages:[]};
 const text=(v,n)=>typeof v==='string'&&v.trim().length>0&&v.length<=n;
 export function validateStreetContent(raw){
