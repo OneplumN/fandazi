@@ -37,10 +37,10 @@ export function useVisibleArt() {
 export function CupArt({api,state,tea,toppings=[],level=1}) {
  const ref=useVisibleArt(),uid=React.useId().replaceAll(':',''),amount=Math.max(0,Math.min(1,level)),surface=62+(1-amount)*152;
  const mixing=state.phase==='mixing',done=state.phase==='result',milk=state.milk!=='无奶',foam=state.milk==='奶盖';
- const blend=done?1:mixing?Math.min(1,state.mixTime/4):0;
+ const blend=Math.max(0,Math.min(1,state.mix||0));
  const color=milk&&!foam?mix(tea?.color||'#B77B54',state.milk==='燕麦奶'?'#E5D4AC':'#F4E4C6',blend*(state.milk==='燕麦奶'?.35:.5)):tea?.color||'#B77B54';
- const iceCount=state.ice==='无冰'?0:state.ice==='少冰'?2:5,kick=mixing&&state.interaction?.type==='shake';
- return h('svg',{ref,viewBox:'0 0 360 260',className:'shop-art art-tea refined-cup kitchen-motion-art',role:'img','aria-label':`${state.size}毫升${state.milk}配方预览`,'data-size':state.size,'data-milk':state.milk,'data-mixing':mixing,'data-motion-visible':'false'},
+ const iceCount=state.ice==='无冰'?0:state.ice==='少冰'?2:5,kick=state.interaction?.type==='shake';
+ return h('svg',{ref,viewBox:'0 0 360 260',className:'shop-art art-tea refined-cup kitchen-motion-art',role:'img','aria-label':`${state.size}毫升${state.milk}配方预览`,'data-size':state.size,'data-milk':state.milk,'data-mixing':mixing,'data-mix':blend,'data-straw-poked':state.strawPoked,'data-motion-visible':'false'},
  h('ellipse',{className:'cup-ground-shadow',cx:180,cy:229,rx:54,ry:6,fill:'#9D7957',opacity:.14}),
  h('g',{transform:state.size===700?'translate(0 0)':'translate(18 22) scale(.9)'},
  h('g',{className:mixing?'cup-rock':''},h('g',{key:kick?state.interaction.serial:0,className:kick?'cup-hand-shake':''},
@@ -49,11 +49,11 @@ export function CupArt({api,state,tea,toppings=[],level=1}) {
  h('g',{clipPath:`url(#${uid}-cup)`},h('g',{clipPath:`url(#${uid}-drink)`,'data-fill-level':amount,opacity:amount?1:0},
  h('rect',{x:100,y:40,width:165,height:195,fill:color}),
  milk&&!foam&&blend<1&&h('g',{className:'cup-milk-current',opacity:1-blend},path('M96 132 Q133 103 179 134 T266 130 V240 H96 Z','#F1E0BC',{stroke:'none'}),path('M111 146 Q157 114 207 146 T260 143','none',{stroke:'#E6CDA6',strokeWidth:3,opacity:.65})),
- h('g',{className:'cup-toppings-drift'},...toppings.flatMap((item,index)=>Array.from({length:Math.ceil(4*amount)},(_,n)=>h(CupTopping,{key:`${item.id}-${n}`,id:item.id,color:item.color,x:139+n*25,y:208-index*16})))),
+ h('g',{className:'cup-toppings-drift'},...toppings.flatMap((item,index)=>Array.from({length:Math.ceil(4*amount)},(_,n)=>h(CupTopping,{key:`${item.id}-${n}`,id:item.id,color:item.color,x:139+n*25+Math.sin((state.shakes||0)+n)*blend*14,y:208-index*16-blend*(12+(n%2)*50)})))),
  ...Array.from({length:amount?iceCount:0},(_,n)=>h('g',{key:`ice${n}`,className:'cup-ice-drift',style:{'--lag':`${n*-140}ms`}},h('rect',{className:'cup-ice',x:126+(n%3)*31,y:surface+(foam?31:9)+Math.floor(n/3)*24,width:18,height:18,rx:4,fill:'#DCE9E2',stroke:ink,strokeWidth:1.2,transform:`rotate(${n%2?14:-10} ${135+n%3*31} ${surface+(foam?40:18)+Math.floor(n/3)*24})`}))),
  foam&&amount>0&&path(`M108 ${surface+3} Q130 ${surface-3} 151 ${surface+3} T198 ${surface+3} T252 ${surface+3} V${surface+24} Q180 ${surface+32} 108 ${surface+24} Z`,'#F7E8CD',{className:'cup-foam-drift',strokeWidth:1.5}))),
  path('M109 48 L126 214 Q180 231 234 214 L251 48','none'),h('ellipse',{...line,cx:180,cy:48,rx:71,ry:13,fill:'#EEDCB5'}),
- h('g',{className:'cup-straw-flex'},path('M201 44 L214 4 H225 L212 47','#CBA5AF')),h(api.Face,{x:180,y:151,scale:1.9,mood:0}),path('M125 80 L139 179','none',{stroke:'#FFF9EA',strokeWidth:6,opacity:.6})))),
+ h('g',{className:`cup-straw-flex ${state.strawPoked?'is-poked':''}`},path('M201 44 L214 4 H225 L212 47','#CBA5AF')),h(api.Face,{x:180,y:151,scale:1.9,mood:0}),path('M125 80 L139 179','none',{stroke:'#FFF9EA',strokeWidth:6,opacity:.6})))),
  h('text',{x:180,y:252,textAnchor:'middle',fill:'#624735',fontSize:12},`${state.size}mL · ${state.ice}`));
 }
 export function BreakfastArt({api,state,bites=0,folded=false}) {
@@ -61,8 +61,9 @@ export function BreakfastArt({api,state,bites=0,folded=false}) {
  const color=mix('#EDD199',heat>1.3?'#B98A54':'#E3B76D',Math.min(1,Math.max(0,heat>1.3?(heat-1.3)*.6+.4:heat)));
  const flipping=pan&&state.interaction?.type==='flip';
  const sauce={'甜面酱':'#986240','辣酱':'#C9774A','番茄酱':'#C66A51'}[state.sauce] || '#986240';
- return h('svg',{ref,viewBox:'0 0 360 260',className:'shop-art art-breakfast breakfast-detail kitchen-motion-art','data-motion-visible':'false',role:'img','aria-label':`${state.base}${pan?'正在煎制':'在餐盘上'}`,'data-base':state.base,'data-on-pan':pan},
+ return h('svg',{ref,viewBox:'0 0 360 260',className:'shop-art art-breakfast breakfast-detail kitchen-motion-art','data-motion-visible':'false',role:'img','aria-label':`${state.base}${pan?'正在煎制':'在餐盘上'}`,'data-base':state.base,'data-spread':Boolean(state.spread),'data-on-pan':pan},
  pan?h('g',{className:'pancake-pan'},h('ellipse',{...line,cx:180,cy:139,rx:143,ry:72,fill:'#75675A'}),path('M315 142 L350 170 L341 187 L307 167','#B9A68A')):h('ellipse',{...line,cx:180,cy:153,rx:145,ry:83,fill:'#F8ECD4'}),
+ state.spread&&pan&&h('path',{d:'M120 139 Q130 98 185 105 Q242 109 241 141 Q227 175 175 169 Q133 166 137 136 Q150 119 193 124',fill:'none',stroke:'#C99B59',strokeWidth:3}),
  pan&&h('g',{className:'pancake-sizzle'},...[[77,127],[103,181],[280,133],[254,181],[141,83],[224,83]].map(([cx,cy],n)=>h('circle',{key:n,cx,cy,r:2.6,fill:'#F6E5B8',stroke:'#D1AE6C',strokeWidth:1,style:{'--lag':`${n*-.23}s`}}))),
  flipping&&h('g',{key:`spatula${state.interaction.serial}`,className:'pancake-spatula','aria-hidden':true},path('M239 164 L302 193 L314 177 L249 145','#BA9972'),path('M209 143 L244 131 L266 157 L231 175 Z','#D5C4A7'),path('M223 144 L243 158 M232 140 L252 154','none',{stroke:'#8D7963',strokeWidth:2})),
  h('ellipse',{cx:180,cy:149,rx:105,ry:48,fill:'#3D2B23',opacity:pan?.12:0,className:flipping?'pancake-flight-shadow':'' ,key:flipping?`shadow${state.interaction.serial}`:'shadow'}),
@@ -86,5 +87,6 @@ export function PotArt({api,color='#E7D3A1',state={}}) {
  ...[[95,114],[159,63],[270,83],[307,145],[220,191],[109,179],[202,112],[262,151],[151,142]].map(([cx,cy],n)=>h('g',{key:n,transform:`translate(${cx} ${cy})`},h('g',{className:'broth-bubble',style:{'--lag':`${n*-.31}s`,'--cycle':`${1.35+n%3*.21}s`}},h('ellipse',{rx:7+n%3*2,ry:4+n%3,fill:'#F6E3BA',stroke:'#AC8556',strokeWidth:1.2}),path('M-3 -1 Q0 -3 3 -1','none',{stroke:'#FFF6DC',strokeWidth:1.3})),h('ellipse',{className:'broth-ring',rx:13+n%3*3,ry:7+n%3*2,fill:'none',stroke:'#B18B5D',strokeWidth:1,style:{'--lag':`${n*-.31}s`,'--cycle':`${1.35+n%3*.21}s`}}))),
  ...[0,1,2].map(n=>path(`M${80+n*52} ${118+n*25} q48 14 99 -1`,'none',{key:n,className:'broth-current',stroke:'#F8E5BD',strokeWidth:2,opacity:.4,style:{'--lag':`${n*-.7}s`}}))),
  h('g',{className:'pot-vapour',stroke:'#A48B74',strokeWidth:2.5,fill:'none',strokeLinecap:'round'},...[125,195,267].map((x,n)=>h('path',{key:x,d:`M${x} 56 q-11 -14 0 -27 q11 -14 0 -27`,style:{'--lag':`${n*-.8}s`}}))),
+ state.interaction?.type==='take'&&h('g',{key:state.interaction.serial,className:'pot-scoop-ladle'},path('M280 140 L369 50','none',{stroke:'#B28A5E',strokeWidth:9}),h('ellipse',{...line,cx:276,cy:146,rx:28,ry:15,fill:'#D3BD97'}),path('M258 145 H294 M264 151 H288','none',{stroke:'#8D7963',strokeWidth:2})),
  h(api.Face,{x:200,y:302,scale:2.1,mood:0}));
 }

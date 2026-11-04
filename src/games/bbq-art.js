@@ -3,7 +3,7 @@ import {heatLook,blendColor} from './bbq-visuals.js';
 const h=React.createElement, ink='#3D2B23';
 const outline={stroke:ink,strokeWidth:2.6,strokeLinejoin:'round',strokeLinecap:'round'};
 const ids={yangroujuan:'lamb',feiniujuan:'beef',jixiongrou:'chicken',xianxia:'shrimp',qinqinchang:'sausage',youyuquan:'squid',xianggu:'mushroom',dougan:'tofu',yumi:'corn',xilanhua:'broccoli',qiezi:'eggplant',oupian:'lotus'};
-export function SkewerDrawing({api,food,eaten=0,season=null,active=false}) {
+export function SkewerDrawing({api,food,eaten=0,season=food.season || null,active=false}) {
   const type=ids[food.food] || ids[food.id] || food.skewer || food.id;
   const ratio=Number.isFinite(food.doneness)?food.doneness:food.sides?food.sides[food.side || 0]/food.cook:0;
   const cooked=ratio>=.85, burned=ratio>1.3,look=heatLook(ratio),uid=React.useId().replaceAll(":", "");
@@ -30,7 +30,7 @@ export function SkewerDrawing({api,food,eaten=0,season=null,active=false}) {
       default:return null;
     }
   };
-  return h('svg',{viewBox:'0 0 110 216',className:'bbq-skewer-drawing','aria-hidden':true,'data-heat':look.heat.toFixed(3),'data-heating':heating},
+  return h('svg',{viewBox:'0 0 110 216',className:'bbq-skewer-drawing','aria-hidden':true,'data-heat':look.heat.toFixed(3),'data-heating':heating,'data-season':season},
     path('M55 10 L55 205','none',{stroke:'#AA8050',strokeWidth:5}),
     ...[43,91,139].map((y,index)=>index<eaten?null:h('g',{key:index,transform:`translate(55 ${y}) rotate(${index%2?-5:5})`},
       h('defs',null,h('clipPath',{id:`${uid}-piece-${index}`},body())),

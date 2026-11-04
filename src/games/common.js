@@ -1,3 +1,7 @@
+import {isolateModal} from "../modal-isolation.js";
+import {DEV_TOOLS} from "../runtime.js";
+import {getStoreDiscount,resolveStoreId} from "../content-client.js";
+import {discountedCoins} from "../content-model.js";
 import {seedMeal,buddyById,companionLine} from "./outing-model.js";
 import {readOuting,peekOuting,consumeOuting} from "./outing-store.js";
 import {lockPageScroll} from "../scroll-lock.js";
@@ -19,13 +23,16 @@ export function useEngine(game, reducer, initial) {
           ? previous
           : {
               ...next,
+              paidTotal:["reset","next"].includes(event.type)?0:(previous.paidTotal||0)+(event.paidAmount||0),
               companionId:["reset","next"].includes(event.type)?readOuting().buddyId:previous.companionId,
               interaction: !["tick","pause","reset","next"].includes(event.type) ? {type:event.type,serial:(previous.interaction?.serial || 0)+1,target:event.key} : previous.interaction,
+              storeId:["reset","next"].includes(event.type)?resolveStoreId(game):previous.storeId,
+              discountFactor:["reset","next"].includes(event.type)?getStoreDiscount(game):previous.discountFactor,
               runId: ["reset","next"].includes(event.type) ? newRunId(game) : previous.runId,
             };
       },
       undefined,
-      () => {const plan=peekOuting(game);return {...seedMeal(game,initial(),plan,plan?.buddyId||readOuting().buddyId),runId:newRunId(game)};},
+      () => {const plan=peekOuting(game);return {...seedMeal(game,initial(),plan,plan?.buddyId||readOuting().buddyId),storeId:resolveStoreId(game),discountFactor:getStoreDiscount(game),runId:newRunId(game)};},
     ),
     latest = React.useRef(state);
   latest.current = state;
@@ -42,6 +49,10 @@ export function useEngine(game, reducer, initial) {
   React.useEffect(()=>{active.current=true;return()=>{active.current=false;};},[]);
   const dispatch = (event) => {
     if(paying.current || checkout) return;
+    if(event.type==="undo" && game==="bbq" && latest.current.phase==="cooking") {
+      const current=latest.current;paying.current=true;setPaymentPending(true);
+      refundMeal(current.runId).then(()=>{if(active.current){rawDispatch({type:"reset"});setPaymentMessage("已撤销这盘，金币原路退回。");}}).finally(()=>{paying.current=false;setPaymentPending(false);});return;
+    }
     const current=latest.current, next=reducer(current,event);
     if(next === current) return;
     let amount=0;
@@ -51,6 +62,7 @@ export function useEngine(game, reducer, initial) {
     if(game === "hotpot" && event.type === "add_batch")amount=event.ids.reduce((n,id)=>n+(POT_MENU.find(f=>f.id===id)?.price||0),0);
     if(game === "hotpot" && event.type === "add") amount=POT_MENU.find(f=>f.id===event.id)?.price || 0;
     if(!amount) {kitchenFeedback(event.type === "deliver"?"fold":event.type);rawDispatch(event);return;}
+    amount=discountedCoins(amount,current.discountFactor);
     const names={bbq:"烧烤",tea:"奶茶",breakfast:"早餐套餐",hotpot:"火锅食材"};
     rawDispatch({type:"pause",value:true});
     const resume=current.paused;
@@ -62,14 +74,13 @@ export function useEngine(game, reducer, initial) {
         if(!active.current){if(result.status === "paid")await refundMeal(current.runId);return;}
         if(result.status === "paid") {
           rawDispatch({type:"pause",value:resume});
-          rawDispatch({...event,paymentGuard:{runId:current.runId,phase:current.phase,serial:current.serial}});
-          setCheckout(null);setPaymentMessage("");
+          rawDispatch({...event,paidAmount:amount,paymentGuard:{runId:current.runId,phase:current.phase,serial:current.serial}});
+          kitchenFeedback("coin");setCheckout(null);setPaymentMessage(`拍下 ${amount} 金币，开做啦！`);
         } else {rawDispatch({type:"pause",value:resume});setPaymentMessage(result.status === "insufficient"?"金币不够，换个搭配或明天再来领100金币。":"这份订单已结束，请重新选餐。");}
       }catch{rawDispatch({type:"pause",value:resume});setPaymentMessage("这次没能下单，请再点一次。");}
       finally{paying.current=false;setPaymentPending(false);}
     };
-    if(game === "bbq") setCheckout({amount,label:names[game],confirm,cancel:()=>{if(paying.current)return;setCheckout(null);setPaymentMessage("");rawDispatch({type:"pause",value:resume});}});
-    else confirm();
+    confirm();
 
   };
   React.useEffect(()=>{
@@ -111,7 +122,7 @@ export function useEngine(game, reducer, initial) {
       }
     };
     document.addEventListener("keydown", fullscreen);
-    window.render_game_to_text = () =>
+    if(DEV_TOOLS) window.render_game_to_text = () =>
       JSON.stringify({
         game,
         coordinateSystem:
@@ -126,12 +137,12 @@ export function useEngine(game, reducer, initial) {
       rawDispatch({ type: "tick", dt: ms / 1000 });
       return new Promise((resolve) => setTimeout(resolve, 0));
     };
-    window.advanceTime = advance;
+    if(DEV_TOOLS) window.advanceTime = advance;
     return () => {
       clearInterval(timer);
       document.removeEventListener("visibilitychange", visibility);
       document.removeEventListener("keydown", fullscreen);
-      if (window.advanceTime === advance) {
+      if (DEV_TOOLS && window.advanceTime === advance) {
         delete window.advanceTime;
         delete window.render_game_to_text;
       }
@@ -189,8 +200,12 @@ export function Choice({ label, options, value, onChange, disabled = false }) {
   );
 }
 export function Customer({api}) {
-  const round=React.useContext(RoundContext),buddy=buddyById(round?.stats.companionId),line=companionLine(buddy.id,{game:round?.game});
-  return h("section",{className:"companion-presence"},h(api.Avatar,{id:buddy.id,name:buddy.name,size:40,color:buddy.color}),h("div",null,h("b",null,`${buddy.name}陪你吃`),h("p",null,line)));
+  const round=React.useContext(RoundContext),buddy=buddyById(round?.stats.companionId),state=round?.stats||{};
+  const favorite=state.interaction?.type==="sprinkle" || (buddy.id==="lin"&&(state.tea==="jasmine"||state.selected?.some(f=>f.id==="mushroom"))) || (buddy.id==="wang"&&state.selected?.some(f=>f.id==="lamb"));
+  const [idle,setIdle]=React.useState(false);
+  React.useEffect(()=>{setIdle(false);const timer=setTimeout(()=>setIdle(true),18000);return()=>clearTimeout(timer);},[state.interaction?.serial]);
+  const line=favorite?`眼睛亮了！${state.interaction?.type==="sprinkle"?"这串闻着好香，我也想尝一口。":"这一口我也喜欢。"}`:idle?"哈啊～慢慢来，我陪你等热乎的。":companionLine(buddy.id,{game:round?.game});
+  return h("section",{className:`companion-presence ${favorite?"buddy-favorite":idle?"buddy-yawn":""}`},h("span",{className:"buddy-portrait"},h(api.Avatar,{id:buddy.id,name:buddy.name,size:40,color:buddy.color}),favorite&&h("span",{className:"buddy-sparkles","aria-hidden":true},"✦ ✦")),h("div",null,h("b",null,`${buddy.name}陪你吃`),h("p",null,line)));
 }
 export function Food({ api, id, size = 64 }) {
   const item = api.menu.find((item) => item.id === id);
@@ -252,10 +267,12 @@ export function GameFrame({
   React.useEffect(() => {
     if (!leave) return;
     const previous = document.activeElement,unlock=lockPageScroll();
+    const isolation=isolateModal(dialogRef.current);
     const panel = dialogRef.current,
       buttons = () => [...panel.querySelectorAll("button:not(:disabled)")];
     buttons()[0]?.focus();
     const key = (event) => {
+      if(!isolation.isTop())return;
       if (event.key === "Escape") {
         event.preventDefault();
         setLeave(false);
@@ -274,7 +291,7 @@ export function GameFrame({
     };
     panel.addEventListener("keydown", key);
     return () => {
-      unlock();
+      isolation.release();unlock();
       panel.removeEventListener("keydown", key);
       if (previous?.isConnected) previous.focus({preventScroll:true});
     };
@@ -379,9 +396,9 @@ export function GameFrame({
           { className: "game-pause-note", role: "status" },
           "已暂停，火候停住了。准备好再继续。",
         ),
-      state.paymentMessage && !state.checkout && h("p",{className:"game-pause-note",role:"status"},state.paymentMessage),
+      state.paymentMessage && !state.checkout && h("p",{className:"game-pause-note coin-slap",role:"status"},state.paymentMessage),
+      id==="bbq"&&state.phase==="cooking"&&h(Button,{disabled:state.paymentPending,onClick:()=>dispatch({type:"undo"})},"撤销这盘 · 原路退款"),
       children,
-      state.checkout && h(PaymentDialog,{checkout:state.checkout,message:state.paymentMessage,balance:wallet.balance,pending:state.paymentPending}),
       !["result", "shift"].includes(state.phase) &&
         h(MobileDock, { id, state, dispatch }),
       h(
@@ -434,21 +451,10 @@ export function GameFrame({
     ),
   );
 }
-export function readBest(id) {
-  try {
-    const n = Number(localStorage.getItem(`dazi.best.${id}`));
-    return Number.isFinite(n) ? clamp(n) : 0;
-  } catch {
-    return 0;
-  }
-}
 export function GameResult({
   id,
   title,
-  score,
-  breakdown,
   api,
-  order,
   onReplay,
   replayLabel = "再做一份",
   children,
@@ -474,14 +480,14 @@ function MobileDock({ id, state: s, dispatch }) {
   if (id === "bbq") {
     text =
       s.phase === "select"
-        ? `${s.selected.length}/6 串 · ${money(s.selected.reduce((n, f) => n + f.price, 0))}`
+        ? `${s.selected.length}/6 串 · ${money(mealPrice(s,s.selected.reduce((n, f) => n + f.price, 0)))}`
         : "慢慢烤 · 不限时";
     label = s.phase === "select" ? "上炉开烤" : "出炉尝尝";
     type = s.phase === "select" ? "start" : "serve";
     disabled = s.phase === "select" && !s.selected.length;
   }
   if (id === "tea") {
-    text=s.phase === "recipe"?`${money(teaPrice(s))} · 点杯开做`:"摇匀中";
+    text=s.phase === "recipe"?`${money(mealPrice(s,teaPrice(s)))} · 点杯开做`:"摇匀中";
     label=s.phase === "recipe"?"摇这杯":"摇一摇";type=s.phase === "recipe"?"mix":"shake";
     disabled=!!s.paymentPending;
   }
@@ -490,7 +496,7 @@ function MobileDock({ id, state: s, dispatch }) {
     label=!s.pot.length&&s.served.length?"看碗里":"看锅里";type=null;
   }
   if (id === "breakfast") {
-    text=s.phase === "ready"?"早餐10金币 · 点饼开摊":"点饼翻面，点配菜加入";
+    text=s.phase === "ready"?`早餐${mealPrice(s,10)}金币 · 点饼开摊`:"点饼翻面，点配菜加入";
     label=s.phase === "ready"?"摊这张饼":s.phase === "assembling"?"包起来":"包起来";
     type=s.phase === "ready"?"start":s.phase === "assembling"?"deliver":"wrap";
     disabled=!!s.paymentPending || (s.phase!=="ready"&&s.paused);
@@ -537,28 +543,5 @@ function MobileDock({ id, state: s, dispatch }) {
   );
 }
 
-function PaymentDialog({checkout,message,balance,pending}) {
-  const ref=React.useRef(null);
-  React.useEffect(()=>{if(pending)ref.current?.focus();},[pending]);
-  React.useEffect(()=>{
-    const previous=document.activeElement,unlock=lockPageScroll();
-    const node=ref.current,buttons=()=>[...node.querySelectorAll("button:not(:disabled)")];
-    buttons()[0]?.focus();
-    const onKey=e=>{
-      if(e.key === "Escape") {e.preventDefault();checkout.cancel();}
-      if(e.key === "Tab") {
-        const list=buttons();
-        if(!list.length){e.preventDefault();node.focus();return;}
-        if(e.shiftKey && document.activeElement === list[0]) {e.preventDefault();list.at(-1)?.focus();}
-        else if(!e.shiftKey && document.activeElement === list.at(-1)) {e.preventDefault();list[0]?.focus();}
-      }
-    };
-    node.addEventListener("keydown",onKey);
-    return ()=>{unlock();node.removeEventListener("keydown",onKey);if(previous?.isConnected)previous.focus({preventScroll:true});};
-  },[checkout]);
-  return h("div",{className:"game-confirm-backdrop"},h("section",{ref,tabIndex:-1,className:"game-confirm",role:"dialog","aria-modal":true,"aria-label":"确认下单","aria-busy":pending},
-    h("h2",null,`确认下单 · ${checkout.label}`),h("p",null,`本次 ${checkout.amount} 金币，余额 ${balance} 金币。`),
-    h("p",null,"确认后扣币并增加会员成长；未吃完离开会退款。"),
-    h("p",{role:"status"},message),h("div",{className:"game-actions"},
-    h(Button,{onClick:checkout.cancel,disabled:pending},"先不点了"),h(Button,{primary:true,onClick:checkout.confirm,disabled:pending||balance<checkout.amount},pending?"正在下单…":`确认下单 · ${checkout.amount} 金币`))));
-}
+
+export const mealPrice=(state,amount)=>discountedCoins(amount,state.discountFactor ?? 1);

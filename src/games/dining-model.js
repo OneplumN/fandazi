@@ -4,6 +4,7 @@ export function mealItems(game, state, menu = []) {
   if (game === 'breakfast') return [{id:'pancake',name:state.base || '早餐饼',bites:4}];
   const foods = game === 'bbq' ? state.items : game === 'hotpot' ? state.served : state.entries;
   return (foods || []).map((f,index)=>({id:`${f.id}:${index}`, food:f.food || f.id,
+    season:f.season,
     doneness:game === "bbq" && f.sides ? Math.max(...f.sides)/f.cook : undefined,
     name:f.name || menu.find(m=>m.id===f.id)?.name || '食材',
     bites:game==='bbq'?3:Math.max(1,Math.min(9,Math.floor(f.qty || 1)))}));

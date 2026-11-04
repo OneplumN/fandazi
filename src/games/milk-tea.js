@@ -1,3 +1,4 @@
+import {mealPrice} from "./common.js";
 import {
   h,
   useEngine,
@@ -13,7 +14,6 @@ import {
   TEAS,
   MILKS,
   TOPPINGS,
-  TEA_ORDERS,
   initialTea,
   teaReducer,
   teaPrice,
@@ -23,7 +23,6 @@ import {CupArt} from "./kitchen-art.js";
 import { ToppingArt } from "./art.js";
 export function MilkTea({ api }) {
   const [s, dispatch] = useEngine("tea", teaReducer, initialTea),
-    order = TEA_ORDERS[s.round % TEA_ORDERS.length],
     tea = TEAS.find((t) => t.id === s.tea),
     disabled = s.phase !== "recipe";
   const set = (field) => (value) => dispatch({ type: "set", field, value });
@@ -47,10 +46,7 @@ export function MilkTea({ api }) {
           {
             id: "tea",
             title: "你的特调，请试饮",
-            score: s.score,
-            breakdown: s.breakdown,
             api,
-            order,
             onReplay: action(dispatch, "reset"),
             replayLabel: "接下一杯",
           },
@@ -71,7 +67,7 @@ export function MilkTea({ api }) {
           h(
             "p",
             null,
-            `本杯 ${money(s.total)} · 按自己的口味来`,
+            `本杯 ${money(mealPrice(s,s.total))} · 按自己的口味来`,
           ),
         )
       : h(
@@ -80,10 +76,10 @@ export function MilkTea({ api }) {
           h(
             "section",
             { className: "game-workbench" },
-            h(Customer, { api, order, compact:true }),
-            h("button",{type:"button",id:"tea-mix",className:"food-touch-button tea-preview",disabled:s.paymentPending,"aria-label":s.phase === "recipe"?`制作奶茶 ${teaPrice(s)}金币`:s.paused?"继续摇匀":"摇一摇奶茶",onClick:action(dispatch,s.phase === "recipe"?"mix":s.paused?"pause":"shake",s.paused?{value:false}:{})},
+            h(Customer, { api, compact:true }),
+            h("button",{type:"button",id:"tea-mix",className:"food-touch-button tea-preview",disabled:s.paymentPending,"aria-label":s.phase === "recipe"?`制作奶茶 ${mealPrice(s,teaPrice(s))}金币`:s.paused?"继续摇匀":"摇一摇奶茶",onClick:action(dispatch,s.phase === "recipe"?"mix":s.paused?"pause":"shake",s.paused?{value:false}:{})},
               h(CupArt,{api,state:s,tea,toppings:s.toppings.map(id=>TOPPINGS.find(t=>t.id===id))}),
-              h("span",{className:"food-touch-caption"},s.paymentPending?"正在下单…":s.phase === "recipe"?`点杯子开做 · ${teaPrice(s)}金币`:s.paused?"点杯子继续":"点杯子摇一摇")),
+              h("span",{className:"food-touch-caption"},s.paymentPending?"正在下单…":s.phase === "recipe"?`点杯子开做 · ${mealPrice(s,teaPrice(s))}金币`:s.paused?"点杯子继续":"点杯子摇一摇")),
             h(
               "div",
               { className: "recipe-caption" },
@@ -105,7 +101,7 @@ export function MilkTea({ api }) {
               h(
                 "strong",
                 { className: "recipe-price", "aria-live": "polite" },
-                money(teaPrice(s)),
+                money(mealPrice(s,teaPrice(s))),
               ),
               h(
                 "span",
@@ -113,6 +109,7 @@ export function MilkTea({ api }) {
                 "搭子口味仅供参考",
               ),
             ),
+            h(Button,{disabled:s.paused||s.paymentPending,onClick:action(dispatch,"shake"),"aria-label":"摇匀配方"},`摇匀配方 · ${Math.round((s.mix||0)*100)}%`),
             s.phase === "mixing" && h(Pause,{state:s,dispatch}),
           ),
           h(

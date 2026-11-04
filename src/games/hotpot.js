@@ -1,3 +1,5 @@
+import {mealPrice} from "./common.js";
+import {useOptionalStroke} from "./gestures.js";
 import {
   h,
   useEngine,
@@ -14,7 +16,6 @@ import {
 import {
   BROTHS,
   POT_MENU,
-  POT_ORDERS,
   initialHotpot,
   hotpotReducer,
   money,
@@ -22,9 +23,14 @@ import {
 } from "./rules.js";
 import { DiningTable, ServingBowl } from "./dining.js";
 import {PotArt} from "./kitchen-art.js";
+function ScoopFood({food,index,api,state,dispatch}) {
+ const stroke=useOptionalStroke(()=>dispatch({type:"take",key:food.key}));
+ return h("button",{...stroke,type:"button",className:`pot-surface-food pot-${heatState(food.age,food.cook)}`,disabled:state.paused,
+ style:{"--food-x":`${[27,50,73,27,50,73][index]}%`,"--food-y":`${[27,23,27,50,54,50][index]}%`},
+ onClick:action(dispatch,"take",{key:food.key}),"aria-label":`捞起${food.name}`},h("div",{className:"pot-food-entry"},h(Food,{api,id:food.food,size:46})),h("span",{className:"pot-food-number"},food.key+1),h("b",{className:"pot-local-name"},food.name),h("small",{className:"pot-local-state"},({raw:"未熟",ready:"已熟 · 可捞",overdone:"有点老",burned:"煮久了"})[heatState(food.age,food.cook)]));
+}
 export function Hotpot({ api }) {
   const [s, dispatch] = useEngine("hotpot", hotpotReducer, initialHotpot),
-    order = POT_ORDERS[s.round % POT_ORDERS.length],
     broth = BROTHS.find((b) => b.name === s.broth),
     total = [...s.pot, ...s.served].reduce((n, f) => n + f.price, 0);
   return h(
@@ -36,7 +42,7 @@ export function Hotpot({ api }) {
       state: s,
       dispatch,
       rules: [
-        "点食材按标价下锅，点锅里的菜捞起来。",
+        "点食材按标价下锅，点菜捞起，或拖出锅沿试试漏勺。",
         "食材变熟后捞起；捞早了，点碗里的食材免费回锅。",
         "锅里最多六份，捞完后直接点碗里的食物吃。",
       ],
@@ -47,10 +53,7 @@ export function Hotpot({ api }) {
           {
             id: "hotpot",
             title: "这一碗，趁热开吃",
-            score: s.score,
-            breakdown: s.breakdown,
             api,
-            order,
             onReplay: action(dispatch, "reset"),
           },
           h(
@@ -86,21 +89,19 @@ export function Hotpot({ api }) {
             { className: "game-workbench" },
             h(
               Customer,
-              { api, order, compact:true },
-              h("small", null, `想喝：${order.broth}`),
+              { api, compact:true },
+              h("small", null, `今天的汤底：${s.broth}`),
             ),
             s.outingPlan&&s.added===0&&h("div",{className:"suggested-pot"},h("p",null,`${s.outingPlan.title} · ${s.outingPlan.foods.map(f=>f.name).join("、")}`),h(Button,{primary:true,disabled:s.paymentPending,onClick:action(dispatch,"add_batch",{ids:s.outingPlan.recipe.ids})},`这几样下锅 · ${s.outingPlan.cost}金币`)),
             h("div",{className:"pot-stage physical-pot"},h(PotArt,{api,color:broth.color,state:s}),
-              h("div",{className:"pot-surface-foods"},...s.pot.map((f,index)=>h("button",{type:"button",key:f.key,className:`pot-surface-food pot-${heatState(f.age,f.cook)}`,disabled:s.paused,
-                style:{"--food-x":`${[27,50,73,27,50,73][index]}%`,"--food-y":`${[27,23,27,50,54,50][index]}%`},
-                onClick:action(dispatch,"take",{key:f.key}),"aria-label":`捞起${f.name}`,"aria-describedby":`pot-local-${f.key}`},h("div",{className:"pot-food-entry"},h("div",{className:"pot-ingredient-float",style:{"--lag":`${f.key*-.23}s`}},h(Food,{api,id:f.food,size:46}))),h("span",{className:"pot-food-number"},f.key+1),h("b",{className:"pot-local-name"},f.name),h("small",{id:`pot-local-${f.key}`,className:"pot-local-state"},({raw:"未熟",ready:"已熟 · 可捞",burned:"煮久了"})[heatState(f.age,f.cook)]))))),
+              h("div",{className:"pot-surface-foods"},...s.pot.map((f,index)=>h(ScoopFood,{key:f.key,food:f,index,api,state:s,dispatch})))),
             h(
               "p",
               { className: "game-muted pot-legend" },
               s.phase === "setup"
                 ? "点食材下锅"
                 : s.pot.length
-                  ? "点锅里的菜捞起来"
+                  ? "点菜捞起，或拖出锅沿试试漏勺"
                   : "锅里空空的，去食材架下点喜欢的吧。",
             ),
             h(
@@ -116,7 +117,7 @@ export function Hotpot({ api }) {
               h(
                 "span",
                 { className: total > 30 ? "is-warning" : "" },
-                `本餐已点 ${money(total)}`,
+                `本餐已点 ${money(s.paidTotal || 0)}`,
               ),
             ),
             s.phase === "cooking" && h(Pause,{state:s,dispatch}),
@@ -160,7 +161,7 @@ export function Hotpot({ api }) {
                   },
                   h(Food, { api, id: f.food, size: 56 }),
                   h("b", null, f.name),
-                  h("small", null, `${money(f.price)} · 约${f.cook}秒`),
+                  h("small", null, `${money(mealPrice(s,f.price))} · 约${f.cook}秒`),
                 ),
               ),
             ),

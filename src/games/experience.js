@@ -1,13 +1,17 @@
 import {suppressKitchenTouch} from './touch-policy.js';
 import {X as React} from '../../vendor/react-runtime.js';
 const h=React.createElement, KEY='dazi.experience.v1', listeners=new Set();
-const defaults={sound:false,haptics:false,motion:true};
+const defaults={sound:true,haptics:true,motion:true};
 let preferences={...defaults}, audio;
 try {const saved=JSON.parse(localStorage.getItem(KEY));for(const k of Object.keys(defaults))if(typeof saved?.[k]==='boolean')preferences[k]=saved[k];} catch {}
 const update=()=>{document.body.dataset.kitchenMotion=preferences.motion?'on':'off';listeners.forEach(f=>f());};
 update();
+let gestureReady=false;
+const unlockFeedback=()=>{gestureReady=true;};
+document.addEventListener('pointerdown',unlockFeedback,{capture:true});
+document.addEventListener('keydown',unlockFeedback,{capture:true});
 export function kitchenFeedback(kind='tap') {
-  if(document.hidden) return;
+  if(document.hidden || !gestureReady) return;
   if(preferences.haptics) {try{navigator.vibrate?.(kind==='eat'?12:7);}catch{}}
   if(!preferences.sound) return;
   try {
@@ -26,7 +30,7 @@ export function FeedbackSettings() {
   return h('details',{className:'experience-settings'},h('summary',null,'声音与动效'),
     h('div',null,...[['sound','轻声音效'],['motion','互动动效'],...(typeof navigator.vibrate==='function'?[['haptics','轻触反馈']]:[])].map(([key,label])=>h('label',{key},h('input',{type:'checkbox',checked:settings[key],onChange:e=>{
       preferences={...preferences,[key]:e.target.checked};try{localStorage.setItem(KEY,JSON.stringify(preferences));}catch{}update();if(key==='sound'&&preferences.sound)kitchenFeedback('tap');
-    }}),label)),h('small',null,'默认静音；系统减少动态效果设置也会生效。')));
+    }}),label)),h('small',null,'首次操作后有轻声音效；可随时关闭。系统减少动态效果设置也会生效。')));
 }
 window.addEventListener('storage',event=>{if(event.key!==KEY&&event.key!==null)return;try{const saved=event.newValue?JSON.parse(event.newValue):defaults;preferences={...defaults};for(const key of Object.keys(defaults))if(typeof saved[key]==='boolean')preferences[key]=saved[key];update();}catch{}});
 document.body.dataset.kitchenHidden=String(document.hidden);
@@ -65,4 +69,11 @@ export function useDockClearance(ref,rootSelector){
     update();const observer=window.ResizeObserver?new ResizeObserver(update):null;observer?.observe(dock);window.addEventListener('resize',update);
     return()=>{observer?.disconnect();window.removeEventListener('resize',update);root.style.removeProperty('--dock-clearance');};
   },[]);
+}
+
+export function FirstFlipHint(){
+ const [show,setShow]=React.useState(()=>{try{return !localStorage.getItem('dazi.flip-hint.v1');}catch{return true;}});
+ React.useEffect(()=>{if(show)try{localStorage.setItem('dazi.flip-hint.v1','seen');}catch{}},[]);
+ const dismiss=()=>{setShow(false);try{localStorage.setItem('dazi.flip-hint.v1','seen');}catch{}};
+ return show?h('aside',{className:'flip-hint',role:'note'},h('span',null,'点一下串或饼就能翻面，长按串可撒选好的料。'),h('button',{type:'button',onClick:dismiss,'aria-label':'不再显示翻面提示'},'知道啦')):null;
 }

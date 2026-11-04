@@ -4,9 +4,9 @@ const average = (values) =>
   values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
 const validTick = (a) => Number.isFinite(a.dt) && a.dt >= 0;
 export const heatState = (time, target) =>
-  time < target * 0.85 ? "raw" : time <= target * 1.3 ? "ready" : "burned";
+  time < target * 0.85 ? "raw" : time <= target * 1.3 ? "ready" : time <= target * 1.65 ? "overdone" : "burned";
 export const heatLabel = (timeState) =>
-  ({ raw: "还没到火候", ready: "刚刚好", burned: "火候过了" })[timeState];
+  ({ raw: "还没到火候", ready: "刚刚好", overdone: "有点老", burned: "火候过了" })[timeState];
 export function heatQuality(time, target) {
   const ratio = time / target;
   return Math.round(
@@ -27,41 +27,19 @@ export const GRILL_MENU = [
   ["eggplant", "qiezi", "茄子串", 10, 2],
   ["lotus", "oupian", "藕片串", 9, 2],
 ].map(([id, food, name, cook, price]) => ({ id, food, name, cook, price }));
-export const BBQ_ORDERS = [
-  {
-    name: "打工人老王",
-    avatar: "wang",
-    season: "孜然",
-    line: "想吃孜然香的，别夹生，也别烤糊啦。",
-  },
-  {
-    name: "深夜饿鬼",
-    avatar: "gui",
-    season: "辣椒",
-    line: "来点辣椒，火候稳一点，今晚就靠这一盘。",
-  },
-  {
-    name: "甜品控小圆",
-    avatar: "yuan",
-    season: "蜜汁",
-    line: "今天想吃蜜汁口味，甜甜的也可以是烧烤。",
-  },
-];
 export const initialBBQ = (round = 0) => ({
   phase: "select",
   round,
   budget: 30,
   selected: [],
   items: [],
-  season: "孜然",
+  season: null,
   seasonApplied: null,
   sprinkleCount: 0,
   feedback: "先选几串，今晚的手艺从这里开始。",
   elapsed: 0,
   paused: false,
   serial: 0,
-  score: null,
-  breakdown: [],
 });
 export function bbqReducer(s, a) {
   if (a.type === "reset") return initialBBQ(s.round + 1);
@@ -92,7 +70,7 @@ export function bbqReducer(s, a) {
       phase: "cooking",
       elapsed: 0,
       paused: false,
-      feedback: "炭火起来了，点每串分别翻面；出炉前记得撒料。",
+      feedback: "炭火起来了，点每串分别翻面；也可以原味吃。",
       items: s.selected.map((f) => ({
         ...f,
         side: 0,
@@ -139,42 +117,15 @@ export function bbqReducer(s, a) {
       ),
     };
   }
-  if (a.type === "sprinkle" && s.phase === "cooking" && !s.paused) {
-    return {
-      ...s,
-      seasonApplied: s.season,
-      sprinkleCount: s.sprinkleCount + 1,
-      feedback: `${s.items.length} 串撒上${s.season}啦！换口味后要重新撒一次。`,
-    };
+  if (a.type === "sprinkle" && s.phase === "cooking" && !s.paused && s.season) {
+    const targets=s.items.filter(f=>a.key===undefined||f.key===a.key);
+    if(!targets.length)return s;
+    return {...s,seasonApplied:s.season,sprinkleCount:s.sprinkleCount+1,
+      items:s.items.map(f=>targets.includes(f)?{...f,season:s.season}:f),
+      feedback:`${targets.length===1?targets[0].name:targets.length+'串'}撒上${s.season}，香味飘过来啦！`};
   }
-  if (a.type === "serve" && s.phase === "cooking" && !s.paused) {
-    const heat = Math.round(
-      average(
-        s.items.map((f) => average(f.sides.map((t) => heatQuality(t, f.cook)))),
-      ) * 0.7,
-    );
-    const seasoning =
-      s.seasonApplied === BBQ_ORDERS[s.round % BBQ_ORDERS.length].season
-        ? 20
-        : s.seasonApplied
-          ? 5
-          : 0;
-    const total = s.items.reduce((n, f) => n + f.price, 0),
-      budget =
-        total <= s.budget ? 10 : Math.max(0, 10 - Math.ceil(total - s.budget));
-    return {
-      ...s,
-      phase: "result",
-      paused: false,
-      score: heat + seasoning + budget,
-      total,
-      breakdown: [
-        ["烤制火候", heat, 70],
-        ["撒料与口味", seasoning, 20],
-        ["预算控制", budget, 10],
-      ],
-    };
-  }
+  if (a.type === "serve" && s.phase === "cooking" && !s.paused)
+    return {...s,phase:"result",paused:false,total:s.items.reduce((n,f)=>n+f.price,0)};
   return s;
 }
 
@@ -196,56 +147,6 @@ export const TOPPINGS = [
   { id: "taro", name: "芋泥", color: "#C4ABC3" },
   { id: "sago", name: "西米", color: "#E1D7BD" },
 ];
-export const TEA_ORDERS = [
-  {
-    name: "营养师小林",
-    avatar: "lin",
-    tea: "black",
-    milk: "鲜奶",
-    sugar: 50,
-    ice: "少冰",
-    size: 500,
-    toppings: [],
-    budget: 16,
-    line: "一杯朴素的半糖鲜奶红茶，少冰，不加小料。",
-  },
-  {
-    name: "探店网红Vivi",
-    avatar: "vivi",
-    tea: "jasmine",
-    milk: "燕麦奶",
-    sugar: 25,
-    ice: "正常冰",
-    size: 700,
-    toppings: ["pearl"],
-    budget: 22,
-    line: "大杯茉莉燕麦奶，微糖正常冰，加珍珠！",
-  },
-  {
-    name: "甜品控小圆",
-    avatar: "yuan",
-    tea: "cocoa",
-    milk: "奶盖",
-    sugar: 75,
-    ice: "少冰",
-    size: 500,
-    toppings: ["pudding", "taro"],
-    budget: 24,
-    line: "可可奶盖，七分糖少冰，布丁和芋泥都想要。",
-  },
-  {
-    name: "跑马老陈",
-    avatar: "chen",
-    tea: "oolong",
-    milk: "无奶",
-    sugar: 0,
-    ice: "无冰",
-    size: 700,
-    toppings: ["coconut"],
-    budget: 18,
-    line: "大杯纯乌龙，不加糖不加冰，来份椰果。",
-  },
-];
 export const initialTea = (round = 0) => ({
   phase: "recipe",
   round,
@@ -256,9 +157,10 @@ export const initialTea = (round = 0) => ({
   size: 500,
   toppings: [],
   mixTime: 0,
+  mix: 0,
+  shakes: 0,
+  strawPoked: false,
   paused: false,
-  score: null,
-  breakdown: [],
 });
 export const teaPrice = (s) =>
   5 +
@@ -267,7 +169,8 @@ export const teaPrice = (s) =>
   s.toppings.length * 2;
 export function teaReducer(s, a) {
   if (a.type === "reset") return initialTea(s.round + 1);
-  if(a.type === "shake" && s.phase === "mixing" && !s.paused) return teaReducer({...s,shakes:(s.shakes || 0)+1},{type:"tick",dt:.6});
+  if(a.type === "shake" && ["recipe","mixing"].includes(s.phase) && !s.paused) return {...s,shakes:s.shakes+1,mix:Math.min(1,s.mix+.35)};
+  if(a.type === "poke" && ["mixing","result"].includes(s.phase) && !s.paused)return {...s,strawPoked:true};
   if (a.type === "pause") return { ...s, paused: a.value };
   if (a.type === "set" && s.phase === "recipe") {
     const choices = {
@@ -299,42 +202,7 @@ export function teaReducer(s, a) {
   if (a.type === "tick" && validTick(a) && s.phase === "mixing" && !s.paused) {
     const next = { ...s, mixTime: Math.min(4, s.mixTime + a.dt) };
     if (next.mixTime < 4) return next;
-    const order = TEA_ORDERS[s.round % TEA_ORDERS.length];
-    const parts = [
-      ["茶底", s.tea === order.tea ? 25 : 0, 25],
-      ["奶底", s.milk === order.milk ? 20 : 0, 20],
-      [
-        "甜度",
-        Math.round(20 * clamp(1 - Math.abs(s.sugar - order.sugar) / 100, 0, 1)),
-        20,
-      ],
-      [
-        "冰量与杯型",
-        (s.ice === order.ice ? 10 : 0) + (s.size === order.size ? 5 : 0),
-        15,
-      ],
-      [
-        "小料",
-        Math.round(
-          15 *
-            (1 -
-              new Set([
-                ...s.toppings.filter((t) => !order.toppings.includes(t)),
-                ...order.toppings.filter((t) => !s.toppings.includes(t)),
-              ]).size /
-                Math.max(1, new Set([...s.toppings, ...order.toppings]).size)),
-        ),
-        15,
-      ],
-      ["预算", teaPrice(s) <= order.budget ? 5 : 0, 5],
-    ];
-    return {
-      ...next,
-      phase: "result",
-      score: parts.reduce((n, p) => n + p[1], 0),
-      breakdown: parts,
-      total: teaPrice(s),
-    };
+    return {...next,phase:"result",total:teaPrice(s)};
   }
   return s;
 }
@@ -359,26 +227,6 @@ export const POT_MENU = [
   ["xianggu", "香菇", 12, 2],
   ["yuwan", "鱼丸", 18, 3],
 ].map(([id, name, cook, price]) => ({ id, food: id, name, cook, price }));
-export const POT_ORDERS = [
-  {
-    name: "养生阿健",
-    avatar: "jian",
-    broth: "三鲜清汤",
-    line: "想吃清汤，刚好熟就捞起来，别把菜忘在锅里。",
-  },
-  {
-    name: "深夜饿鬼",
-    avatar: "gui",
-    broth: "麻辣红汤",
-    line: "要红汤！菜、肉、主食都来一点，趁热捞。",
-  },
-  {
-    name: "素食阿May",
-    avatar: "may",
-    broth: "菌菇汤",
-    line: "今天想喝菌菇汤，别把菌菇煮得太老。",
-  },
-];
 export const initialHotpot = (round = 0) => ({
   phase: "setup",
   round,
@@ -390,8 +238,6 @@ export const initialHotpot = (round = 0) => ({
   elapsed: 0,
   paused: false,
   serial: 0,
-  score: null,
-  breakdown: [],
 });
 export function hotpotReducer(s, a) {
   if(a.type === "add_batch"){
@@ -457,62 +303,11 @@ export function hotpotReducer(s, a) {
     s.phase === "cooking" && !s.paused &&
     s.pot.length === 0 && s.served.length > 0
   ) {
-    const total = [...s.pot, ...s.served].reduce((n, f) => n + f.price, 0),
-      cooking = Math.round(
-        (s.served.reduce((n, f) => n + f.quality, 0) / Math.max(1, s.added)) *
-          0.75,
-      ),
-      broth =
-        s.broth === POT_ORDERS[s.round % POT_ORDERS.length].broth ? 15 : 3,
-      budget =
-        total <= s.budget ? 10 : Math.max(0, 10 - Math.ceil(total - s.budget));
-    return {
-      ...s,
-      phase: "result",
-      paused: false,
-      score: s.added ? cooking + broth + budget : 0,
-      total,
-      breakdown: s.added
-        ? [
-            ["捞取火候与食材利用", cooking, 75],
-            ["汤底口味", broth, 15],
-            ["预算", budget, 10],
-          ]
-        : [["本局未下食材", 0, 100]],
-    };
+    return {...s,phase:"result",paused:false,total:s.served.reduce((n,f)=>n+f.price,0)};
   }
   return s;
 }
 
-export const BREAKFAST_ORDERS = [
-  {
-    name: "打工人老王",
-    avatar: "wang",
-    base: "煎饼",
-    egg: true,
-    fillings: ["lettuce", "huotuichang"],
-    sauce: "甜面酱",
-    line: "煎饼加蛋，生菜和火腿肠，甜面酱，赶着上班呢。",
-  },
-  {
-    name: "跑马老陈",
-    avatar: "chen",
-    base: "手抓饼",
-    egg: false,
-    fillings: ["peigen", "huanggua"],
-    sauce: "辣酱",
-    line: "手抓饼不要蛋，加培根黄瓜，辣酱。",
-  },
-  {
-    name: "素食阿May",
-    avatar: "may",
-    base: "煎饼",
-    egg: true,
-    fillings: ["dougan", "xihulu"],
-    sauce: "番茄酱",
-    line: "煎饼加蛋，豆干西葫芦，番茄酱，谢谢！",
-  },
-];
 export const FILLINGS = [
   ["lettuce", "生菜"],
   ["huotuichang", "火腿肠"],
@@ -525,8 +320,6 @@ export const FILLINGS = [
 ].map(([id, name]) => ({ id, food: id, name }));
 export const initialBreakfast = () => ({
   phase: "ready",
-  orderIndex: 0,
-  order: BREAKFAST_ORDERS[0],
   base: "煎饼",
   egg: false,
   fillings: [],
@@ -535,13 +328,10 @@ export const initialBreakfast = () => ({
   sides: [0, 0],
   elapsed: 0,
   paused: false,
-  history: [],
-  score: null,
-  shiftScore: null,
-  breakdown: [],
 });
 export function breakfastReducer(s, a) {
   if (a.type === "reset") return initialBreakfast();
+  if(a.type === "spread" && s.phase === "cooking" && !s.paused)return {...s,spread:true};
   if (a.type === "pause") return { ...s, paused: a.value };
   if(a.type === "wrap" && s.phase === "cooking" && !s.paused)return breakfastReducer(breakfastReducer(s,{type:"plate"}),{type:"deliver"});
   if (
@@ -595,44 +385,14 @@ export function breakfastReducer(s, a) {
     ["甜面酱", "辣酱", "番茄酱"].includes(a.value)
   )
     return { ...s, phase:"assembling",sauce: a.value };
-  if (a.type === "deliver" && s.phase === "assembling" && !s.paused) {
-    const order = s.order,
-      heat = Math.round(average(s.sides.map((t) => heatQuality(t, 6))) * 0.3),
-      base = s.base === order.base ? 15 : 0,
-      egg = s.egg === order.egg ? 15 : 0,
-      matching = Math.round(
-        25 *
-          (1 -
-            new Set([
-              ...s.fillings.filter((f) => !order.fillings.includes(f)),
-              ...order.fillings.filter((f) => !s.fillings.includes(f)),
-            ]).size /
-              Math.max(1, new Set([...s.fillings, ...order.fillings]).size)),
-      ),
-      sauce = s.sauce === order.sauce ? 15 : 0;
-    return {
-      ...s,
-      phase: "result",
-      score: heat + base + egg + matching + sauce,
-      breakdown: [
-        ["双面火候", heat, 30],
-        ["饼底", base, 15],
-        ["鸡蛋", egg, 15],
-        ["配菜", matching, 25],
-        ["酱料", sauce, 15],
-      ],
-    };
-  }
-  if (a.type === "next" && s.phase === "result") {
-    const index=(s.orderIndex+1)%BREAKFAST_ORDERS.length;
-    return {...initialBreakfast(), orderIndex:index, order:BREAKFAST_ORDERS[index]};
-  }
+  if (a.type === "deliver" && s.phase === "assembling" && !s.paused) return {...s,phase:"result"};
+  if (a.type === "next" && s.phase === "result") return initialBreakfast();
   return s;
 }
 
 export function bbqItemNotes(food) {
   const status=bbqStatus(food);
-  return status.kind === "burned"?"烤得有点过，下次早点夹出保温。":status.kind === "ready"?"烤得刚好，趁热吃。":"还欠一点火候，翻一翻再烤会儿。";
+  return status.kind === "burned"?"烤得有点过，下次早点夹出保温。":status.kind === "overdone"?"烤得有点老，趁热慢慢吃。":status.kind === "ready"?"烤得刚好，趁热吃。":"还欠一点火候，翻一翻再烤会儿。";
 }
 export function bbqAdvice(s) {
   const burned = s.items.filter((f) =>
@@ -644,19 +404,15 @@ export function bbqAdvice(s) {
   if (burned)
     return `${burned}串烤过头了，下回看到火候刚好就翻面或出炉。${raw ? `还有${raw}串还欠点火候，记得分别照顾。` : ""}`;
   if (raw) return `有${raw}串还欠点火候，翻一翻再烤会儿就好。`;
-  if (!s.seasonApplied)
-    return "火候照顾得不错，可惜忘了撒料。选好口味后要点一下撒料。";
-  const wanted = BBQ_ORDERS[s.round % BBQ_ORDERS.length].season;
-  if (s.seasonApplied !== wanted)
-    return `火候稳住了！不过这位客人想要${wanted}，你撒的是${s.seasonApplied}。`;
-  if (s.total > s.budget) return "火候和口味都不错，下次选串时也照顾一下预算。";
-  return "火候刚好，撒料也对了口味。这盘串儿，值得再来一次！";
+  if(s.items.some(f=>f.sides.some(t=>heatState(t,f.cook)==="overdone")))return "烤得有点老，下回早点夹出；这一盘慢慢吃。";
+  return s.items.some(f=>f.season)?"香味落在串上啦，趁热一起吃！":"原味也香，按自己喜欢的来。";
 }
 
 // The label describes the whole skewer, not only the face touching the grill.
 export function bbqStatus(food) {
   const sides=food.sides || [0,0],current=heatState(sides[food.side || 0],food.cook),other=heatState(sides[1-(food.side || 0)],food.cook);
   if(sides.some(t=>heatState(t,food.cook)==='burned'))return {kind:'burned',label:'烤过头',hint:food.resting?'已离火':'可夹出'};
+  if(sides.some(t=>heatState(t,food.cook)==='overdone'))return {kind:'overdone',label:'有点老',hint:food.resting?'已离火':'可夹出'};
   if(sides.every(t=>heatState(t,food.cook)==='ready'))return {kind:'ready',label:food.resting?'已熟保温':'烤好了',hint:food.resting?'已离火':'可夹出'};
   if(food.resting)return {kind:'raw',label:'未熟保温',hint:'可回炉'};
   if(current==='ready' && other==='raw')return {kind:'turn',label:'翻一翻',hint:'点串翻面'};

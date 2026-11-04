@@ -1,3 +1,6 @@
+import {mealPrice} from "./common.js";
+import {createHoldGesture} from "./gestures.js";
+import {FirstFlipHint} from "./experience.js";
 import {X as React} from "../../vendor/react-runtime.js";
 import {
   h,
@@ -12,7 +15,6 @@ import {
 } from "./common.js";
 import {
   GRILL_MENU,
-  BBQ_ORDERS,
   initialBBQ,
   bbqReducer,
   money,
@@ -30,6 +32,14 @@ function SkewerArt({ api, food, season, burst = 0, served = false, turning = fal
     turning && h("svg",{key:`tongs${food.flips}`,className:"bbq-turning-tongs",viewBox:"0 0 110 216","aria-hidden":true},h("path",{d:"M100 -6 L53 71 L40 85 M106 -2 L67 78 L51 93",fill:"none",stroke:"#6D6558",strokeWidth:4,strokeLinecap:"round"}),h("path",{d:"M100 -6 L106 -2",stroke:"#B99062",strokeWidth:8,strokeLinecap:"round"})),
     burst>0 && !served && h("span",{key:burst,className:"seasoning-burst","aria-hidden":true},...[0,1,2,3,4,5,6,7].map(n=>h("i",{key:n,style:{"--fall-x":`${8+n%4*12}px`,"--fall-delay":`${n*.035}s`,background:season === "辣椒"?"#B95543":"#B58B45"}}))));
 }
+function SkewerButton({food,index,state,dispatch,api}) {
+ const latest=React.useRef();latest.current={state,dispatch,food};
+ const gestures=React.useMemo(()=>createHoldGesture({hold:()=>{const {state,dispatch,food}=latest.current;if(state.season)dispatch({type:"sprinkle",key:food.key});},tap:()=>{const {dispatch,food}=latest.current;dispatch({type:"flip",key:food.key});}}),[]);
+ React.useEffect(()=>()=>gestures.dispose(),[gestures]);
+ return h("button",{type:"button",className:"bbq-on-grate",style:{"--skewer-offset":`${(2.5-index)*7}%`},disabled:state.paused,
+ onPointerDown:gestures.down,onPointerMove:gestures.move,onPointerUp:gestures.up,onPointerCancel:gestures.cancel,onPointerLeave:gestures.cancel,onClick:gestures.click,onKeyDown:e=>{if(e.key.toLowerCase()==="s"&&state.season){e.preventDefault();dispatch({type:"sprinkle",key:food.key});}},onContextMenu:e=>e.preventDefault(),"aria-label":`翻动烤网第${index+1}串${food.name}，长按或按S撒料`,"aria-describedby":`bbq-local-${food.key}`},
+ h(SkewerArt,{api,food,season:food.season,burst:state.interaction?.type==="sprinkle"&&(state.interaction.target===undefined||state.interaction.target===food.key)?state.sprinkleCount:0,turning:state.interaction?.type==="flip"&&state.interaction.target===food.key}),h("span",{className:"bbq-skewer-number"},index+1),h(GrillLabel,{food,paused:state.paused}));
+}
 function Doneness({food}) {
   return h("small",{className:`bbq-simple-status status-${bbqStatus(food).kind}`},bbqStatus(food).label);
 }
@@ -40,7 +50,6 @@ function GrillLabel({food,paused=false,removed=false}) {
 }
 export function BBQ({ api }) {
   const [s, dispatch] = useEngine("bbq", bbqReducer, initialBBQ),
-    order = BBQ_ORDERS[s.round % BBQ_ORDERS.length],
     total = s.selected.reduce((n, f) => n + f.price, 0),
     cooking = s.phase === "cooking",
     ready = s.items.filter((f) =>
@@ -72,10 +81,7 @@ export function BBQ({ api }) {
           {
             id: "bbq",
             title: "串儿出炉，趁热开吃",
-            score: s.score,
-            breakdown: s.breakdown,
             api,
-            order,
             feedback: bbqAdvice(s),
             onReplay: action(dispatch, "reset"),
           },
@@ -103,7 +109,7 @@ export function BBQ({ api }) {
           h(
             "p",
             { className: "game-muted" },
-            `${s.seasonApplied ? `已撒${s.seasonApplied}` : "这盘忘了撒料"} · 合计 ${money(s.total)} · 用时 ${Math.round(s.elapsed)}秒`,
+            `${s.items.map(f=>`${f.name} ${f.season||"原味"}`).join("、")} · 合计 ${money(mealPrice(s,s.total))} · 用时 ${Math.round(s.elapsed)}秒`,
           ),
         )
       : h(
@@ -112,7 +118,7 @@ export function BBQ({ api }) {
           h(
             "section",
             { className: "game-workbench" },
-            h(Customer, { api, order }),
+            h(Customer, { api }),cooking&&h(FirstFlipHint),
             h(
               "div",
               { className: "bbq-live-feedback", role: "status" },
@@ -126,13 +132,11 @@ export function BBQ({ api }) {
             : h("section",{className:"bbq-cooking-station","aria-label":"烤炉"},
               h("div",{className:"bbq-live-grill",ref:grillRef},h(GrillDrawing,{api,active:s.items.some(f=>!f.resting)}),
                 s.interaction?.type === "sprinkle" && h(SeasonShaker,{key:s.sprinkleCount,kind:s.seasonApplied}),
-                h("div",{className:"bbq-grate-skewers"},...s.items.map((f,index)=>f.resting?h("div",{key:f.key,className:"bbq-empty-slot",style:{"--skewer-offset":`${(2.5-index)*7}%`}},h(GrillLabel,{food:f,removed:true})):h("button",{
-                  key:f.key,type:"button",className:"bbq-on-grate",style:{"--skewer-offset":`${(2.5-index)*7}%`},disabled:s.paused,onClick:action(dispatch,"flip",{key:f.key}),"aria-label":`翻动烤网第${index+1}串${f.name}`,"aria-describedby":`bbq-local-${f.key}`},
-                  h(SkewerArt,{api,food:f,season:s.seasonApplied,burst:s.interaction?.type==="sprinkle"?s.sprinkleCount:0,turning:s.interaction?.type==="flip"&&s.interaction?.target===f.key}),h("span",{className:"bbq-skewer-number"},index+1),h(GrillLabel,{food:f,paused:s.paused}))))),
-              h("p",{className:"bbq-grill-caption"},"点一下串就能翻面，烤好了就夹到保温盘。"),
+                h("div",{className:"bbq-grate-skewers"},...s.items.map((f,index)=>f.resting?h("div",{key:f.key,className:"bbq-empty-slot",style:{"--skewer-offset":`${(2.5-index)*7}%`}},h(GrillLabel,{food:f,removed:true})):h(SkewerButton,{key:f.key,food:f,index,state:s,dispatch,api})))),
+              h("p",{className:"bbq-grill-caption"},"点串翻面；长按串撒选好的料，也可用每串下方的撒料按钮。烤好了就夹出。"),
               h("div",{className:"bbq-skewer-controls"},...s.items.map((f,index)=>h("article",{key:f.key,className:`bbq-control-row ${f.resting?"is-resting":""}`},
                 h("div",{className:"bbq-control-name"},h("b",null,`${index+1} · ${f.name}`),h("small",null,f.resting?"已离火保温":bbqStatus(f).label)),
-                h("div",{className:"bbq-row-actions"},!f.resting&&h("button",{type:"button",disabled:s.paused,onClick:action(dispatch,"flip",{key:f.key}),"aria-label":`给${f.name}翻面`},"翻面"),
+                h("div",{className:"bbq-row-actions"},h("button",{type:"button",disabled:s.paused||!s.season,onClick:action(dispatch,"sprinkle",{key:f.key}),"aria-label":`给${f.name}撒${s.season||"料"}`},f.season||"撒料"),!f.resting&&h("button",{type:"button",disabled:s.paused,onClick:action(dispatch,"flip",{key:f.key}),"aria-label":`给${f.name}翻面`},"翻面"),
                   h("button",{type:"button",disabled:s.paused,onClick:action(dispatch,"rest",{key:f.key}),"aria-label":`${f.resting?"回炉":"夹出"}${f.name}`},f.resting?"回炉":"夹到保温区")))))) ,
             cooking &&
               h(
@@ -155,7 +159,7 @@ export function BBQ({ api }) {
                           h(SkewerArt, {
                             api,
                             food: f,
-                            season: s.seasonApplied,
+                            season: f.season,
                             burst: s.sprinkleCount,
                           }),
                           h(
@@ -173,7 +177,7 @@ export function BBQ({ api }) {
             h(
               "div",
               { className: "game-status-line" },
-              h("b", null, `${s.selected.length}/6 串 · ${money(total)}`),
+              h("b", null, `${s.selected.length}/6 串 · ${money(mealPrice(s,total))}`),
               h(
                 "span",
                 { className: total > s.budget ? "is-warning" : "" },
@@ -236,16 +240,16 @@ export function BBQ({ api }) {
                 Button,
                 {
                   primary: true,
-                  disabled: s.paused,
+                  disabled: s.paused||!s.season,
                   onClick: action(dispatch, "sprinkle"),
                 },
-                `撒上${s.season}`,
+                s.season?`整盘撒上${s.season}`:"先选口味",
               ),
               h(
                 "p",
                 { className: "applied-season" },
-                !cooking ? `预选${s.season}，上炉后再撒。` : s.seasonApplied
-                  ? `这盘已经撒了：${s.seasonApplied}`
+                !cooking ? (s.season?`预选${s.season}，上炉后可长按串撒料。`:"原味开烤，也可以选一种调料。") : s.seasonApplied
+                  ? s.items.map(f=>`${f.name}：${f.season||"原味"}`).join(" · ")
                   : "这盘还没有撒料",
               ),
             ),

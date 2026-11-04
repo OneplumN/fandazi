@@ -17,7 +17,7 @@ test('invalid or stale dining progress cannot give negative servings',()=>{
 });
 test('optional shaking helps mixing but respects pause and never changes recipe',()=>{
  let s=teaReducer(initialTea(),{type:'mix'});s=teaReducer(s,{type:'pause',value:true});assert.strictEqual(teaReducer(s,{type:'shake'}),s);s=teaReducer(s,{type:'pause',value:false});
- for(let i=0;i<7;i++)s=teaReducer(s,{type:'shake'});assert.equal(s.phase,'result');assert.equal(s.tea,'black');assert.equal(s.total,8);
+ for(let i=0;i<7;i++)s=teaReducer(s,{type:'shake'});assert.equal(s.mix,1);assert.equal(s.phase,'mixing');s=teaReducer(s,{type:'tick',dt:4});assert.equal(s.phase,'result');assert.equal(s.tea,'black');assert.equal(s.total,8);
 });
 
 test('hotpot food still in the pot cannot silently become edible',()=>{
