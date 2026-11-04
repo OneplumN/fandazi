@@ -1,5 +1,5 @@
-import {discountedCoins} from '../content-model.js';
-import {GRILL_MENU,POT_MENU,FILLINGS,teaPrice} from './rules.js';
+import {discountedCoins,validateSeasonalIds} from '../content-model.js';
+import {GRILL_MENU,POT_MENU,FILLINGS,teaPrice,TOPPINGS as SEASONAL_TOPPINGS} from './rules.js';
 export const COMPANIONS=[
  {id:'wan',name:'丸丸',tag:'随性搭子',intro:'好吃比纠结重要，今天我陪你随便搭。',color:'#C77850'},
  {id:'lin',name:'小林',tag:'清爽搭子',intro:'想吃得清爽一点？我帮你留意口味。',color:'#78965F'},
@@ -55,4 +55,23 @@ export function companionLine(id,{game,stage='start',items=[],state={}}={}){
  if(b.id==='lin')return greens?'青菜和配菜都没落下，这一顿挺清爽。':'你挑喜欢的，我负责陪你慢慢吃。';
  if(b.id==='wang')return count<=2?'先垫一口，待会儿想加再加，不着急。':'这一顿吃得踏实，其他事等吃完再说。';
  return game==='breakfast'?'有热乎的饼陪着，今天就算开了个好头。':count>=5?'这一盆挺热闹，和你一起吃就刚刚好。':'不必搭得多漂亮，喜欢这一口就够啦。';
+}
+
+// Limited-time combinations use the same native recipes, capacities and checkout prices.
+export function seasonalPlan({store,buddyId='wan',menu=[],settings={pricePerJin:19.8},budget=20,balance=100}){
+ const game=store?.kind||store?.id,limit=Math.max(0,Math.min(budget,balance));
+ if(!store||store.status==='closed'||!Number.isFinite(limit)||!validateSeasonalIds(game,store.seasonalItems)||!store.seasonalItems.length)return null;
+ const factor=store.discount??1;if(!Number.isFinite(factor)||factor<=0||factor>1)return null;
+ const caps={tea:3,breakfast:3,bbq:6,hotpot:6,malatang:8};let ids=store.seasonalItems.slice(0,caps[game]);
+ if(game==='malatang'&&ids.some(id=>!menu.some(f=>f.id===id&&f.enabled!==false)))return null;
+ const rates={...settings,pricePerJin:(settings.pricePerJin??19.8)*factor,priceGroups:Object.fromEntries(Object.entries(settings.priceGroups||{}).map(([id,n])=>[id,n*factor]))};
+ const build=()=>{
+  if(game==='tea'){const recipe={tea:'black',milk:'鲜奶',sugar:50,ice:'少冰',size:500,toppings:[...ids]};return {recipe,cost:discountedCoins(teaPrice(recipe),factor),foods:ids.map(id=>({id,name:SEASONAL_TOPPINGS.find(f=>f.id===id).name}))};}
+  if(game==='breakfast')return {recipe:{base:'煎饼',egg:true,fillings:[...ids],sauce:'甜面酱'},cost:discountedCoins(10,factor),foods:ids.map(id=>FILLINGS.find(f=>f.id===id))};
+  if(game==='bbq'||game==='hotpot'){const native=game==='bbq'?GRILL_MENU:POT_MENU,foods=ids.map(id=>native.find(f=>f.id===id));return {recipe:{ids:[...ids],...(game==='bbq'?{season:'孜然'}:{broth:'三鲜清汤'})},cost:discountedCoins(foods.reduce((sum,f)=>sum+f.price,0),factor),foods};}
+  const entries=ids.map(id=>({id,qty:1}));return {recipe:{entries,spice:'不辣'},cost:malatangCost(entries,menu,rates),foods:ids.map(id=>menu.find(f=>f.id===id))};
+ };
+ let chosen=build();while(ids.length>1&&chosen.cost>limit){ids=ids.slice(0,-1);chosen=build();}
+ if(chosen.cost>limit)return null;
+ return {...chosen,game,storeId:store.id,storeName:store.name||STORE_NAMES[game],title:store.seasonal||'本季搭配',buddyId:buddyById(buddyId).id,budget,taste:'any',foods:chosen.foods.map(f=>({id:f.food||f.id,name:f.name})),reason:'听说这几样正当季，先照着搭，进店还能随心改。'};
 }

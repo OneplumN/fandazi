@@ -1,47 +1,24 @@
-import {DEV_TOOLS} from '../runtime.js';
+import {DEV_TOOLS,isAdminPath} from '../runtime.js';
 import {useStreet,storeTerms} from '../content-client.js';
 import {useConsumer} from './consumer-store.js';
 import {FavoriteButton,RegularWelcome,ReviewsPage} from './consumer-ui.js';
 import {regularStatus} from './consumer-model.js';
-import {buddyById} from './outing-model.js';
+import {buddyById,seasonalPlan} from './outing-model.js';
 import {DomainNotice,MoveIn,PRIMARY_ORIGIN,LEGACY_ORIGIN} from './domain-move.js';
-import {useOuting} from './outing-store.js';
-import {MealMemento} from './memento.js';
+import {useOuting,prepareOuting} from './outing-store.js';
+const MealMemento=React.lazy(()=>import('./memento.js').then(m=>({default:m.MealMemento})));
+
 import {TodayMeal} from "./outing-ui.js";
 import { WalletBadge, WalletSkin, ShopPage, useWallet, MemberCard } from "./wallet-ui.js";
 import { X as React } from "../../vendor/react-runtime.js";
-import { h } from "./common.js";
+const h=React.createElement;
 import { ShopArt } from "./art.js";
-import { BBQ } from "./bbq.js";
-import { MilkTea } from "./milk-tea.js";
-import { Hotpot } from "./hotpot.js";
-import { Breakfast } from "./breakfast.js";
+const BBQ=React.lazy(()=>import('./bbq.js').then(m=>({default:m.BBQ})));
+const MilkTea=React.lazy(()=>import('./milk-tea.js').then(m=>({default:m.MilkTea})));
+const Hotpot=React.lazy(()=>import('./hotpot.js').then(m=>({default:m.Hotpot})));
+const Breakfast=React.lazy(()=>import('./breakfast.js').then(m=>({default:m.Breakfast})));
 const stores = [
-  {
-    id: "breakfast",
-    name: "早餐小摊",
-    kind: "breakfast",
-    label: "摊饼 · 加料 · 趁热吃",
-    desc: "一份10金币，鸡蛋和三种配菜随心搭。",
-    tag: "早起有好事",
-  },
-  {
-    id: "hotpot",
-    name: "火锅搭子",
-    kind: "hotpot",
-    label: "下锅 · 等候 · 趁好捞起",
-    desc: "不同的菜有不同的脾气，咕嘟声里看准时机。",
-    tag: "一锅热闹",
-  },
-  {
-    id: "tea",
-    name: "奶茶实验室",
-    kind: "tea",
-    label: "调配 · 摇匀 · 客人试饮",
-    desc: "把茶香、奶香和今天的灵感摇进杯子里。",
-    tag: "你的独家特调",
-  },
-  {
+{
     id: "malatang",
     name: "麻辣搭子",
     kind: "malatang",
@@ -49,7 +26,7 @@ const stores = [
     desc: "夹一盆自己喜欢的，看看预算和口味合不合拍。",
     tag: "熟悉的老朋友",
   },
-  {
+{
     id: "bbq",
     name: "烧烤搭子",
     kind: "bbq",
@@ -57,13 +34,42 @@ const stores = [
     desc: "炭火正旺，别忘了给每串翻个面。",
     tag: "新店开张",
   },
+{
+    id: "tea",
+    name: "奶茶实验室",
+    kind: "tea",
+    label: "调配 · 摇匀 · 客人试饮",
+    desc: "把茶香、奶香和今天的灵感摇进杯子里。",
+    tag: "你的独家特调",
+  },
+{
+    id: "hotpot",
+    name: "火锅搭子",
+    kind: "hotpot",
+    label: "下锅 · 等候 · 趁好捞起",
+    desc: "不同的菜有不同的脾气，咕嘟声里看准时机。",
+    tag: "一锅热闹",
+  },
+{
+    id: "breakfast",
+    name: "早餐小摊",
+    kind: "breakfast",
+    label: "摊饼 · 加料 · 趁热吃",
+    desc: "一份10金币，鸡蛋和三种配菜随心搭。",
+    tag: "早起有好事",
+  }
 ];
+function SeasonalSuggestion({store,api,profile,balance}){
+ let settings=api.settings;try{settings={...settings,...JSON.parse(localStorage.getItem('malatang.settings')||'{}')};}catch{}
+ const plan=seasonalPlan({store,buddyId:profile.buddyId,budget:profile.budget,balance,menu:api.menu,settings});if(!plan)return null;
+ return h('div',{className:'seasonal-suggestion','data-seasonal-plan':JSON.stringify({game:plan.game,storeId:plan.storeId,cost:plan.cost,recipe:plan.recipe})},h('p',{className:'street-chat'},`${buddyById(profile.buddyId).name}：本季一起尝尝${plan.foods.map(f=>f.name).join('、')}？`),h('button',{type:'button',className:'btn btn--ghost',onClick:()=>{prepareOuting(plan);window.location.hash=plan.storeId===plan.game?plan.game:'store/'+plan.storeId;}},`尝尝本季搭配 · ${plan.cost}金币`),h('small',null,'先带上搭配进店，开做前不扣金币。'));
+}
 export function GameCollection(props) {
   return h(
     React.Fragment,
     null,
     h(WalletSkin, {}),
-    h(CollectionContents, props),
+    h(React.Suspense,{fallback:h('main',{className:'game-shell initial-loading',role:'status'},'炉子点着了，马上就好…')},h(CollectionContents, props)),
   );
 }
 function CollectionContents({ api, Malatang }) {
@@ -73,7 +79,7 @@ function CollectionContents({ api, Malatang }) {
   const {content,live}=useStreet();
   const entered=React.useRef(null);
   const route = () =>
-    window.location.pathname.startsWith("/admin")
+    isAdminPath()
       ? "malatang"
       : window.location.hash.slice(1).split("?")[0] || "home";
   const [current, setCurrent] = React.useState(route);
@@ -178,6 +184,7 @@ function CollectionContents({ api, Malatang }) {
             { className: "store-card-copy" },
             h("h2", null, storeTerms(store.id).name||store.name),
             h(FavoriteButton,{game:store.id,name:storeTerms(store.id).name||store.name}),
+            h(SeasonalSuggestion,{store:{...store,...storeTerms(store.id)},api,profile,balance:wallet.balance}),
             storeTerms(store.id).seasonal&&h("p",{className:"street-chat"},`丸丸：听说这里上了${storeTerms(store.id).seasonal}，有空来尝尝。`),
             storeTerms(store.id).discount<1&&h("p",{className:"street-chat"},`老王：今天是${Number((storeTerms(store.id).discount*10).toFixed(2))}折，结账也按这个算。`),
             regularStatus(consumer,store.id).regular&&h("small",null,regularStatus(consumer,store.id).side?"熟客 · 老板请小菜":"这里的常客"),
