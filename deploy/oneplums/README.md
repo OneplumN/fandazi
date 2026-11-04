@@ -1,3 +1,5 @@
+当前最新20261104T104631Z，前版103644Z保留；详见 ../../docs/评审落实与发布.md。
+
 当前最新20261104T103644Z，前版101204Z保留；详见 ../../docs/评审落实与发布.md。
 
 当前最新：20261104T101204Z。安全片段需同时部署fandazi-encoding.conf到http级conf.d以及security/precompressed到snippets；内容服务与Node22配置见评审落实文档。以下为历史记录。
