@@ -1,7 +1,7 @@
 {
   "server": "configured outside repository",
   "domain": "fandazi.oneplums.cn",
-  "release": "20261104T101204Z",
+  "release": "20261104T103644Z",
   "http_deployed": true,
   "dns_status": "Primary domain resolves; origin address omitted",
   "tls_status": "fandazi certificate issued; expires2027-02-02; strict TLS browser/curl and HTTP2 verified",
@@ -12,7 +12,7 @@
     "Mobile390px: old-to-new wallet/preferences/cosmetics/receipt transfer; source retained; existing new-site spending not overwritten"
   ],
   "existing_regex_http_status": 301,
-  "previous_release": "20261104T084355Z",
+  "previous_release": "20261104T101204Z",
   "icon_verification": "120 rendered SVGs match local, original70 unchanged, new50 changed",
   "collection": [
     "malatang",
@@ -22,7 +22,7 @@
     "breakfast"
   ],
   "file_count": 110,
-  "game_verification": "65 model tests;13 repository browser tests;8 viewport40 paid meal flows;120 SVGs unchanged; production real payment/PNG/reload and security/compression/auth checks",
+  "game_verification": "68 model tests;15 repository browser tests;8 viewport40 paid meal flows;120 SVGs unchanged;production payment/PNG/reload/compression/security/auth checks passed",
   "economy": "local browser wallet v2: daily100, paid meals, pending-order refunds, cumulative-spend membership; v1 balances/cosmetics migrated",
   "existing_regex_https_status": 200,
   "experience": "Five-shop edible tables, drink liquid level, pancake bite masks, bowl transfers, optional shaking, opt-in sound/haptics, reduced-motion support",

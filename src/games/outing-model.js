@@ -1,5 +1,5 @@
 import {discountedCoins,validateSeasonalIds} from '../content-model.js';
-import {GRILL_MENU,POT_MENU,FILLINGS,teaPrice,TOPPINGS as SEASONAL_TOPPINGS} from './rules.js';
+import {GRILL_MENU,POT_MENU,FILLINGS,teaPrice,heatState,TOPPINGS as SEASONAL_TOPPINGS} from './rules.js';
 export const COMPANIONS=[
  {id:'wan',name:'丸丸',tag:'随性搭子',intro:'好吃比纠结重要，今天我陪你随便搭。',color:'#C77850'},
  {id:'lin',name:'小林',tag:'清爽搭子',intro:'想吃得清爽一点？我帮你留意口味。',color:'#78965F'},
@@ -51,6 +51,14 @@ export function seedMeal(game,base,plan,buddyId){
 export function companionLine(id,{game,stage='start',items=[],state={}}={}){
  const b=buddyById(id),count=items.reduce((n,f)=>n+(f.bites||f.qty||1),0),names=items.map(f=>f.name||'').join(' '),greens=/菠菜|生菜|菌|菇|豆|黄瓜|藕|荷兰豆/.test(names);
  if(stage==='start')return b.id==='lin'?'先按自己喜欢的搭，我陪你吃得清爽一点。':b.id==='wang'?'别着急，先把想吃的摆上，咱们踏实吃一顿。':'今天没有标准答案，想加什么就加什么。';
+ if(game==='bbq'&&state.items?.length){
+  const food=state.items.find(f=>f.sides?.some(t=>['overdone','burned'].includes(heatState(t,f.cook))));
+  if(food)return b.id==='wang'?`${food.name}有点老啦，慢慢嚼；下回我陪你早一点夹出来。`:`${food.name}的颜色深了，我替这口火候皱皱眉，下回咱们早一点翻。`;
+  const plain=state.items.filter(f=>!f.season);
+  if(plain.length)return `${plain.slice(0,2).map(f=>f.name).join('、')}还没撒料，原味也有自己的香。`;
+ }
+ if(game==='tea'&&Number.isFinite(state.mix)&&state.mix<.6&&state.milk==='无奶')return state.toppings?.length?'小料还在杯底，前几口先尝尝清爽茶香。':'这杯纯茶清清爽爽，慢慢喝就好。';
+ if(game==='tea'&&Number.isFinite(state.mix)&&state.mix<.6)return b.id==='lin'?'奶和茶还分着层，下一口换个滋味；喜欢的话再轻轻摇一摇。':'这杯还留着分层，小料沉在杯底，最后几口也有惊喜。';
  if(game==='tea')return b.id==='lin'?(state.sugar>=75?'这杯甜得很认真，下次陪我试试半糖？':'清清爽爽的一杯，正好陪你歇一会儿。'):b.id==='wang'?'咕嘟几口，今天这点小疲惫也喝下去。':(state.toppings?.length>=2?'小料挤在一起，像我们凑热闹。':'这杯我喜欢，和你一起喝就更有味道。');
  if(b.id==='lin')return greens?'青菜和配菜都没落下，这一顿挺清爽。':'你挑喜欢的，我负责陪你慢慢吃。';
  if(b.id==='wang')return count<=2?'先垫一口，待会儿想加再加，不着急。':'这一顿吃得踏实，其他事等吃完再说。';

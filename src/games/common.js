@@ -216,8 +216,9 @@ export function Customer({api}) {
   const favorite=state.interaction?.type==="sprinkle" || (buddy.id==="lin"&&(state.tea==="jasmine"||state.selected?.some(f=>f.id==="mushroom"))) || (buddy.id==="wang"&&state.selected?.some(f=>f.id==="lamb"));
   const [idle,setIdle]=React.useState(false);
   React.useEffect(()=>{setIdle(false);const timer=setTimeout(()=>setIdle(true),18000);return()=>clearTimeout(timer);},[state.interaction?.serial]);
-  const line=favorite?`眼睛亮了！${state.interaction?.type==="sprinkle"?"这串闻着好香，我也想尝一口。":"这一口我也喜欢。"}`:idle?"哈啊～慢慢来，我陪你等热乎的。":companionLine(buddy.id,{game:round?.game});
-  return h("section",{className:`companion-presence ${favorite?"buddy-favorite":idle?"buddy-yawn":""}`},h("span",{className:"buddy-portrait"},h(api.Avatar,{id:buddy.id,name:buddy.name,size:40,color:buddy.color}),favorite&&h("span",{className:"buddy-sparkles","aria-hidden":true},"✦ ✦")),h("div",null,h("b",null,`${buddy.name}陪你吃`),h("p",null,line)));
+  const overdone=state.items?.some(f=>f.sides?.some(t=>["overdone","burned"].includes(heatState(t,f.cook))));
+  const line=overdone?companionLine(buddy.id,{game:round?.game,stage:"end",state}):favorite?`眼睛亮了！${state.interaction?.type==="sprinkle"?"这串闻着好香，我也想尝一口。":"这一口我也喜欢。"}`:idle?"哈啊～慢慢来，我陪你等热乎的。":companionLine(buddy.id,{game:round?.game});
+  return h("section",{className:`companion-presence ${overdone?"buddy-wince":favorite?"buddy-favorite":idle?"buddy-yawn":""}`},h("span",{className:"buddy-portrait"},h(api.Avatar,{id:buddy.id,name:buddy.name,size:40,color:buddy.color}),favorite&&h("span",{className:"buddy-sparkles","aria-hidden":true},"✦ ✦")),h("div",null,h("b",null,`${buddy.name}陪你吃`),h("p",null,line)));
 }
 export function Food({ api, id, size = 64 }) {
   const item = api.menu.find((item) => item.id === id);
