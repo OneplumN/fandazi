@@ -37,7 +37,7 @@ export function MilkTea({ api }) {
       rules: [
         "茶底、奶、甜度、冰量和杯型都能按自己口味选。",
         "小料点一下加入，再点一下拿掉，一杯最多3种。杯子会实时显示配方。",
-        "点杯子按标价开做，摇匀后直接点杯子喝，搭子点评只作参考。",
+        "点杯子按标价开做，分层或摇匀随你喜欢；出杯后点杯子喝。",
       ],
     },
     s.phase === "result"
@@ -109,7 +109,7 @@ export function MilkTea({ api }) {
                 "搭子口味仅供参考",
               ),
             ),
-            h(Button,{disabled:s.paused||s.paymentPending,onClick:action(dispatch,"shake"),"aria-label":"摇匀配方"},`摇匀配方 · ${Math.round((s.mix||0)*100)}%`),
+            h(Button,{disabled:s.paused||s.paymentPending,onClick:action(dispatch,"shake"),"aria-label":"摇匀配方"},s.mix>=1?"摇匀啦":"轻轻摇一摇"),
             s.phase === "mixing" && h(Pause,{state:s,dispatch}),
           ),
           h(

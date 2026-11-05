@@ -164,7 +164,7 @@ export function useEngine(game, reducer, initial) {
   }, [game]);
   React.useEffect(() => {
     if(game === "bbq") {window.scrollTo(0,0);return;}
-    if(state.phase === "result") {
+    if(state.phase === "result" && game!=="hotpot") {
       const frame=requestAnimationFrame(()=>{const panel=document.querySelector(".game-result");panel?.scrollIntoView({block:"start"});panel?.querySelector("h2")?.focus({preventScroll:true});});
       return()=>cancelAnimationFrame(frame);
     }
@@ -313,6 +313,7 @@ export function GameFrame({
       if (previous?.isConnected) previous.focus({preventScroll:true});
     };
   }, [leave]);
+  const hotpotDining=id==="hotpot"&&!state.pot?.length&&state.served?.length>0&&state.served.every(f=>heatState(f.age,f.cook)!=="raw");
   const busy = ![
     "select",
     "recipe",
@@ -406,7 +407,7 @@ export function GameFrame({
           "离开页面会暂停计时，回来后点“继续”。支持键盘 Tab、Enter；按 F 可全屏。",
         ),
       ),
-      state.phase !== "result" && h(FeedbackSettings,{}),
+      state.phase !== "result" && !hotpotDining && h(FeedbackSettings,{}),
       state.paused &&
         busy &&
         h(
@@ -418,7 +419,7 @@ export function GameFrame({
       id==="bbq"&&state.phase==="cooking"&&h(Button,{disabled:state.paymentPending,onClick:()=>dispatch({type:"undo"})},"撤销这盘 · 原路退款"),
       children,
       !["result", "shift"].includes(state.phase) &&
-        !(id==="hotpot"&&!state.pot?.length&&state.served?.length>0&&state.served.every(f=>heatState(f.age,f.cook)!=="raw")) &&
+        !hotpotDining &&
         h(MobileDock, { id, state, dispatch }),
       h(
         "footer",
@@ -479,14 +480,16 @@ export function GameResult({
   children,
   record = true,
   feedback,
+  onBite,
+  tableControls,
 }) {
   const round=React.useContext(RoundContext);
   const buddy=buddyById(round?.stats.companionId);
   const review=h("div",{className:"game-review"},h(api.Avatar,{id:buddy.id,name:buddy.name,size:44,color:buddy.color}),h("div",null,h("b",null,buddy.name),h("p",null,companionLine(buddy.id,{game:id,stage:"end",state:round?.stats,items:[]}))));
   const receipt=round&&h(MealReceipt,{runId:round.runId});
-  const table=round&&h(DiningTable,{key:round.runId,game:id,mealId:round.runId,state:round.stats,api});
+  const table=round&&h(DiningTable,{key:round.runId,game:id,mealId:round.runId,state:round.stats,api,onBite,canInteract:round.stats.canInteract});
   return h("section",{className:"game-result"},h("h2",{tabIndex:-1},title),
-    table,h("details",{className:"meal-notes"},h("summary",null,"这餐小记"),receipt,review,children),
+    table,tableControls,h("details",{className:"meal-notes"},h("summary",null,"这餐小记"),receipt,review,children),
     h("div",{className:"game-actions"},h(Button,{onClick:()=>{window.location.hash="home";}},"逛逛其他小店"),h(Button,{primary:true,onClick:onReplay},replayLabel)));
 }
 
@@ -506,7 +509,7 @@ function MobileDock({ id, state: s, dispatch }) {
     disabled = s.phase === "select" && !s.selected.length;
   }
   if (id === "tea") {
-    text=s.phase === "recipe"?`${money(mealPrice(s,teaPrice(s)))} · 点杯开做`:"摇匀中";
+    text=s.phase === "recipe"?`${money(mealPrice(s,teaPrice(s)))} · 点杯开做`:"正在装杯";
     label=s.phase === "recipe"?"摇这杯":"摇一摇";type=s.phase === "recipe"?"mix":"shake";
     disabled=!!s.paymentPending;
   }

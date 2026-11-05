@@ -29,10 +29,10 @@ export function servingPage(items,counts,limit=6){
  const start=Math.floor(first/limit)*limit;
  return items.slice(start,start+limit).map((_,i)=>start+i);
 }
-export function biteReply(game,item,{actor='you',finished=false,sip=0}={}){
+export function biteReply(game,item,{actor='you',finished=false,sip=0,hasToppings=true,hasIce=true}={}){
  if(finished)return actor==='buddy'?'最后这口我收下啦，碰个杯，谢谢你陪我吃。':'吃好啦，和你慢慢吃一顿真舒服。';
  if(actor==='buddy')return item?.name?`这口${item.name}分我啦，你慢慢吃，下一口等你。`:'这一口分我啦，下一口等你。';
- if(game==='tea')return sip%2?'咕嘟，小料也跟上来啦。':'冰块轻轻碰了一下杯壁。';
+ if(game==='tea')return sip%2?(hasToppings?'咕嘟，小料也跟上来啦。':'咕嘟，这一口慢慢喝。'):(hasIce?'冰块轻轻碰了一下杯壁。':'杯子轻轻放回桌上。');
  if(game==='bbq')return '竹签上又空出一点，烤香还留着。';
  if(game==='breakfast')return '咔嚓，饼边掉了两粒小碎屑。';
  if(game==='hotpot')return '先吹一吹，这一口还热乎。';

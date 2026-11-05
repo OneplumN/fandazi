@@ -42,3 +42,14 @@ test('unpaid quote follows delayed content, successful first payment fixes subse
  const paid={discountFactor:.5,discountCaptured:true};assert.equal(quotedDiscount(paid,.75),.5);assert.equal(quotedDiscount(paid,1),.5);
  assert.equal(quotedDiscount({...paid,discountCaptured:false},.75),.75);
 });
+test('included breakfast egg can be added before or after fillings without reheating or an extra charge',()=>{
+ const cooking=breakfastReducer(initialBreakfast(),{type:'start'}),filled=breakfastReducer(cooking,{type:'filling',id:'lettuce'}),after=breakfastReducer(filled,{type:'egg'});
+ assert.equal(after.egg,true);assert.equal(after.phase,'assembling');assert.deepEqual(after.fillings,['lettuce']);assert.deepEqual(after.sides,filled.sides);assert.strictEqual(breakfastReducer({...filled,paused:true},{type:'egg'}).egg,false);assert.strictEqual(breakfastReducer(after,{type:'egg'}),after);
+});
+test('touch pointerleave after release keeps the completed tap, but a held or cancelled gesture never adds a flip',()=>{
+ let timer,flips=0,seasons=0;
+ const g=createHoldGesture({hold:()=>seasons++,tap:()=>flips++,schedule:fn=>(timer=fn,1),cancel:()=>{timer=null;}}),down={pointerId:1,clientX:10,clientY:10,button:0};
+ g.down(down);g.up();g.cancel();g.click({detail:1});assert.equal(flips,1);
+ g.down(down);timer();g.up();g.cancel();g.click({detail:1});assert.equal(seasons,1);assert.equal(flips,1);
+ g.down(down);g.cancel();g.up();g.click({detail:1});assert.equal(flips,1);
+});

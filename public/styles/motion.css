@@ -307,6 +307,7 @@ body[data-kitchen-motion=off] .skewer-art {
 .recipe-topping {
   animation: pot-to-bowl 220ms cubic-bezier(.16,1,.3,1)
 }
+body[data-kitchen-motion=off] .recipe-topping{animation:none!important}
 @media(prefers-reduced-motion:reduce) {
   .recipe-topping {
     animation: none
@@ -1198,18 +1199,18 @@ body[data-kitchen-hidden=true] .kitchen-action-note {
 .dining-eater .avatar{border:2px solid #3d2b23;background:#fff4dd;box-shadow:0 3px 6px #3d2b2314}
 .dining-eater small{font-size:11px;color:#725541;margin-top:4px}
 .munch-marks{position:absolute;width:84px;height:67px;inset:-3px 0 auto;opacity:0}
-.dining-eater[data-chewing=true] .avatar{animation:meal-chew 680ms ease-out both;transform-origin:50% 85%}
-.dining-eater[data-chewing=true] .munch-marks{animation:meal-munch-marks 680ms ease-out both}
-.dining-table[data-eating] .dining-food[data-lifting=true]>svg,.dining-table[data-eating] .dining-food[data-lifting=true]>.malatang-food-settle{animation:meal-source 680ms ease-out both}
-.dining-mouthful{position:fixed;width:46px;height:46px;margin:-23px 0 0 -23px;z-index:var(--z-feedback,1100);pointer-events:none;animation:meal-mouthful 680ms cubic-bezier(.25,.65,.25,1) both;transform-origin:center;will-change:transform,opacity}
+.dining-eater[data-chewing=true][data-actor=buddy] .avatar{animation:meal-chew var(--bite-ms,520ms) ease-out both;transform-origin:50% 85%}
+.dining-eater[data-chewing=true][data-actor=buddy] .munch-marks{animation:meal-munch-marks var(--bite-ms,520ms) ease-out both}
+.dining-table[data-eating] .dining-food[data-lifting=true]>svg,.dining-table[data-eating] .dining-food[data-lifting=true]>.malatang-food-settle{animation:meal-source var(--bite-ms,520ms) ease-out both}
+.dining-mouthful{position:fixed;width:46px;height:46px;margin:-23px 0 0 -23px;z-index:var(--z-feedback,1100);pointer-events:none;animation:meal-mouthful var(--bite-ms,520ms) cubic-bezier(.25,.65,.25,1) both;transform-origin:center;will-change:transform,opacity}
 .dining-mouthful>svg:first-child{width:46px;height:46px;display:block}
 .dining-mouthful .meal-chopsticks{position:absolute;left:0;top:-17px;width:58px;height:58px;transform:rotate(-20deg)}
-.bite-crumb{position:absolute;width:5px;height:7px;border:1px solid #795333;border-radius:2px;background:#ddbb78;opacity:0;animation:meal-crumb 680ms ease-out both;left:24px;top:25px}
+.bite-crumb{position:absolute;width:5px;height:7px;border:1px solid #795333;border-radius:2px;background:#ddbb78;opacity:0;animation:meal-crumb var(--bite-ms,520ms) ease-out both;left:24px;top:25px}
 .crumb-two{--crumb-x:-14px;--crumb-turn:-35deg;left:16px;top:20px}
 .crumb-one{--crumb-x:17px;--crumb-turn:45deg}
 .dining-tea .dining-motion,.dining-breakfast .dining-motion{animation:none}
-.dining-tea[data-eating] .dining-motion{animation:meal-drink 680ms cubic-bezier(.16,1,.3,1) both;transform-origin:50% 80%}
-.dining-breakfast[data-eating] .dining-motion{animation:meal-nibble 680ms cubic-bezier(.16,1,.3,1) both}
+.dining-tea[data-eating] .dining-motion{animation:meal-drink var(--bite-ms,520ms) cubic-bezier(.16,1,.3,1) both;transform-origin:50% 80%}
+.dining-breakfast[data-eating] .dining-motion{animation:meal-nibble var(--bite-ms,520ms) cubic-bezier(.16,1,.3,1) both}
 @keyframes meal-mouthful{0%{transform:translate(0,0) rotate(-6deg) scale(1);opacity:1}28%{transform:translate(calc(var(--bite-x)*.25),calc(var(--bite-y)*.25 - 34px)) rotate(-13deg) scale(1.12);opacity:1}60%{transform:translate(var(--bite-x),var(--bite-y)) rotate(8deg) scale(.72);opacity:1}76%,100%{transform:translate(var(--bite-x),var(--bite-y)) rotate(6deg) scale(.12);opacity:0}}
 @keyframes meal-source{0%{opacity:1;transform:scale(1)}18%,78%{opacity:.18;transform:scale(.88)}100%{opacity:1;transform:scale(1)}}
 @keyframes meal-chew{0%,45%{transform:rotate(0) scale(1)}58%{transform:rotate(-5deg) scale(1.06,.95)}70%{transform:rotate(3deg) scale(.98,1.04)}83%{transform:rotate(-2deg) scale(1.04,.97)}100%{transform:rotate(0) scale(1)}}
@@ -1225,11 +1226,23 @@ body[data-kitchen-motion=off] .dining-eater *,body[data-kitchen-motion=off] .din
 .dining-eater:disabled {cursor: default}
 .cup-liquid-edge {transition: transform 520ms cubic-bezier(.16,1,.3,1)}
 .dining-mouthful .bite-steam {position:absolute;width:46px;height:46px;left:0;top:-26px;opacity:.65}
-.dining-mouthful .noodle-tail {position:absolute;width:46px;height:72px;left:0;top:12px;transform-origin:50% 0;animation:noodle-follow 680ms ease-out both}
-.dining-bbq[data-eating] .dining-food[data-lifting=true]>svg {animation:skewer-nibble 680ms ease-out both;transform-origin:50% 90%}
-.cup-sip-beads circle {opacity:0;animation:pearl-sip 540ms ease-in var(--sip-lag) both}
+.dining-mouthful .noodle-tail {position:absolute;width:46px;height:72px;left:0;top:12px;transform-origin:50% 0;animation:noodle-follow var(--bite-ms,520ms) ease-out both}
+.dining-bbq[data-eating] .dining-food[data-lifting=true]>svg {animation:skewer-nibble var(--bite-ms,520ms) ease-out both;transform-origin:50% 90%}
+.cup-sip-beads>g {opacity:0;animation:pearl-sip 540ms ease-in var(--sip-lag) both}
 @keyframes skewer-nibble {0%,100%{transform:rotate(0)}28%{transform:translateY(-8px) rotate(-9deg)}58%{transform:translateY(-5px) rotate(-5deg)}}
 @keyframes noodle-follow {0%,18%{transform:scaleY(1) rotate(5deg)}48%{transform:scaleY(.75) rotate(-6deg)}75%,100%{transform:scaleY(.1);opacity:0}}
 @keyframes pearl-sip {0%{transform:translate(0,0);opacity:0}25%{opacity:1}100%{transform:translate(13px,-41px);opacity:0}}
 body[data-kitchen-motion=off] .cup-liquid-edge {transition:none}
 @media(prefers-reduced-motion:reduce){.cup-liquid-edge{transition:none}.noodle-tail,.cup-sip-beads{display:none}}
+
+/* Your bite comes closer to you; a shared bite travels up to your companion. */
+.dining-mouthful[data-diner=you]{animation-name:meal-player-bite}
+.dining-eater[data-chewing=true][data-actor=you] .avatar{animation:buddy-taste-nod var(--bite-ms,520ms) ease-out both}
+.dining-table[data-diner=you].dining-tea .dining-motion{animation-name:meal-sip-self}
+.dining-table[data-eating] .dining-main-food:disabled{opacity:1}
+.dining-table[data-eating] .dining-main-food>span{background:#FFD274;color:#3D2B23}
+.dining-tea[data-eating] .cup-straw-flex{animation:straw-sip var(--bite-ms,560ms) ease-in-out both;transform-origin:207px 44px}
+@keyframes meal-player-bite{0%{transform:translate(0,0) rotate(-5deg) scale(1);opacity:1}32%{transform:translate(calc(var(--bite-x)*.25),-18px) rotate(-8deg) scale(1.2);opacity:1}72%{transform:translate(calc(var(--bite-x)*.8),calc(var(--bite-y)*.6)) rotate(4deg) scale(1.55);opacity:1}100%{transform:translate(var(--bite-x),var(--bite-y)) rotate(2deg) scale(1.7);opacity:0}}
+@keyframes buddy-taste-nod{0%,100%{transform:none}35%{transform:translateY(3px) rotate(-4deg)}65%{transform:translateY(-1px) rotate(2deg)}}
+@keyframes meal-sip-self{0%,100%{transform:none}35%{transform:translateY(6px) rotate(-5deg) scale(1.05)}62%{transform:translateY(9px) rotate(-7deg) scale(1.07)}}
+@keyframes straw-sip{0%,100%{transform:translateY(13px)}40%,65%{transform:translateY(15px) rotate(3deg)}}

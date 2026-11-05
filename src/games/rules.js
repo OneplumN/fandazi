@@ -340,7 +340,7 @@ export function breakfastReducer(s, a) {
     ["煎饼", "手抓饼"].includes(a.value)
   )
     return { ...s, base: a.value };
-  if (a.type === "egg" && s.phase === "cooking" && !s.paused && !s.egg)
+  if (a.type === "egg" && ["cooking","assembling"].includes(s.phase) && !s.paused && !s.egg)
     return { ...s, egg: true };
   if (a.type === "start" && s.phase === "ready")
     return { ...s, phase: "cooking", paused: false };

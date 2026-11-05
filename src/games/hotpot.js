@@ -21,7 +21,7 @@ import {
   money,
   heatState,
 } from "./rules.js";
-import { DiningTable, ServingBowl } from "./dining.js";
+import { ServingBowl } from "./dining.js";
 import {PotArt} from "./kitchen-art.js";
 function ScoopFood({food,index,api,state,dispatch}) {
  const stroke=useOptionalStroke(()=>dispatch({type:"take",key:food.key}));
@@ -33,6 +33,7 @@ export function Hotpot({ api }) {
   const [s, dispatch] = useEngine("hotpot", hotpotReducer, initialHotpot),
     broth = BROTHS.find((b) => b.name === s.broth),
     total = [...s.pot, ...s.served].reduce((n, f) => n + f.price, 0);
+  const diningReady=!s.pot.length&&s.served.length>0&&s.served.every(f=>heatState(f.age,f.cook)!=="raw");
   return h(
     GameFrame,
     {
@@ -47,7 +48,7 @@ export function Hotpot({ api }) {
         "锅里最多六份，捞完后直接点碗里的食物吃。",
       ],
     },
-    s.phase === "result"
+    (s.phase === "result"||diningReady)
       ? h(
           GameResult,
           {
@@ -55,11 +56,13 @@ export function Hotpot({ api }) {
             title: "这一碗，趁热开吃",
             api,
             onReplay: action(dispatch, "reset"),
+            onBite:s.phase==="cooking"?action(dispatch,"finish"):undefined,
+            tableControls:s.phase==="cooking"?h(Pause,{state:s,dispatch}):null,
           },
           h(
             "p",
             null,
-            `${s.broth} · 下锅 ${s.added} 份 · 捞起 ${s.served.length} 份 · ${money(s.total || 0)}`,
+            `${s.broth} · 下锅 ${s.added} 份 · 捞起 ${s.served.length} 份 · ${money(s.paidTotal || s.total || 0)}`,
           ),
           s.pot.length > 0 &&
             h(
@@ -122,9 +125,7 @@ export function Hotpot({ api }) {
             ),
             s.phase === "cooking" && h(Pause,{state:s,dispatch}),
             s.served.length>0 && h("section",{className:"served-plate"},
-              !s.pot.length && s.served.every(f=>heatState(f.age,f.cook)!=="raw")
-                ? h(DiningTable,{key:s.served.map(f=>f.key).join(","),game:"hotpot",mealId:s.runId,api,state:s,canInteract:s.canInteract,onBite:action(dispatch,"finish")})
-                : h(ServingBowl,{api},h("div",{className:"bowl-preview-foods"},...s.served.slice(-6).map(f=>h("button",{type:"button",key:f.key,className:"raw-bowl-food",disabled:s.paused||s.paymentPending||s.pot.length>=6,onClick:action(dispatch,"return",{key:f.key}),"aria-label":`回锅再煮${f.name}`},h(Food,{api,id:f.food,size:44}),h("small",null,f.name),h("small",null,heatState(f.age,f.cook)==="raw"?"点我回锅":"点我再煮"))))),
+              h(ServingBowl,{api},h("div",{className:"bowl-preview-foods"},...s.served.slice(-6).map(f=>h("button",{type:"button",key:f.key,className:"raw-bowl-food",disabled:s.paused||s.paymentPending||s.pot.length>=6,onClick:action(dispatch,"return",{key:f.key}),"aria-label":`回锅再煮${f.name}`},h(Food,{api,id:f.food,size:44}),h("small",null,f.name),h("small",null,heatState(f.age,f.cook)==="raw"?"点我回锅":"点我再煮"))))),
             ),
           ),
           h(

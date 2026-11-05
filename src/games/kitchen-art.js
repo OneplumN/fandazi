@@ -15,13 +15,13 @@ export function IngredientArt({id,size=56}) {
  }
  return h('svg',{width:size,height:size,viewBox:'0 0 64 64','aria-hidden':true,className:'breakfast-ingredient','data-ingredient':id},shape);
 }
-function CupTopping({id,x,y,color}) {
+export function CupTopping({id,x,y,color,enter=true}) {
  let shape;
  if(id==='pearl'||id==='bean')shape=h('ellipse',{...line,cx:0,cy:0,rx:id==='bean'?4:4.5,ry:id==='bean'?6:4.5,fill:color,strokeWidth:1.2});
  else if(id==='taro')shape=path('M-7 4 Q-12 -4 -4 -5 Q-6 -10 2 -9 Q10 -9 8 -1 Q14 6 4 8 Z',color,{strokeWidth:1.2});
  else if(id==='pudding')shape=path('M-7 -7 H5 L9 7 Q0 11 -10 7 Z',color,{strokeWidth:1.2});
  else shape=h('rect',{...line,x:-5,y:-5,width:id==='coconut'?7:10,height:id==='coconut'?14:10,rx:1.5,fill:color,strokeWidth:1.2,transform:'rotate(-12)'});
- return h('g',{transform:`translate(${x} ${y})`,'data-topping':id,className:'recipe-topping'},shape);
+ return h('g',{transform:`translate(${x} ${y})`,'data-topping':id,className:'cup-topping-position'},h('g',{className:enter?'recipe-topping':'cup-topping-shape'},shape));
 }
 // Only visible illustrations run their loops; timers and food rules stay in the engine.
 export function useVisibleArt() {
@@ -53,13 +53,14 @@ export function CupArt({api,state,tea,toppings=[],level=1}) {
  ...Array.from({length:amount?iceCount:0},(_,n)=>h('g',{key:`ice${n}`,className:'cup-ice-drift',style:{'--lag':`${n*-140}ms`}},h('rect',{className:'cup-ice',x:126+(n%3)*31,y:surface+(foam?31:9)+Math.floor(n/3)*24,width:18,height:18,rx:4,fill:'#DCE9E2',stroke:ink,strokeWidth:1.2,transform:`rotate(${n%2?14:-10} ${135+n%3*31} ${surface+(foam?40:18)+Math.floor(n/3)*24})`}))),
  foam&&amount>0&&path(`M108 ${surface+3} Q130 ${surface-3} 151 ${surface+3} T198 ${surface+3} T252 ${surface+3} V${surface+24} Q180 ${surface+32} 108 ${surface+24} Z`,'#F7E8CD',{className:'cup-foam-drift',strokeWidth:1.5}))),
  path('M109 48 L126 214 Q180 231 234 214 L251 48','none'),h('ellipse',{...line,cx:180,cy:48,rx:71,ry:13,fill:'#EEDCB5'}),
- state.drinking&&h('g',{className:'cup-sip-beads',fill:'#76513D',stroke:ink,strokeWidth:1},...[0,1,2].map(n=>h('circle',{key:n,cx:207,cy:45,r:3,style:{'--sip-lag':`${n*90}ms`}}))),
+ state.drinking&&h('g',{className:'cup-sip-beads'},...toppings.slice(0,3).map((item,n)=>h('g',{key:item.id,style:{'--sip-lag':`${n*80}ms`}},h(CupTopping,{id:item.id,x:207,y:45,color:item.color,enter:false})))),
  h('g',{className:`cup-straw-flex ${state.strawPoked?'is-poked':''}`},path('M201 44 L214 4 H225 L212 47','#CBA5AF')),h(api.Face,{x:180,y:151,scale:1.9,mood:0}),path('M125 80 L139 179','none',{stroke:'#FFF9EA',strokeWidth:6,opacity:.6})))),
  h('text',{x:180,y:252,textAnchor:'middle',fill:'#624735',fontSize:12},`${state.size}mL · ${state.ice}`));
 }
+export function breakfastColor(state){const heat=(state.sides?.[state.side||0]||0)/6;return mix('#EDD199',heat>1.3?'#B98A54':'#E3B76D',Math.min(1,Math.max(0,heat>1.3?(heat-1.3)*.6+.4:heat)));}
 export function BreakfastArt({api,state,bites=0,folded=false,biteMarks=[]}) {
  const ref=useVisibleArt(),uid=React.useId().replaceAll(':',''),pan=state.phase==='cooking',ready=state.phase==='ready',heat=(state.sides?.[state.side || 0] || 0)/6;
- const color=mix('#EDD199',heat>1.3?'#B98A54':'#E3B76D',Math.min(1,Math.max(0,heat>1.3?(heat-1.3)*.6+.4:heat)));
+ const color=breakfastColor(state);
  const flipping=pan&&state.interaction?.type==='flip';
  const sauce={'甜面酱':'#986240','辣酱':'#C9774A','番茄酱':'#C66A51'}[state.sauce] || '#986240';
  return h('svg',{ref,viewBox:'0 0 360 260',className:'shop-art art-breakfast breakfast-detail kitchen-motion-art','data-motion-visible':'false',role:'img','aria-label':`${state.base}${pan?'正在煎制':'在餐盘上'}`,'data-base':state.base,'data-spread':Boolean(state.spread),'data-on-pan':pan},
@@ -68,7 +69,7 @@ export function BreakfastArt({api,state,bites=0,folded=false,biteMarks=[]}) {
  pan&&h('g',{className:'pancake-sizzle'},...[[77,127],[103,181],[280,133],[254,181],[141,83],[224,83]].map(([cx,cy],n)=>h('circle',{key:n,cx,cy,r:2.6,fill:'#F6E5B8',stroke:'#D1AE6C',strokeWidth:1,style:{'--lag':`${n*-.23}s`}}))),
  flipping&&h('g',{key:`spatula${state.interaction.serial}`,className:'pancake-spatula','aria-hidden':true},path('M239 164 L302 193 L314 177 L249 145','#BA9972'),path('M209 143 L244 131 L266 157 L231 175 Z','#D5C4A7'),path('M223 144 L243 158 M232 140 L252 154','none',{stroke:'#8D7963',strokeWidth:2})),
  h('ellipse',{cx:180,cy:149,rx:105,ry:48,fill:'#3D2B23',opacity:pan?.12:0,className:flipping?'pancake-flight-shadow':'' ,key:flipping?`shadow${state.interaction.serial}`:'shadow'}),
- h('defs',null,h('mask',{id:`${uid}-bite`,maskUnits:'userSpaceOnUse',x:0,y:0,width:360,height:260},h('rect',{width:360,height:260,fill:bites>=4?'black':'white'}),...(biteMarks.length>=bites?biteMarks.map(m=>[m.cx,m.cy,m.r]):[[252,109,31],[218,83,34],[179,95,39]]).slice(0,bites).map(([cx,cy,r],n)=>h('circle',{key:n,cx,cy,r,fill:'black'})))),
+ h('defs',null,h('mask',{id:`${uid}-bite`,maskUnits:'userSpaceOnUse',x:0,y:0,width:360,height:260},h('rect',{width:360,height:260,fill:bites>=4?'black':'white'}),...(biteMarks.length>=bites?biteMarks.map(m=>[m.cx,m.cy,m.r]):[[252,109,31],[218,83,34],[179,95,39]]).slice(0,bites).map(([cx,cy,r],n)=>h('g',{key:n,'data-bite-edge':cx<180?'left':'right',transform:`translate(${cx} ${cy}) scale(${r/31})`},...[[0,0,22],[-17,5,17],[17,5,17],[0,-17,17]].map(([x,y,radius],i)=>h('circle',{key:i,cx:x,cy:y,r:radius,fill:'black'})))))),
  h('g',{mask:`url(#${uid}-bite)`,key:flipping?`flip${state.interaction.serial}`:'pancake',className:flipping?'pancake-flip':folded?'served-pancake':''},
  folded?path('M77 127 Q180 39 282 127 L257 183 Q179 221 102 181 Z',color):h('ellipse',{...line,cx:180,cy:139,rx:111,ry:64,fill:ready?'#EDD9AE':color}),
  pan&&h('g',{className:'pancake-toast-marks',opacity:Math.min(.7,Math.max(0,heat*.45))},...[[132,116,8],[212,122,5],[161,170,7],[231,158,6],[105,148,4],[183,101,4]].map(([cx,cy,r],n)=>h('ellipse',{key:n,cx,cy,rx:r,ry:r*.45,fill:'#AC763E'}))),

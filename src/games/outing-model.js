@@ -70,7 +70,7 @@ export function companionLine(id,{game,stage='start',items=[],state={}}={}){
   if(plain.length)return `${plain.slice(0,2).map(f=>f.name).join('、')}还没撒料，原味也有自己的香。`;
  }
  if(game==='tea'&&Number.isFinite(state.mix)&&state.mix<.6&&state.milk==='无奶')return state.toppings?.length?'小料还在杯底，前几口先尝尝清爽茶香。':'这杯纯茶清清爽爽，慢慢喝就好。';
- if(game==='tea'&&Number.isFinite(state.mix)&&state.mix<.6)return b.id==='lin'?'奶和茶还分着层，下一口换个滋味；喜欢的话再轻轻摇一摇。':'这杯还留着分层，小料沉在杯底，最后几口也有惊喜。';
+ if(game==='tea'&&Number.isFinite(state.mix)&&state.mix<.6)return b.id==='lin'?'奶和茶还分着层，下一口换个滋味；下回开做前再轻轻摇匀。':'这杯还留着分层，小料沉在杯底，最后几口也有惊喜。';
  if(game==='tea')return b.id==='lin'?(state.sugar>=75?'这杯甜得很认真，下次陪我试试半糖？':'清清爽爽的一杯，正好陪你歇一会儿。'):b.id==='wang'?'咕嘟几口，今天这点小疲惫也喝下去。':(state.toppings?.length>=2?'小料挤在一起，像我们凑热闹。':'这杯我喜欢，和你一起喝就更有味道。');
  if(b.id==='lin')return greens?'青菜和配菜都没落下，这一顿挺清爽。':'你挑喜欢的，我负责陪你慢慢吃。';
  if(b.id==='wang')return count<=2?'先垫一口，待会儿想加再加，不着急。':'这一顿吃得踏实，其他事等吃完再说。';
