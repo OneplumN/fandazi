@@ -225,7 +225,7 @@ export function BasketDock({
           "div",
           { className: "checkout-dock-info" },
           h("span", null, `已选 ${entries.length} 样 · ${Math.round(weight)}g`),
-          (message || empty) && h("small", {role:message?"status":undefined}, message || "点食材，夹一盆"),
+          (message || empty || Math.abs(Math.ceil(price)-price)>.0001) && h("small", {role:message?"status":undefined}, message || (empty?"点食材，夹一盆":"金币向上取整")),
         ),
         h(
           "strong",

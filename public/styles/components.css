@@ -1965,3 +1965,8 @@ body.modal-open .picked-food-flight {
 .play-settings-panel .settings-action {display:block;width:100%;min-height:44px;text-align:left;padding:8px;border:0;border-radius:8px;background:transparent;color:var(--ink);font:inherit}
 .play-settings-panel .settings-action:hover {background:#F9E6CE}
 .play-settings-panel .settings-action:focus-visible,.warming-items>button:focus-visible {outline:3px solid #9B7047;outline-offset:3px}
+
+.pricing-sheet .field input {min-height:44px;font-size:16px;box-sizing:border-box}
+.pricing-sheet .field--row {min-height:44px}
+.pricing-sheet .field--row input {min-height:20px;width:20px;height:20px}
+.pricing-sheet .field--row {cursor:pointer}

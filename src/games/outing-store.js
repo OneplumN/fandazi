@@ -1,11 +1,11 @@
 import {X as React} from '../../vendor/react-runtime.js';
 import {recordCompletedMeal} from './consumer-store.js';
-import {buddyById} from './outing-model.js';
+import {buddyById,isValidBudget} from './outing-model.js';
 export const OUTING_KEY='dazi.outing.v1';
 const defaults={version:1,buddyId:'wan',budget:20,taste:'any',lastMeal:null};
 let value={...defaults},persistent=true;const listeners=new Set();
 function validMeal(m){return m&&typeof m.id==='string'&&['malatang','bbq','tea','hotpot','breakfast'].includes(m.game)&&typeof m.store==='string'&&Number.isFinite(m.amount)&&m.amount>=0&&Number.isFinite(m.at)&&m.recipe&&typeof m.recipe==='object'&&typeof m.line==='string'&&Array.isArray(m.items)&&m.items.every(f=>f&&(f.food===undefined||typeof f.food==='string')&&typeof f.name==='string'&&Number.isFinite(f.qty));}
-function clean(raw){return {...defaults,buddyId:buddyById(raw?.buddyId).id,budget:[10,20,30].includes(raw?.budget)?raw.budget:20,taste:['any','light','spicy','drink'].includes(raw?.taste)?raw.taste:'any',lastMeal:validMeal(raw?.lastMeal)?raw.lastMeal:null};}
+function clean(raw){return {...defaults,buddyId:buddyById(raw?.buddyId).id,budget:isValidBudget(raw?.budget)?raw.budget:20,taste:['any','light','spicy','drink'].includes(raw?.taste)?raw.taste:'any',lastMeal:validMeal(raw?.lastMeal)?raw.lastMeal:null};}
 try{value=clean(JSON.parse(localStorage.getItem(OUTING_KEY)));}catch{persistent=false;}
 let snapshot={profile:value,persistent};
 function update(next){value=next;try{localStorage.setItem(OUTING_KEY,JSON.stringify(value));}catch{persistent=false;}snapshot={profile:value,persistent};listeners.forEach(f=>f());}

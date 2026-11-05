@@ -1,3 +1,4 @@
+import {normalizePricing} from '../malatang-pricing.js';
 import {FeedbackSettings} from './experience.js';
 import {DEV_TOOLS,isAdminPath} from '../runtime.js';
 import {useStreet,storeTerms} from '../content-client.js';
@@ -61,7 +62,7 @@ const stores = [
   }
 ];
 function SeasonalSuggestion({store,api,profile,balance}){
- let settings=api.settings;try{settings={...settings,...JSON.parse(localStorage.getItem('malatang.settings')||'{}')};}catch{}
+ let settings=api.settings;try{settings=normalizePricing(JSON.parse(localStorage.getItem('malatang.settings')||'{}'),settings);}catch{}
  const plan=seasonalPlan({store,buddyId:profile.buddyId,budget:profile.budget,balance,menu:api.menu,settings});if(!plan)return null;
  return h('div',{className:'seasonal-suggestion','data-seasonal-plan':JSON.stringify({game:plan.game,storeId:plan.storeId,cost:plan.cost,recipe:plan.recipe})},h('p',{className:'street-chat'},`${buddyById(profile.buddyId).name}：本季一起尝尝${plan.foods.map(f=>f.name).join('、')}？`),h('button',{type:'button',className:'btn btn--ghost',onClick:()=>{prepareOuting(plan);window.location.hash=plan.storeId===plan.game?plan.game:'store/'+plan.storeId;}},`尝尝本季搭配 · ${plan.cost}金币`),h('small',null,'先带上搭配进店，开做前不扣金币。'));
 }
@@ -174,14 +175,13 @@ function CollectionContents({ api, Malatang }) {
             "div",
             { className: "store-card-top" },
             h("span", null, `0${index + 1}`),
-            h("i", null, storeTerms(store.id).status==='closed'?'今天歇歇':storeTerms(store.id).tag||store.tag),
+            h("div",{className:"store-card-tools"},h("i", null, storeTerms(store.id).status==='closed'?'今天歇歇':storeTerms(store.id).tag||store.tag),h(FavoriteButton,{game:store.id,name:storeTerms(store.id).name||store.name,compact:true})),
           ),
           h(ShopArt, { kind: store.kind, api }),
           h(
             "div",
             { className: "store-card-copy" },
             h("h2", null, storeTerms(store.id).name||store.name),
-            h(FavoriteButton,{game:store.id,name:storeTerms(store.id).name||store.name}),
             h(SeasonalSuggestion,{store:{...store,...storeTerms(store.id)},api,profile,balance:wallet.balance}),
             storeTerms(store.id).seasonal&&h("p",{className:"street-chat"},`丸丸：听说这里上了${storeTerms(store.id).seasonal}，有空来尝尝。`),
             storeTerms(store.id).discount<1&&h("p",{className:"street-chat"},`老王：今天是${Number((storeTerms(store.id).discount*10).toFixed(2))}折，结账也按这个算。`),

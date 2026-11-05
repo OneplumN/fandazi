@@ -1,3 +1,4 @@
+import {DEFAULT_RATE} from '../malatang-pricing.js';
 import {memoryLine} from './companion-memory.js';
 import {discountedCoins,validateSeasonalIds} from '../content-model.js';
 import {GRILL_MENU,POT_MENU,FILLINGS,teaPrice,heatState,TOPPINGS as SEASONAL_TOPPINGS,TEAS} from './rules.js';
@@ -6,16 +7,17 @@ export const COMPANIONS=[
  {id:'lin',name:'小林',tag:'清爽搭子',intro:'想吃得清爽一点？我帮你留意口味。',color:'#78965F'},
  {id:'wang',name:'老王',tag:'干饭搭子',intro:'踏踏实实吃一顿，其他事等吃完再说。',color:'#A57C52'},
 ];
+export const isValidBudget=value=>Number.isInteger(value)&&value>=5&&value<=200;
 export const STORE_NAMES={malatang:'麻辣搭子',bbq:'烧烤搭子',tea:'奶茶实验室',hotpot:'火锅搭子',breakfast:'早餐小摊'};
 export const buddyById=id=>COMPANIONS.find(b=>b.id===id)||COMPANIONS[0];
 export function malatangCost(entries,menu,settings){
- const total=entries.reduce((sum,e)=>{const f=menu.find(f=>f.id===e.id&&f.enabled!==false);if(!f)return sum;const rate=settings.separatePricing?settings.priceGroups?.[f.priceGroup]:settings.pricePerJin;return sum+f.unitWeightG*e.qty/500*(Number.isFinite(rate)&&rate>=0?rate:19.8);},0);
+ const total=entries.reduce((sum,e)=>{const f=menu.find(f=>f.id===e.id&&f.enabled!==false);if(!f)return sum;const rate=settings.separatePricing?settings.priceGroups?.[f.priceGroup]:settings.pricePerJin;return sum+f.unitWeightG*e.qty/500*(Number.isFinite(rate)&&rate>=0?rate:DEFAULT_RATE);},0);
  return entries.length?Math.max(1,Math.ceil(total)):0;
 }
-export function makeMealPlan({buddyId='wan',budget=20,taste='any',balance=100,round=0,menu=[],settings={pricePerJin:19.8},discounts={},closed=[],favorites=[],storeOptions=[],memory=null}){
+export function makeMealPlan({buddyId='wan',budget=20,taste='any',balance=100,round=0,menu=[],settings={pricePerJin:DEFAULT_RATE},discounts={},closed=[],favorites=[],storeOptions=[],memory=null}){
  const targets={};for(const kind of ['breakfast','hotpot','tea','malatang','bbq']){const variants=storeOptions.filter(s=>(s.kind||s.id)===kind&&s.status!=='closed');targets[kind]=variants.find(s=>favorites.includes(s.id))?.id||(!closed.includes(kind)?kind:variants[0]?.id)||null;}
  const factor=id=>discounts[targets[id]||id]||1,price=(n,id)=>discountedCoins(n,factor(id));
- settings={...settings,pricePerJin:(settings.pricePerJin??19.8)*factor('malatang'),priceGroups:Object.fromEntries(Object.entries(settings.priceGroups||{}).map(([k,v])=>[k,v*factor('malatang')]))};
+ settings={...settings,pricePerJin:(settings.pricePerJin??DEFAULT_RATE)*factor('malatang'),priceGroups:Object.fromEntries(Object.entries(settings.priceGroups||{}).map(([k,v])=>[k,v*factor('malatang')]))};
  const buddy=buddyById(buddyId),limit=Math.max(0,Math.min(Number.isFinite(budget)?budget:20,Number.isFinite(balance)?balance:0));
  const wantsSpicy=taste==='spicy',ids=buddy.id==='lin'?['spinach','xianggu','dongdoufu','oupian','fensi']:buddy.id==='wang'?['feiniujuan','niurouwan','spinach','fensi','dongdoufu']:['spinach','xianggu','niurouwan','fensi','dongdoufu'];
  const rememberedIds=taste==='any'?(memory?.foods||[]).map(f=>f.id):[];
@@ -78,13 +80,13 @@ export function companionLine(id,{game,stage='start',items=[],state={}}={}){
 }
 
 // Limited-time combinations use the same native recipes, capacities and checkout prices.
-export function seasonalPlan({store,buddyId='wan',menu=[],settings={pricePerJin:19.8},budget=20,balance=100}){
+export function seasonalPlan({store,buddyId='wan',menu=[],settings={pricePerJin:DEFAULT_RATE},budget=20,balance=100}){
  const game=store?.kind||store?.id,limit=Math.max(0,Math.min(budget,balance));
  if(!store||store.status==='closed'||!Number.isFinite(limit)||!validateSeasonalIds(game,store.seasonalItems)||!store.seasonalItems.length)return null;
  const factor=store.discount??1;if(!Number.isFinite(factor)||factor<=0||factor>1)return null;
  const caps={tea:3,breakfast:3,bbq:6,hotpot:6,malatang:8};let ids=store.seasonalItems.slice(0,caps[game]);
  if(game==='malatang'&&ids.some(id=>!menu.some(f=>f.id===id&&f.enabled!==false)))return null;
- const rates={...settings,pricePerJin:(settings.pricePerJin??19.8)*factor,priceGroups:Object.fromEntries(Object.entries(settings.priceGroups||{}).map(([id,n])=>[id,n*factor]))};
+ const rates={...settings,pricePerJin:(settings.pricePerJin??DEFAULT_RATE)*factor,priceGroups:Object.fromEntries(Object.entries(settings.priceGroups||{}).map(([id,n])=>[id,n*factor]))};
  const build=()=>{
   if(game==='tea'){const recipe={tea:'black',milk:'鲜奶',sugar:50,ice:'少冰',size:500,toppings:[...ids]};return {recipe,cost:discountedCoins(teaPrice(recipe),factor),foods:ids.map(id=>({id,name:SEASONAL_TOPPINGS.find(f=>f.id===id).name}))};}
   if(game==='breakfast')return {recipe:{base:'煎饼',egg:true,fillings:[...ids],sauce:'甜面酱'},cost:discountedCoins(10,factor),foods:ids.map(id=>FILLINGS.find(f=>f.id===id))};

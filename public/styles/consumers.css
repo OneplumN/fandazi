@@ -23,3 +23,9 @@
 .review-share{display:flex!important;align-items:center;gap:10px;min-height:44px}.review-share input{width:22px;height:22px;flex-shrink:0;accent-color:#9b7047}
 
 .complimentary-side{display:flex;align-items:center;gap:12px;min-height:60px;padding:8px 14px;border:1px solid #c4ac8b;border-radius:18px;background:#fffbef;color:#654632;font:inherit;cursor:pointer;touch-action:manipulation}.complimentary-side svg{max-width:50%;height:auto}
+
+.store-card-tools {display:flex;align-items:center;gap:8px;min-width:0}
+.store-card-tools .favorite-store--compact {display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;padding:0;margin:0;border:0;border-radius:50%;background:transparent;color:#78513D}
+.store-card-tools .favorite-store--compact:hover {background:#F9E6CE}
+.store-card-tools .favorite-store--compact[aria-pressed=true] {background:#F9E6CE;color:#8B4A34}
+.store-card-copy>small {display:block}

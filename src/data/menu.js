@@ -1,3 +1,4 @@
+import {DEFAULT_RATE} from '../malatang-pricing.js';
 import {extraIngredients} from '../extra-ingredients.js';
 
 export const CATEGORY_LABELS = {
@@ -14,7 +15,7 @@ export const CATEGORY_ORDER = ["leaf", "mushroom", "root", "tofu", "meat", "stap
 
 export const DEFAULT_SETTINGS = {
     shopName: "楼下那家麻辣烫",
-    pricePerJin: 19.8,
+    pricePerJin: DEFAULT_RATE,
     budgetDefault: 25,
     separatePricing: !1,
     priceGroups: { veg: 19.8, meat: 26.8, ball: 24.8, staple: 19.8 },

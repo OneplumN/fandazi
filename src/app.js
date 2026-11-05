@@ -1,3 +1,4 @@
+import {normalizePricing} from './malatang-pricing.js';
 import {useConsumer} from './games/consumer-store.js';
 import {companionMemory,memoryLine} from './games/companion-memory.js';
 import {LegacyDialog} from './legacy-dialog.js';
@@ -498,6 +499,7 @@ function WeightDisplay({
   budget: d,
   over: r,
   onBudget: S,
+  onPricing,
 }) {
   return i.jsxs(i.Fragment, {
     children: [
@@ -511,7 +513,7 @@ function WeightDisplay({
               i.jsxs("div", {
                 children: [
                   i.jsx("b", { children: "麻辣搭子" }),
-                  i.jsx("small", { children: s.shopName }),
+                  i.jsx("button", {type:"button",className:"hud-rate","aria-label":"修改麻辣烫单价",onClick:onPricing,children:s.separatePricing?"荤素分价 · 改价":`¥${s.pricePerJin.toFixed(2).replace(/(\.\d)0$/,'$1')}/斤 · 改价`}),
                 ],
               }),
             ],
@@ -835,18 +837,18 @@ function SettingsDialog({ settings: s, onSave: f, onClose: d }) {
   const [r, S] = X.useState(s),
     g = (O, D) => S((_) => ({ ..._, [O]: D }));
   return i.jsx(LegacyDialog, {
-    className: "overlay",
+    className: "overlay","aria-label":"麻辣烫单价",
     role: "dialog",
     "aria-modal": "true",
     onClick: d,
     children: i.jsxs("div", {
-      className: "sheet sheet--narrow",
+      className: "sheet sheet--narrow pricing-sheet",
       onClick: (O) => O.stopPropagation(),
-      children: [
+      children: i.jsxs("form",{onSubmit:event=>{event.preventDefault();f(normalizePricing({...r,pricePerJin:Number(r.pricePerJin),budgetDefault:Number(r.budgetDefault),priceGroups:Object.fromEntries(Object.entries(r.priceGroups).map(([key,value])=>[key,Number(value)]))},s));},children:[
         i.jsxs("header", {
           className: "sheet-head",
           children: [
-            i.jsx("h2", { children: "⚙️ 门店设置" }),
+            i.jsx("h2", { children: "麻辣烫单价" }),
             i.jsx("button", {
               type: "button",
               className: "icon-btn",
@@ -873,15 +875,17 @@ function SettingsDialog({ settings: s, onSave: f, onClose: d }) {
             i.jsxs("label", {
               className: "field",
               children: [
-                i.jsx("span", { children: "单价（元 / 斤）" }),
+                i.jsx("span", { children: "单价（元 / 斤，500克）" }),
                 i.jsx("input", {
                   type: "number",
                   step: "0.1",
                   min: 1,
-                  max: 99,
+                  max: 200,
+                  required:true,
+                  inputMode:"decimal",
+                  disabled:r.separatePricing,
                   value: r.pricePerJin,
-                  onChange: (O) =>
-                    g("pricePerJin", Number(O.target.value) || 0),
+                  onChange: (O) => g("pricePerJin", O.target.value),
                 }),
               ],
             }),
@@ -893,9 +897,11 @@ function SettingsDialog({ settings: s, onSave: f, onClose: d }) {
                   type: "number",
                   min: 5,
                   max: 200,
+                  step:1,
+                  required:true,
+                  inputMode:"numeric",
                   value: r.budgetDefault,
-                  onChange: (O) =>
-                    g("budgetDefault", Number(O.target.value) || 0),
+                  onChange: (O) => g("budgetDefault", O.target.value),
                 }),
               ],
             }),
@@ -907,7 +913,7 @@ function SettingsDialog({ settings: s, onSave: f, onClose: d }) {
                   checked: r.separatePricing,
                   onChange: (O) => g("separatePricing", O.target.checked),
                 }),
-                i.jsx("span", { children: "荤素不同价（很多店是这样）" }),
+                i.jsx("span", { children: "荤素分价" }),
               ],
             }),
             r.separatePricing &&
@@ -928,11 +934,12 @@ function SettingsDialog({ settings: s, onSave: f, onClose: d }) {
                         i.jsx("input", {
                           type: "number",
                           step: "0.1",
+                          min:1,max:200,required:true,inputMode:"decimal",
                           value: r.priceGroups[O],
                           onChange: (_) =>
                             g("priceGroups", {
                               ...r.priceGroups,
-                              [O]: Number(_.target.value) || 0,
+                              [O]: _.target.value,
                             }),
                         }),
                       ],
@@ -946,15 +953,14 @@ function SettingsDialog({ settings: s, onSave: f, onClose: d }) {
         i.jsx("p", {
           className: "hint",
           children:
-            "这里的修改只影响你这台设备的显示，方便按自家楼下那家店的价来算。",
+            "默认价仅作示例，可改成楼下店的单价。保存后价签、推荐和结算同步更新，只在本机生效。",
         }),
         i.jsx("button", {
-          type: "button",
+          type: "submit",
           className: "btn btn--primary btn--block",
-          onClick: () => f(r),
           children: "保存",
         }),
-      ],
+      ]}),
     }),
   });
 }
@@ -1079,6 +1085,7 @@ function IngredientShelf({
           className: "popular",
           children: [
             i.jsx("span", { className: "popular-label", children: "本店常点" }),
+            i.jsx("div",{className:"popular-items",children:
             A.map((G) =>
               i.jsxs(
                 "button",
@@ -1098,7 +1105,7 @@ function IngredientShelf({
                 },
                 G.id,
               ),
-            ),
+            )}),
           ],
         }),
       i.jsxs("div", {
@@ -1686,6 +1693,7 @@ function MalatangGame({
           price: rl.price,
           budget: D.budget,
           over: Fl,
+          onPricing:()=>Q(true),
           onBudget: (ol) => {
             _({ type: "budget", value: ol });
             try {
@@ -2777,7 +2785,7 @@ const SETTINGS_KEY = "malatang.settings";
 function readSettings() {
   try {
     const s = localStorage.getItem(SETTINGS_KEY);
-    return s ? JSON.parse(s) : {};
+    return s ? normalizePricing(JSON.parse(s),DEFAULT_SETTINGS) : {};
   } catch {
     return {};
   }

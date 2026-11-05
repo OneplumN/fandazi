@@ -2651,3 +2651,23 @@ body[data-dazi-grill=copper] .bbq-grill-drawing>path:first-child {
  .game-hotpot[data-phase=setup] .physical-pot {max-width:260px}
  .simple-game .food-touch-button>svg {max-height:220px}
 }
+
+/* Keep the label stationary and let complete food chips scroll inside it. */
+.app .popular {display:grid;grid-template-columns:auto minmax(0,1fr);overflow:visible}
+.popular-items {display:flex;gap:8px;flex-wrap:wrap;min-width:0}
+.app button {-webkit-tap-highlight-color:transparent}
+.app .popular-chip {touch-action:pan-x pan-y;user-select:none;-webkit-user-select:none}
+.app .popular-chip:active {background:#FFEDC9}
+.app .popular-chip:focus-visible {outline:3px solid #9B7047;outline-offset:2px}
+.hud-rate {display:block;min-height:44px;padding:4px 0;border:0;background:transparent;color:#78513D;font:inherit;font-size:12px;text-align:left;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;touch-action:manipulation}
+.hud-rate:focus-visible {outline:3px solid #9B7047;outline-offset:2px;border-radius:6px}
+@media(max-width:900px) {
+ .app .popular-items {flex-wrap:nowrap;overflow-x:auto;padding:4px 6px 6px;scroll-padding-inline:6px;overscroll-behavior-x:contain}
+}
+@media(max-width:600px) {
+ .app .hud {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+ .app .hud-brand {min-width:0;gap:6px;margin:0}
+ .app .hud-logo {font-size:24px}
+ .app .hud-brand b {font-size:16px}
+ .app .hud-rate {font-size:11px}
+}
