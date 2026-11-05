@@ -103,11 +103,7 @@ export function MilkTea({ api }) {
                 { className: "recipe-price", "aria-live": "polite" },
                 money(mealPrice(s,teaPrice(s))),
               ),
-              h(
-                "span",
-                { className: "tea-inspiration-note" },
-                "搭子口味仅供参考",
-              ),
+
             ),
             h(Button,{disabled:s.paused||s.paymentPending,onClick:action(dispatch,"shake"),"aria-label":"摇匀配方"},s.mix>=1?"摇匀啦":"轻轻摇一摇"),
             s.phase === "mixing" && h(Pause,{state:s,dispatch}),
@@ -129,7 +125,7 @@ export function MilkTea({ api }) {
               onChange: set("milk"),
               disabled,
             }),
-            h("details",{className:"optional-recipe"},h("summary",null,`甜度、冰量与杯型 · ${s.sugar}%糖 / ${s.ice} / ${s.size}mL`),
+            h("details",{className:"optional-recipe"},h("summary",null,"甜度、冰量与杯型"),
             h(Choice, {
               label: "甜度",
               options: [
@@ -184,11 +180,7 @@ export function MilkTea({ api }) {
                 ),
               ),
             ),
-            h(
-              "p",
-              { className: "game-muted" },
-              "茶底5金币 · 鲜奶/燕麦奶+3 · 奶盖+4 · 大杯+3 · 小料每种+2。",
-            ),
+            h("details",{className:"price-note"},h("summary",null,"价格明细"),h("p",null,"茶底5金币 · 鲜奶/燕麦奶+3 · 奶盖+4 · 大杯+3 · 小料每种+2。")),
           ),
         ),
   );

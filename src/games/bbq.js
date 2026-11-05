@@ -1,6 +1,5 @@
 import {mealPrice} from "./common.js";
 import {createHoldGesture} from "./gestures.js";
-import {FirstFlipHint} from "./experience.js";
 import {X as React} from "../../vendor/react-runtime.js";
 import {
   h,
@@ -118,22 +117,22 @@ export function BBQ({ api }) {
           h(
             "section",
             { className: "game-workbench" },
-            h(Customer, { api }),cooking&&h(FirstFlipHint),
+            h(Customer, { api }),
             h(
               "div",
-              { className: "bbq-live-feedback", role: "status" },
+              { className: "bbq-live-feedback sr-only", role: "status" },
               s.feedback,
             ),
             !cooking ? h("section",{className:"bbq-prep-tray","aria-label":"待烤盘"},
-              h("div",{className:"bbq-tray-heading"},h("h2",null,`待烤盘 · ${s.selected.length}/6串`),h("span",null,"选好后再上炉，点串可以拿掉")),
+              h("div",{className:"bbq-tray-heading"},h("h2",null,`待烤盘 · ${s.selected.length}/6串`),s.selected.length>0&&h("span",null,"点串拿掉")),
               s.selected.length ? h("div",{className:"bbq-prep-skewers"},...s.selected.map(f=>h("button",{type:"button",key:f.key,className:"bbq-prep-skewer",onClick:action(dispatch,"remove",{key:f.key}),"aria-label":`移除${f.name}`},
-                h(SkewerArt,{api,food:f}),h("b",null,f.name),h("small",null,"拿掉这一串"))))
-                : h("p",{className:"bbq-empty-tray"},"先挑喜欢的串，选好再上炉。"))
+                h(SkewerArt,{api,food:f}),h("b",null,f.name))))
+                : h("p",{className:"bbq-empty-tray"},"先从下面挑几串"))
             : h("section",{className:"bbq-cooking-station","aria-label":"烤炉"},
               h("div",{className:"bbq-live-grill",ref:grillRef},h(GrillDrawing,{api,active:s.items.some(f=>!f.resting)}),
                 s.interaction?.type === "sprinkle" && h(SeasonShaker,{key:s.sprinkleCount,kind:s.seasonApplied}),
                 h("div",{className:"bbq-grate-skewers"},...s.items.map((f,index)=>f.resting?h("div",{key:f.key,className:"bbq-empty-slot",style:{"--skewer-offset":`${(2.5-index)*7}%`}},h(GrillLabel,{food:f,removed:true})):h(SkewerButton,{key:f.key,food:f,index,state:s,dispatch,api})))),
-              h("p",{className:"bbq-grill-caption"},"点串翻面；长按串撒选好的料，也可用每串下方的撒料按钮。烤好了就夹出。"),
+              !s.items.some(f=>f.flips>0)&&h("p",{className:"bbq-grill-caption"},"点串翻面 · 长按撒料"),
               h("div",{className:"bbq-skewer-controls"},...s.items.map((f,index)=>h("article",{key:f.key,className:`bbq-control-row ${f.resting?"is-resting":""}`},
                 h("div",{className:"bbq-control-name"},h("b",null,`${index+1} · ${f.name}`),h("small",null,f.resting?"已离火保温":bbqStatus(f).label)),
                 h("div",{className:"bbq-row-actions"},h("button",{type:"button",disabled:s.paused||!s.season,onClick:action(dispatch,"sprinkle",{key:f.key}),"aria-label":`给${f.name}撒${s.season||"料"}`},f.season||"撒料"),!f.resting&&h("button",{type:"button",disabled:s.paused,onClick:action(dispatch,"flip",{key:f.key}),"aria-label":`给${f.name}翻面`},"翻面"),
@@ -223,14 +222,10 @@ export function BBQ({ api }) {
             h(
               "div",
               { className: "bbq-season-station" },
-              h("h2", null, "调味小台"),
-              h(
-                "p",
-                { className: "game-muted" },
-                "按自己喜欢的口味撒一点，香气才会落到串上。",
-              ),
+              h("h2", null, "调味"),
+
               h(Choice, {
-                label: "选一种口味",
+                label: "口味",
                 options: ["孜然", "辣椒", "蜜汁"],
                 value: s.season,
                 onChange: (value) => dispatch({ type: "season", value }),
@@ -245,7 +240,7 @@ export function BBQ({ api }) {
                 },
                 s.season?`整盘撒上${s.season}`:"先选口味",
               ),
-              h(
+              cooking&&s.seasonApplied&&h(
                 "p",
                 { className: "applied-season" },
                 !cooking ? (s.season?`预选${s.season}，上炉后可长按串撒料。`:"原味开烤，也可以选一种调料。") : s.seasonApplied
@@ -275,11 +270,7 @@ export function BBQ({ api }) {
                     }),
                   ),
                   h("h2", null, "今晚烤点什么"),
-                  h(
-                    "p",
-                    { className: "game-muted" },
-                    "每串一面所需时间不同；早烤好的可以先夹到保温区。",
-                  ),
+
                   h(
                     "div",
                     { className: "game-food-grid" },

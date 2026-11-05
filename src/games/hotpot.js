@@ -104,8 +104,8 @@ export function Hotpot({ api }) {
               s.phase === "setup"
                 ? "点食材下锅"
                 : s.pot.length
-                  ? "点菜捞起，或拖出锅沿试试漏勺"
-                  : "锅里空空的，去食材架下点喜欢的吧。",
+                  ? "点菜捞起"
+                  : "点食材下锅",
             ),
             h(
               "div",
@@ -139,11 +139,7 @@ export function Hotpot({ api }) {
               disabled: s.phase !== "setup",
             }),
             h("h2", null, "咕嘟咕嘟，下点什么？"),
-            h(
-              "p",
-              { className: "game-muted" },
-              `已下 ${s.added} 份，按份扣币。先把锅里煮好的捞走，再腾位置。`,
-            ),
+
             h(
               "div",
               { className: "game-food-grid" },

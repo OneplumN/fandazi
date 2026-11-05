@@ -1125,46 +1125,39 @@ body[data-dazi-member="黑金食客"] .member-card {
     padding-bottom: max(16px,env(safe-area-inset-bottom));
   }
 }
-.experience-settings {
-  margin: 8px 0 14px;
-  color: #624735;
-  font-size: 12px;
-  text-align: left
-}
-.experience-settings summary {
-  cursor: pointer;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  text-decoration: underline;
-  text-underline-offset: 4px
-}
-.experience-settings>div {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  padding: 4px 0 12px
-}
-.experience-settings label {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 44px;
-  cursor: pointer
-}
-.experience-settings input {
-  width: 19px;
-  height: 19px;
-  accent-color: #9d613c;
-  cursor: pointer
-}
-.experience-settings small {
-  flex-basis: 100%;
-  font-size: 11px;
-  line-height: 1.7
+/* One sound switch and one optional menu, shared by the game headers. */
+.sr-only {position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
+.play-controls {display:inline-flex;align-items:center;gap:4px;flex:none;position:relative}
+.play-control {display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;min-height:44px;min-width:44px;padding:0;border:1px solid #BBA58A;border-radius:12px;background:#FFF9ED;color:#624735;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.play-control:hover {background:#F9E6CE}
+.play-control:active {background:#F1DBB9}
+.play-control:focus-visible,.play-settings-panel input:focus-visible {outline:3px solid #9B7047;outline-offset:3px}
+.sound-toggle[aria-pressed=false] {color:#8B6F5A}
+.experience-settings {margin:0;position:relative;color:#624735;font-size:13px;text-align:left}
+.experience-settings>summary {list-style:none;text-decoration:none}
+.experience-settings>summary::-webkit-details-marker {display:none}
+.play-controls:has(.experience-settings[open]) {z-index:var(--z-notice)}
+.play-settings-panel {position:absolute;right:0;top:calc(100% + 8px);width:min(264px,calc(100vw - 32px));max-height:min(70dvh,440px);overflow:auto;overscroll-behavior:contain;box-sizing:border-box;padding:12px;background:#FFFDF7;border:1.5px solid #73563F;border-radius:14px;box-shadow:0 7px 18px #3D2B2320}
+.play-settings-panel>label {display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;cursor:pointer}
+.play-settings-panel input {width:20px;height:20px;accent-color:#9D613C;cursor:pointer}
+.play-settings-panel .favorite-store {width:100%;margin:4px 0;padding:8px;text-align:left;border:0;border-radius:8px;background:transparent}
+.play-settings-panel .favorite-store:hover {background:#F9E6CE}
+.play-settings-panel .game-guide {margin:4px 0 0;background:transparent;border:0;border-top:1px dashed #D6C0A2;border-radius:0}
+.play-settings-panel .game-guide summary {padding:8px 0}
+.play-settings-panel .game-guide ol {margin:0 0 8px 20px;padding:0;font-size:13px}
+.play-settings-panel .game-guide>p {padding:0;font-size:12px}
+.game-topbar {gap:8px}
+.game-topbar>.wallet-badge,.malatang-game-nav>.wallet-badge {margin-left:auto}
+.hub-player-tools {display:flex;align-items:center;gap:8px}
+.checkout-header>h2 {flex:1;min-width:0}
+.checkout-header .play-settings-panel {right:-56px}
+.price-note {margin:8px 0;color:#624735;font-size:12px;line-height:1.7}
+.price-note summary {min-height:44px;display:flex;align-items:center;cursor:pointer}
+@media(max-width:600px){
+ .game-topbar .wallet-badge small,.malatang-game-nav .wallet-badge small,.hub-player-tools .wallet-badge small{display:none}
+ .malatang-game-nav{align-items:center;gap:8px}
+ .hub-header{gap:8px}
+ .hub-player-tools{gap:6px}
 }
 .dining-table {
   margin: 22px 0;
@@ -1325,9 +1318,7 @@ body[data-dazi-member="黑金食客"] .member-card {
   font-weight: 700;
   color: #624735
 }
-.dining-table .experience-settings {
-  margin: 8px 0 0
-}
+
 .serving-bowl {
   position: relative;
   max-width: 260px;
@@ -1697,12 +1688,8 @@ body[data-dazi-member="黑金食客"] .member-card {
   align-items: center;
   line-height: 1.6
 }
-.simple-game>.game-guide {
-  order: 6
-}
-.simple-game>.experience-settings {
-  order: 7
-}
+
+
 .simple-game>.game-footnote {
   order: 8
 }
@@ -1922,12 +1909,8 @@ body.modal-open .picked-food-flight {
     max-height: calc(100dvh - 12px)
   }
 }
-.game-bbq>.game-guide {
-  order: 6
-}
-.game-bbq>.experience-settings {
-  order: 7
-}
+
+
 .game-bbq>.game-footnote {
   order: 8
 }

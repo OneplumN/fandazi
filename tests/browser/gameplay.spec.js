@@ -27,7 +27,7 @@ test('saved sound off remains off with keyboard and synthetic keys never unlock 
  await page.goto('/play/#tea');await page.evaluate(()=>document.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true})));
  await page.getByRole('button',{name:'摇匀配方',exact:true}).focus();await page.keyboard.press('Enter');
  expect(await page.evaluate(()=>window.__audioCreated)).toBe(0);
- await page.getByText('声音与动效',{exact:true}).first().click();await expect(page.getByRole('checkbox',{name:'轻声音效',exact:true})).not.toBeChecked();
+ await expect(page.getByRole('button',{name:'打开声音',exact:true})).toHaveAttribute('aria-pressed','false');
 });
 
 test('sound waits for a trusted gesture and a real keyboard action can unlock it',async({page})=>{

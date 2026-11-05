@@ -1695,13 +1695,13 @@ body[data-dazi-tray=gold] .bbq-serving-platter {
   height: 126px
 }
 .bbq-empty-tray {
-  min-height: 180px;
+  min-height: 64px;
   display: grid;
   place-content: center;
   text-align: center;
   font-size: 13px;
   color: #624735;
-  padding: 20px;
+  padding: 12px;
   line-height: 1.8
 }
 .bbq-skewer-drawing {
@@ -1882,6 +1882,7 @@ body[data-dazi-grill=copper] .bbq-grill-drawing>path:first-child {
   border-radius: 8px
 }
 @media(max-width:900px) {
+  .game-bbq[data-phase=select] .game-workbench>.game-actions,.game-bbq[data-phase=select] .game-status-line {display:none}
   .bbq-refined>.game-controls {
     order: 2
   }
@@ -1902,9 +1903,6 @@ body[data-dazi-grill=copper] .bbq-grill-drawing>path:first-child {
   .bbq-prep-skewer .skewer-art {
     width: 60px;
     height: 118px
-  }
-  .bbq-empty-tray {
-    min-height: 148px
   }
   .bbq-tray-heading h2 {
     font-size: 14px

@@ -354,7 +354,6 @@ export function GameFrame({
           },
           "← 小馆首页",
         ),
-        h(FavoriteButton,{game:state.storeId||id}),
         h(WalletBadge, {
           onClick: (event) => {
             if(state.paymentPending){event.preventDefault();return;}
@@ -367,6 +366,27 @@ export function GameFrame({
             }
           },
         }),
+        h(FeedbackSettings,{},h(FavoriteButton,{game:state.storeId||id}),      h(
+        "details",
+        {
+          className: "game-guide",
+          onToggle: (event) => {
+            if (event.currentTarget.open && busy)
+              dispatch({ type: "pause", value: true });
+          },
+        },
+        h("summary", null, "怎么玩"),
+        h(
+          "ol",
+          null,
+          rules.map((rule, index) => h("li", { key: index }, rule)),
+        ),
+        h(
+          "p",
+          null,
+          "离开会暂停；价格和食材参数为游戏设定。",
+        ),
+      )),
       ),
       h(
         "div",
@@ -374,7 +394,6 @@ export function GameFrame({
         h(
           "div",
           null,
-          h("p", null, "搭子小馆 · PLAY & TASTE"),
           h("h1", null, title),
           h("span", null, subtitle),
         ),
@@ -386,28 +405,6 @@ export function GameFrame({
             : membership(wallet.spent).name !== "初来小馆" ? `${membership(wallet.spent).name}\n欢迎常来` : "好好玩\n慢慢吃",
         ),
       ),
-      h(
-        "details",
-        {
-          className: "game-guide",
-          onToggle: (event) => {
-            if (event.currentTarget.open && busy)
-              dispatch({ type: "pause", value: true });
-          },
-        },
-        h("summary", null, "怎么玩 · 点开看看"),
-        h(
-          "ol",
-          null,
-          rules.map((rule, index) => h("li", { key: index }, rule)),
-        ),
-        h(
-          "p",
-          null,
-          "离开页面会暂停计时，回来后点“继续”。支持键盘 Tab、Enter；按 F 可全屏。",
-        ),
-      ),
-      state.phase !== "result" && !hotpotDining && h(FeedbackSettings,{}),
       state.paused &&
         busy &&
         h(
@@ -421,11 +418,6 @@ export function GameFrame({
       !["result", "shift"].includes(state.phase) &&
         !hotpotDining &&
         h(MobileDock, { id, state, dispatch }),
-      h(
-        "footer",
-        { className: "game-footnote" },
-        "小馆里的火候、价格与营养参数均为游戏设定；现实烹饪请以实际食材为准。",
-      ),
       leave &&
         h(
           "div",

@@ -40,7 +40,7 @@ test('BBQ starts with one payment click, then serves and records every bite',asy
  await expect.poll(wallet).not.toBeNull();
  const before=await wallet();
  await page.locator('.game-food-grid button').first().click();
- await page.getByRole('button',{name:'开始烤制',exact:true}).click();
+ await page.getByRole('button',{name:'上炉开烤',exact:true}).click();
  await expect(page.locator('[data-game="bbq"]')).toHaveAttribute('data-phase','cooking');
  await expect(page.getByRole('dialog',{name:/确认下单/})).toHaveCount(0);
  const paid=await wallet();expect(paid.balance).toBeLessThan(before.balance);

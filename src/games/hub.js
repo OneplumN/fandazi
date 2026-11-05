@@ -1,3 +1,4 @@
+import {FeedbackSettings} from './experience.js';
 import {DEV_TOOLS,isAdminPath} from '../runtime.js';
 import {useStreet,storeTerms} from '../content-client.js';
 import {useConsumer} from './consumer-store.js';
@@ -128,8 +129,7 @@ function CollectionContents({ api, Malatang }) {
         "nav",
         { className: "malatang-game-nav" },
         h("a", { href: "#home" }, "← 小馆首页"),
-        h(FavoriteButton,{game:storeId,name:selected?.name}),
-        h(WalletBadge, {}),
+        h(WalletBadge, {}),h(FeedbackSettings,{},h(FavoriteButton,{game:storeId,name:selected?.name})),
       ),
       h(RegularWelcome,{game:storeId,name:storeTerms(storeId).name||selected.name,buddyId:profile.buddyId}),
       h(Malatang,{key:storeId}),
@@ -150,7 +150,7 @@ function CollectionContents({ api, Malatang }) {
         h("span", null, "搭"),
         h("b", null, "搭子小馆"),
       ),
-      h(WalletBadge, {}),
+      h("div",{className:"hub-player-tools"},h(WalletBadge, {}),h(FeedbackSettings,{})),
     ),
     h(DomainNotice),
     h(TodayMeal,{api,balance:wallet.balance}),

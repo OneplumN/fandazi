@@ -1,7 +1,7 @@
 import {storeTerms,resolveStoreId} from './content-client.js';
 import {isolateModal} from "./modal-isolation.js";
 import {lockPageScroll} from "./scroll-lock.js";
-import {useDockClearance} from "./games/experience.js";
+import {FeedbackSettings,useDockClearance} from "./games/experience.js";
 import {PickBowl} from "./games/malatang-motion.js";
 import {DiningTable} from "./games/dining.js";
 import {payMeal,finishMeal,useWallet} from "./games/wallet-store.js";
@@ -25,11 +25,13 @@ export function Modal({ title, className = "", panelId, onClose, children }) {
           'button:not(:disabled), a[href], summary, input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])',
         ),
       ].filter((el) => el.getClientRects().length && !el.closest("[inert]"));
-    (focusable()[0] || panel).focus();
+    (panel.querySelector(".checkout-header .icon-btn") || focusable()[0] || panel).focus();
     const keyboard = (event) => {
       if (!isolation.isTop()) return;
       if (event.key === "Escape") {
         event.preventDefault();
+        const settings=panel.querySelector('.experience-settings[open]');
+        if(settings){settings.open=false;settings.querySelector('summary').focus({preventScroll:true});return;}
         closeRef.current();
       }
       if (event.key !== "Tab") return;
@@ -86,6 +88,7 @@ export function Modal({ title, className = "", panelId, onClose, children }) {
         "header",
         { className: "checkout-header" },
         h("h2", { id: headingId }, title),
+        h(FeedbackSettings,{}),
         h(
           "button",
           {

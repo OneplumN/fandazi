@@ -1,3 +1,4 @@
+import {ControlIcon} from './control-icon.js';
 import {suppressKitchenTouch} from './touch-policy.js';
 import {X as React} from '../../vendor/react-runtime.js';
 const h=React.createElement, KEY='dazi.experience.v1', listeners=new Set();
@@ -25,12 +26,26 @@ export function kitchenFeedback(kind='tap') {
     oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};
   } catch {} // Feedback is optional; unsupported devices keep the same interactions.
 }
-export function FeedbackSettings() {
-  const settings=React.useSyncExternalStore(cb=>{listeners.add(cb);return()=>listeners.delete(cb);},()=>preferences);
-  return h('details',{className:'experience-settings'},h('summary',null,'声音与动效'),
-    h('div',null,...[['sound','轻声音效'],['motion','互动动效'],...(typeof navigator.vibrate==='function'?[['haptics','轻触反馈']]:[])].map(([key,label])=>h('label',{key},h('input',{type:'checkbox',checked:settings[key],onChange:e=>{
-      preferences={...preferences,[key]:e.target.checked};try{localStorage.setItem(KEY,JSON.stringify(preferences));}catch{}update();if(key==='sound'&&preferences.sound)kitchenFeedback('tap');
-    }}),label)),h('small',null,'首次操作后有轻声音效；可随时关闭。系统减少动态效果设置也会生效。')));
+function setFeedbackPreference(key,value){
+ preferences={...preferences,[key]:value};
+ try{localStorage.setItem(KEY,JSON.stringify(preferences));}catch{}
+ update();
+ if(key==='sound'&&value)kitchenFeedback('tap');
+}
+export function FeedbackSettings({children}) {
+ const settings=React.useSyncExternalStore(cb=>{listeners.add(cb);return()=>listeners.delete(cb);},()=>preferences),ref=React.useRef(null);
+ React.useEffect(()=>{
+  const outside=event=>{const menu=ref.current;if(menu?.open&&!menu.parentElement.contains(event.target))menu.open=false;};
+  document.addEventListener('pointerdown',outside,true);return()=>document.removeEventListener('pointerdown',outside,true);
+ },[]);
+ const label=settings.sound?'关闭声音':'打开声音';
+ return h('div',{className:'play-controls'},
+  h('button',{type:'button',className:'play-control sound-toggle',onClick:()=>setFeedbackPreference('sound',!settings.sound),'aria-label':label,'aria-pressed':settings.sound,title:label},h(ControlIcon,{muted:!settings.sound})),
+  h('details',{className:'experience-settings',ref,onKeyDown:event=>{if(event.key==='Escape'&&ref.current.open){event.preventDefault();event.stopPropagation();ref.current.open=false;ref.current.querySelector('summary').focus({preventScroll:true});}}},
+   h('summary',{className:'play-control','aria-label':'更多设置',title:'更多设置'},h(ControlIcon,{more:true})),
+   h('div',{className:'play-settings-panel','aria-label':'游玩设置'},
+    ...[['motion','动效'],...(typeof navigator.vibrate==='function'?[['haptics','触感']]:[])].map(([key,text])=>h('label',{key},h('span',null,text),h('input',{type:'checkbox',checked:settings[key],onChange:e=>setFeedbackPreference(key,e.target.checked)}))),
+    children)));
 }
 window.addEventListener('storage',event=>{if(event.key!==KEY&&event.key!==null)return;try{const saved=event.newValue?JSON.parse(event.newValue):defaults;preferences={...defaults};for(const key of Object.keys(defaults))if(typeof saved[key]==='boolean')preferences[key]=saved[key];update();}catch{}});
 document.body.dataset.kitchenHidden=String(document.hidden);
@@ -69,11 +84,4 @@ export function useDockClearance(ref,rootSelector){
     update();const observer=window.ResizeObserver?new ResizeObserver(update):null;observer?.observe(dock);window.addEventListener('resize',update);
     return()=>{observer?.disconnect();window.removeEventListener('resize',update);root.style.removeProperty('--dock-clearance');};
   },[]);
-}
-
-export function FirstFlipHint(){
- const [show,setShow]=React.useState(()=>{try{return !localStorage.getItem('dazi.flip-hint.v1');}catch{return true;}});
- React.useEffect(()=>{if(show)try{localStorage.setItem('dazi.flip-hint.v1','seen');}catch{}},[]);
- const dismiss=()=>{setShow(false);try{localStorage.setItem('dazi.flip-hint.v1','seen');}catch{}};
- return show?h('aside',{className:'flip-hint',role:'note'},h('span',null,'点一下串或饼就能翻面，长按串可撒选好的料。'),h('button',{type:'button',onClick:dismiss,'aria-label':'不再显示翻面提示'},'知道啦')):null;
 }
