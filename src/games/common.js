@@ -1,3 +1,5 @@
+import {useConsumer} from './consumer-store.js';
+import {companionMemory,memoryLine} from './companion-memory.js';
 import {FavoriteButton} from './consumer-ui.js';
 import {quotedDiscount} from "./meal-pricing.js";
 import {isolateModal} from "../modal-isolation.js";
@@ -212,12 +214,14 @@ export function Choice({ label, options, value, onChange, disabled = false }) {
   );
 }
 export function Customer({api}) {
+  const {profile:history}=useConsumer();
   const round=React.useContext(RoundContext),buddy=buddyById(round?.stats.companionId),state=round?.stats||{};
   const favorite=state.interaction?.type==="sprinkle" || (buddy.id==="lin"&&(state.tea==="jasmine"||state.selected?.some(f=>f.id==="mushroom"))) || (buddy.id==="wang"&&state.selected?.some(f=>f.id==="lamb"));
   const [idle,setIdle]=React.useState(false);
   React.useEffect(()=>{setIdle(false);const timer=setTimeout(()=>setIdle(true),18000);return()=>clearTimeout(timer);},[state.interaction?.serial]);
   const overdone=state.items?.some(f=>f.sides?.some(t=>["overdone","burned"].includes(heatState(t,f.cook))));
-  const line=overdone?companionLine(buddy.id,{game:round?.game,stage:"end",state}):favorite?`眼睛亮了！${state.interaction?.type==="sprinkle"?"这串闻着好香，我也想尝一口。":"这一口我也喜欢。"}`:idle?"哈啊～慢慢来，我陪你等热乎的。":companionLine(buddy.id,{game:round?.game});
+  const remembered=memoryLine(companionMemory(history,buddy.id),{game:round?.game});
+  const line=remembered&&!state.interaction?remembered:overdone?companionLine(buddy.id,{game:round?.game,stage:"end",state}):favorite?`眼睛亮了！${state.interaction?.type==="sprinkle"?"这串闻着好香，我也想尝一口。":"这一口我也喜欢。"}`:idle?"哈啊～慢慢来，我陪你等热乎的。":remembered||companionLine(buddy.id,{game:round?.game});
   return h("section",{className:`companion-presence ${overdone?"buddy-wince":favorite?"buddy-favorite":idle?"buddy-yawn":""}`},h("span",{className:"buddy-portrait"},h(api.Avatar,{id:buddy.id,name:buddy.name,size:40,color:buddy.color}),favorite&&h("span",{className:"buddy-sparkles","aria-hidden":true},"✦ ✦")),h("div",null,h("b",null,`${buddy.name}陪你吃`),h("p",null,line)));
 }
 export function Food({ api, id, size = 64 }) {
@@ -414,6 +418,7 @@ export function GameFrame({
       id==="bbq"&&state.phase==="cooking"&&h(Button,{disabled:state.paymentPending,onClick:()=>dispatch({type:"undo"})},"撤销这盘 · 原路退款"),
       children,
       !["result", "shift"].includes(state.phase) &&
+        !(id==="hotpot"&&!state.pot?.length&&state.served?.length>0&&state.served.every(f=>heatState(f.age,f.cook)!=="raw")) &&
         h(MobileDock, { id, state, dispatch }),
       h(
         "footer",

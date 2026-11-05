@@ -1,3 +1,5 @@
+import {useConsumer} from './games/consumer-store.js';
+import {companionMemory,memoryLine} from './games/companion-memory.js';
 import {LegacyDialog} from './legacy-dialog.js';
 import {assetUrl,basePath,isAdminPath} from './runtime.js';
 import {getStoreDiscount,resolveStoreId,useStreet} from './content-client.js';
@@ -1646,6 +1648,7 @@ function MalatangGame({
   onSettings: S,
   onAdmin: g,
 }) {
+  const {profile:buddyHistory}=useConsumer();
   const [storeId]=X.useState(()=>resolveStoreId('malatang'));
   useStreet();
   const rawSettings=d,[frozenDiscount,freezeDiscount]=X.useState(null),storeDiscount=frozenDiscount??getStoreDiscount('malatang');
@@ -1693,13 +1696,13 @@ function MalatangGame({
     ),
     Fl = rl.price > D.budget && D.budget > 0,
     vl = (ol) => D.entries.find((el) => el.id === ol)?.qty ?? 0;
-  const buddy=buddyById(D.companionId);
-  let Dl = `${buddy.name}：${companionLine(buddy.id,{game:"malatang",items:D.entries.map(e=>({...e,name:K.get(e.id)?.name}))})}`;
+  const buddy=buddyById(D.companionId),rememberedGreeting=memoryLine(companionMemory(buddyHistory,buddy.id),{game:"malatang"});
+  let Dl = `${buddy.name}：${rememberedGreeting||companionLine(buddy.id,{game:"malatang",items:D.entries.map(e=>({...e,name:K.get(e.id)?.name}))})}`;
   return (
     D.entries.length === 0
-      ? (Dl = "先夹点东西吧，丸丸饿了。")
+      ? (Dl = rememberedGreeting?`${buddy.name}：${rememberedGreeting}`:`先夹点喜欢的吧，${buddy.name}陪你吃。`)
       : Fl
-        ? (Dl = "超预算了……不过麻姐没拦你，是丸丸在拦你。")
+        ? (Dl = "这盆超出刚才的预算啦，按自己的胃口来就好。")
         : Rl.vegShare < 0.2
           ? (Dl = "一把绿叶都没有，加两把菜？盆会更满、秤不会更重。")
           : Rl.proteinShare < 0.15

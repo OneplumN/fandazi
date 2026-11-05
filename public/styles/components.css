@@ -1203,6 +1203,19 @@ body[data-dazi-member="黑金食客"] .member-card {
   position: relative;
   isolation: isolate
 }
+.dining-eater {
+  border: 0;
+  padding: 4px;
+  background: transparent;
+  color: inherit;
+  min-height: 88px;
+  touch-action: manipulation;
+  cursor: pointer
+}
+.dining-eater:focus-visible {outline: 2px solid #A5734C;outline-offset: 2px;border-radius: 18px}
+.dining-eater[aria-pressed=true] .avatar {box-shadow: 0 0 0 3px #E1B976,0 3px 6px #3D2B2314}
+.empty-mouthful {min-width: 0;display: grid;place-items: center;width: 100%;height: 56px;min-height: 56px;pointer-events: none}
+.dining-table .bowl-edible-foods .dining-food b {font-size: 10px;line-height: 12px}
 .dining-foods {
   display: grid;
   grid-template-columns: repeat(3,minmax(0,1fr));
@@ -1560,6 +1573,7 @@ body[data-dazi-member="黑金食客"] .member-card {
   .serving-bowl {
     max-width: 340px
   }
+  .bowl-edible-foods .empty-mouthful {height: 44px;min-height: 44px}
   .bowl-edible-foods .dining-food {
     height: 44px;
     min-height: 44px
@@ -1618,6 +1632,7 @@ body[data-dazi-member="黑金食客"] .member-card {
   .bowl-mouthful {
     top: 4%
   }
+  .bowl-edible-foods .empty-mouthful {height: 44px;min-height: 44px}
   .bowl-edible-foods .dining-food {
     height: 44px;
     min-height: 44px
@@ -1718,6 +1733,7 @@ body[data-dazi-member="黑金食客"] .member-card {
     margin-top: 16px
   }
 }
+.game-hotpot .served-plate .dining-eater {border: 0;background: transparent;padding: 4px;opacity: 1}
 .simple-game .served-plate .dining-food {
   border: 0;
   background: transparent;
@@ -1855,8 +1871,8 @@ body.modal-open .picked-food-flight {
     height: 17px
   }
   .dining-malatang .malatang-food-settle {
-    width: 28px;
-    height: 28px
+    width: 32px;
+    height: 32px
   }
   .dining-malatang .bowl-edible-foods:has(>button:only-child) .malatang-food-settle {
     width: 48px;
@@ -1868,7 +1884,7 @@ body.modal-open .picked-food-flight {
   height: 48px
 }
 .dining-malatang .dining-stage {
-  padding-top: 44px
+  padding-top: 96px
 }
 @media(max-width:900px) {
   .malatang-game-nav .wallet-badge {

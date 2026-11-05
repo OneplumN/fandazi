@@ -44,7 +44,7 @@ export function CupArt({api,state,tea,toppings=[],level=1}) {
  h('ellipse',{className:'cup-ground-shadow',cx:180,cy:229,rx:54,ry:6,fill:'#9D7957',opacity:.14}),
  h('g',{transform:state.size===700?'translate(0 0)':'translate(18 22) scale(.9)'},
  h('g',{className:mixing?'cup-rock':''},h('g',{key:kick?state.interaction.serial:0,className:kick?'cup-hand-shake':''},
- h('defs',null,h('clipPath',{id:`${uid}-cup`},h('path',{d:'M109 48 L126 214 Q180 231 234 214 L251 48 Z'})),h('clipPath',{id:`${uid}-drink`},h('path',{className:'cup-liquid-edge',d:`M94 ${surface} Q136 ${surface-6} 180 ${surface} T266 ${surface} V235 H94 Z`}))),
+ h('defs',null,h('clipPath',{id:`${uid}-cup`},h('path',{d:'M109 48 L126 214 Q180 231 234 214 L251 48 Z'})),h('clipPath',{id:`${uid}-drink`},h('path',{className:'cup-liquid-edge',d:'M94 62 Q136 56 180 62 T266 62 V235 H94 Z',style:{transform:`translateY(${surface-62}px)`}}))),
  path('M109 48 L126 214 Q180 231 234 214 L251 48 Z','#F4E8D1'),
  h('g',{clipPath:`url(#${uid}-cup)`},h('g',{clipPath:`url(#${uid}-drink)`,'data-fill-level':amount,opacity:amount?1:0},
  h('rect',{x:100,y:40,width:165,height:195,fill:color}),
@@ -53,10 +53,11 @@ export function CupArt({api,state,tea,toppings=[],level=1}) {
  ...Array.from({length:amount?iceCount:0},(_,n)=>h('g',{key:`ice${n}`,className:'cup-ice-drift',style:{'--lag':`${n*-140}ms`}},h('rect',{className:'cup-ice',x:126+(n%3)*31,y:surface+(foam?31:9)+Math.floor(n/3)*24,width:18,height:18,rx:4,fill:'#DCE9E2',stroke:ink,strokeWidth:1.2,transform:`rotate(${n%2?14:-10} ${135+n%3*31} ${surface+(foam?40:18)+Math.floor(n/3)*24})`}))),
  foam&&amount>0&&path(`M108 ${surface+3} Q130 ${surface-3} 151 ${surface+3} T198 ${surface+3} T252 ${surface+3} V${surface+24} Q180 ${surface+32} 108 ${surface+24} Z`,'#F7E8CD',{className:'cup-foam-drift',strokeWidth:1.5}))),
  path('M109 48 L126 214 Q180 231 234 214 L251 48','none'),h('ellipse',{...line,cx:180,cy:48,rx:71,ry:13,fill:'#EEDCB5'}),
+ state.drinking&&h('g',{className:'cup-sip-beads',fill:'#76513D',stroke:ink,strokeWidth:1},...[0,1,2].map(n=>h('circle',{key:n,cx:207,cy:45,r:3,style:{'--sip-lag':`${n*90}ms`}}))),
  h('g',{className:`cup-straw-flex ${state.strawPoked?'is-poked':''}`},path('M201 44 L214 4 H225 L212 47','#CBA5AF')),h(api.Face,{x:180,y:151,scale:1.9,mood:0}),path('M125 80 L139 179','none',{stroke:'#FFF9EA',strokeWidth:6,opacity:.6})))),
  h('text',{x:180,y:252,textAnchor:'middle',fill:'#624735',fontSize:12},`${state.size}mL · ${state.ice}`));
 }
-export function BreakfastArt({api,state,bites=0,folded=false}) {
+export function BreakfastArt({api,state,bites=0,folded=false,biteMarks=[]}) {
  const ref=useVisibleArt(),uid=React.useId().replaceAll(':',''),pan=state.phase==='cooking',ready=state.phase==='ready',heat=(state.sides?.[state.side || 0] || 0)/6;
  const color=mix('#EDD199',heat>1.3?'#B98A54':'#E3B76D',Math.min(1,Math.max(0,heat>1.3?(heat-1.3)*.6+.4:heat)));
  const flipping=pan&&state.interaction?.type==='flip';
@@ -67,7 +68,7 @@ export function BreakfastArt({api,state,bites=0,folded=false}) {
  pan&&h('g',{className:'pancake-sizzle'},...[[77,127],[103,181],[280,133],[254,181],[141,83],[224,83]].map(([cx,cy],n)=>h('circle',{key:n,cx,cy,r:2.6,fill:'#F6E5B8',stroke:'#D1AE6C',strokeWidth:1,style:{'--lag':`${n*-.23}s`}}))),
  flipping&&h('g',{key:`spatula${state.interaction.serial}`,className:'pancake-spatula','aria-hidden':true},path('M239 164 L302 193 L314 177 L249 145','#BA9972'),path('M209 143 L244 131 L266 157 L231 175 Z','#D5C4A7'),path('M223 144 L243 158 M232 140 L252 154','none',{stroke:'#8D7963',strokeWidth:2})),
  h('ellipse',{cx:180,cy:149,rx:105,ry:48,fill:'#3D2B23',opacity:pan?.12:0,className:flipping?'pancake-flight-shadow':'' ,key:flipping?`shadow${state.interaction.serial}`:'shadow'}),
- h('defs',null,h('mask',{id:`${uid}-bite`,maskUnits:'userSpaceOnUse',x:0,y:0,width:360,height:260},h('rect',{width:360,height:260,fill:bites>=4?'black':'white'}),...[[252,109,31],[218,83,34],[179,95,39]].slice(0,bites).map(([cx,cy,r],n)=>h('circle',{key:n,cx,cy,r,fill:'black'})))),
+ h('defs',null,h('mask',{id:`${uid}-bite`,maskUnits:'userSpaceOnUse',x:0,y:0,width:360,height:260},h('rect',{width:360,height:260,fill:bites>=4?'black':'white'}),...(biteMarks.length>=bites?biteMarks.map(m=>[m.cx,m.cy,m.r]):[[252,109,31],[218,83,34],[179,95,39]]).slice(0,bites).map(([cx,cy,r],n)=>h('circle',{key:n,cx,cy,r,fill:'black'})))),
  h('g',{mask:`url(#${uid}-bite)`,key:flipping?`flip${state.interaction.serial}`:'pancake',className:flipping?'pancake-flip':folded?'served-pancake':''},
  folded?path('M77 127 Q180 39 282 127 L257 183 Q179 221 102 181 Z',color):h('ellipse',{...line,cx:180,cy:139,rx:111,ry:64,fill:ready?'#EDD9AE':color}),
  pan&&h('g',{className:'pancake-toast-marks',opacity:Math.min(.7,Math.max(0,heat*.45))},...[[132,116,8],[212,122,5],[161,170,7],[231,158,6],[105,148,4],[183,101,4]].map(([cx,cy,r],n)=>h('ellipse',{key:n,cx,cy,rx:r,ry:r*.45,fill:'#AC763E'}))),
@@ -75,6 +76,7 @@ export function BreakfastArt({api,state,bites=0,folded=false}) {
  state.egg&&!ready&&(!pan||state.side===0)&&h('g',null,path(folded?'M108 149 Q155 127 205 144 L242 158 L231 174 L116 173 Z':'M113 126 Q139 101 179 114 Q221 98 248 129 Q256 158 220 164 Q180 184 136 163 Q107 156 113 126 Z','#F2E2B7',{strokeWidth:1.5}),!folded&&h('ellipse',{cx:185,cy:139,rx:20,ry:16,fill:'#DDB357',stroke:ink,strokeWidth:1.5})),
  !ready&&!pan&&h('g',{'data-breakfast-fillings':state.fillings.join(',')},...state.fillings.map((id,n)=>h('g',{key:id,transform:`translate(${106+n*45} ${folded?130:111}) scale(.8)`},h(IngredientArt,{id,size:64}))),path(folded?'M112 160 Q145 145 173 160 T243 160':'M112 137 Q141 117 171 137 T246 137 M120 157 Q150 140 180 157 T240 157','none',{stroke:sauce,strokeWidth:5,'data-sauce':state.sauce})),
  h(api.Face,{x:179,y:folded?188:143,scale:1.15,mood:0})),
+ bites>0&&h('g',{className:'breakfast-plate-crumbs',fill:'#D4B079',stroke:'#A57C52',strokeWidth:1},...Array.from({length:Math.min(bites,3)*3},(_,n)=>h('ellipse',{key:n,cx:105+(n*37)%145,cy:193+(n%3)*6,rx:2+n%2,ry:1.5,transform:`rotate(${n*23} ${105+(n*37)%145} ${193+(n%3)*6})`}))),
  ready&&h('text',{x:180,y:248,textAnchor:'middle',fontSize:12,fill:'#624735'},'点饼开摊'));
 }
 export function PotArt({api,color='#E7D3A1',state={}}) {

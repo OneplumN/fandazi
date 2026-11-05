@@ -1,3 +1,4 @@
+import {companionMemory,memoryLine} from './companion-memory.js';
 import {backupNative,saveNativeReceipt} from '../wechat-bridge.js';
 import {X as React} from '../../vendor/react-runtime.js';
 import {TEAS,TOPPINGS,FILLINGS} from './rules.js';
@@ -7,13 +8,15 @@ import {storeTerms} from '../content-client.js';
 import {assetUrl} from '../runtime.js';
 import {LeftoversArt} from './leftovers.js';
 import {MealReview} from './consumer-ui.js';
-import {useConsumer,saveMealNote,recordCompletedMeal} from './consumer-store.js';
+import {useConsumer,readConsumer,saveMealNote,recordCompletedMeal} from './consumer-store.js';
 import {useWallet} from './wallet-store.js';
 const h=React.createElement;
 export function makeMemento({mealId,game,state,items,amount,now=Date.now()}){
  const buddy=buddyById(state.companionId),recipe={};
- for(const key of ['tea','milk','sugar','ice','size','toppings','base','egg','fillings','sauce','broth','seasonApplied','mix','shakes','season','heat','sides','items','served','entries','soupLevel'])if(state[key]!==undefined)recipe[key]=state[key];
- return {id:mealId,game,storeId:state.storeId||game,store:storeTerms(state.storeId||game).name||STORE_NAMES[game],buddyId:buddy.id,amount,at:now,recipe,ingredientNames:game==='tea'?(state.toppings?.length?state.toppings.map(id=>TOPPINGS.find(t=>t.id===id)?.name).filter(Boolean):[TEAS.find(t=>t.id===state.tea)?.name].filter(Boolean)):game==='breakfast'?(state.fillings||[]).map(id=>FILLINGS.find(f=>f.id===id)?.name).filter(Boolean):items.map(f=>f.name),items:items.map(f=>({food:f.food,name:f.name,qty:game==='bbq'||game==='tea'||game==='breakfast'?1:f.bites,doneness:f.doneness})),line:companionLine(buddy.id,{game,stage:'end',state,items})};
+ const cookingStory=game==='bbq'&&state.items?.some(f=>!f.season||f.sides?.some(t=>t/f.cook>1.3))||game==='tea'&&Number.isFinite(state.mix)&&state.mix<.6;
+ const recalled=cookingStory?'':memoryLine(companionMemory(readConsumer(),buddy.id,{excludeMealId:mealId}),{game,stage:'end',state,items});
+ for(const key of ['tea','milk','sugar','ice','size','toppings','base','egg','fillings','sauce','broth','seasonApplied','mix','shakes','season','heat','sides','items','served','entries','soupLevel','spice'])if(state[key]!==undefined)recipe[key]=state[key];
+ return {id:mealId,game,storeId:state.storeId||game,store:storeTerms(state.storeId||game).name||STORE_NAMES[game],buddyId:buddy.id,amount,at:now,recipe,ingredientNames:game==='tea'?(state.toppings?.length?state.toppings.map(id=>TOPPINGS.find(t=>t.id===id)?.name).filter(Boolean):[TEAS.find(t=>t.id===state.tea)?.name].filter(Boolean)):game==='breakfast'?(state.fillings||[]).map(id=>FILLINGS.find(f=>f.id===id)?.name).filter(Boolean):items.map(f=>f.name),items:items.map(f=>({food:f.food,name:f.name,qty:game==='bbq'||game==='tea'||game==='breakfast'?1:f.bites,doneness:f.doneness})),line:recalled||companionLine(buddy.id,{game,stage:'end',state,items})};
 }
 function MementoArt({meal,api}){
  const state={...meal.recipe,phase:'result',sides:[6,6],side:0,companionId:meal.buddyId};
