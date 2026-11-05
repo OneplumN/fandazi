@@ -78,7 +78,7 @@ export function BreakfastArt({api,state,bites=0,folded=false,biteMarks=[]}) {
  !ready&&!pan&&h('g',{'data-breakfast-fillings':state.fillings.join(',')},...state.fillings.map((id,n)=>h('g',{key:id,transform:`translate(${106+n*45} ${folded?130:111}) scale(.8)`},h(IngredientArt,{id,size:64}))),path(folded?'M112 160 Q145 145 173 160 T243 160':'M112 137 Q141 117 171 137 T246 137 M120 157 Q150 140 180 157 T240 157','none',{stroke:sauce,strokeWidth:5,'data-sauce':state.sauce})),
  h(api.Face,{x:179,y:folded?188:143,scale:1.15,mood:0})),
  bites>0&&h('g',{className:'breakfast-plate-crumbs',fill:'#D4B079',stroke:'#A57C52',strokeWidth:1},...Array.from({length:Math.min(bites,3)*3},(_,n)=>h('ellipse',{key:n,cx:105+(n*37)%145,cy:193+(n%3)*6,rx:2+n%2,ry:1.5,transform:`rotate(${n*23} ${105+(n*37)%145} ${193+(n%3)*6})`}))),
- ready&&h('text',{x:180,y:248,textAnchor:'middle',fontSize:12,fill:'#624735'},'点饼开摊'));
+ null);
 }
 export function PotArt({api,color='#E7D3A1',state={}}) {
  const ref=useVisibleArt(),uid=React.useId().replaceAll(':',''),active=state.phase==='cooking';

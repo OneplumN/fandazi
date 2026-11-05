@@ -1961,3 +1961,7 @@ body.modal-open .picked-food-flight {
  .reco-head {align-items:flex-start;gap:8px}
  .reco-card {padding:12px}
 }
+
+.play-settings-panel .settings-action {display:block;width:100%;min-height:44px;text-align:left;padding:8px;border:0;border-radius:8px;background:transparent;color:var(--ink);font:inherit}
+.play-settings-panel .settings-action:hover {background:#F9E6CE}
+.play-settings-panel .settings-action:focus-visible,.warming-items>button:focus-visible {outline:3px solid #9B7047;outline-offset:3px}

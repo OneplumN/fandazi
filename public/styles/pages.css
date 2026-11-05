@@ -1382,7 +1382,7 @@ body[data-dazi-tray=gold] .bbq-serving-platter {
   display: grid;
   gap: 8px
 }
-.warming-items article {
+.warming-items>button {
   display: grid;
   grid-template-columns: 46px minmax(0,1fr) 46px;
   align-items: center;
@@ -1395,7 +1395,7 @@ body[data-dazi-tray=gold] .bbq-serving-platter {
   width: 42px;
   height: 42px
 }
-.warming-items article b {
+.warming-items>button b {
   font-size: 11px;
   display: block;
   margin-bottom: 4px
@@ -1846,7 +1846,7 @@ body[data-dazi-grill=copper] .bbq-grill-drawing>path:first-child {
 .bbq-control-row.is-resting .bbq-control-name small {
   color: #5e713e
 }
-.game-bbq .warming-items article {
+.game-bbq .warming-items>button {
   grid-template-columns: 48px minmax(0,1fr)
 }
 .game-bbq .warming-items .skewer-art {
@@ -1883,6 +1883,8 @@ body[data-dazi-grill=copper] .bbq-grill-drawing>path:first-child {
 }
 @media(max-width:900px) {
   .game-bbq[data-phase=select] .game-workbench>.game-actions,.game-bbq[data-phase=select] .game-status-line {display:none}
+  .game-bbq[data-phase=cooking] .game-cook-actions>.btn--primary,
+  .game-breakfast .game-actions>.btn:last-child:not(:first-child) {display:none}
   .bbq-refined>.game-controls {
     order: 2
   }
@@ -1958,7 +1960,7 @@ body[data-dazi-grill=copper] .bbq-grill-drawing>path:first-child {
     padding: 5px 2px
   }
 }
-.game-bbq .warming-items article {
+.game-bbq .warming-items>button {
   grid-template-columns: 48px minmax(0,1fr) 48px
 }
 .bbq-grate-skewers {
@@ -2634,4 +2636,18 @@ body[data-dazi-grill=copper] .bbq-grill-drawing>path:first-child {
 .game-bbq {
   display: flex;
   flex-direction: column
+}
+
+/* Keep occasional choices out of the main food action. */
+.optional-season>summary {min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700;font-size:13px}
+.optional-season[open]>summary {margin-bottom:8px}
+.app>.malatang-game-nav {padding:0 0 12px}
+.game-tea[data-phase=mixing] .game-layout {grid-template-columns:1fr}
+.game-tea[data-phase=mixing] .game-workbench {width:100%;max-width:740px;margin:auto}
+.game-breakfast[data-phase=ready] .game-controls {align-self:start}
+
+.simple-game .game-workbench>.game-actions {display:flex;justify-content:flex-end}
+@media(max-width:600px) {
+ .game-hotpot[data-phase=setup] .physical-pot {max-width:260px}
+ .simple-game .food-touch-button>svg {max-height:220px}
 }

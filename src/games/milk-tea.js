@@ -3,7 +3,6 @@ import {
   h,
   useEngine,
   GameFrame,
-  Button,
   Choice,
   Customer,
   Pause,
@@ -48,7 +47,7 @@ export function MilkTea({ api }) {
             title: "你的特调，请试饮",
             api,
             onReplay: action(dispatch, "reset"),
-            replayLabel: "接下一杯",
+            replayLabel: "再调一杯",
           },
                     h(
             "p",
@@ -95,20 +94,10 @@ export function MilkTea({ api }) {
                   : "原味不加小料",
               ),
             ),
-            h(
-              "div",
-              { className: "game-status-line" },
-              h(
-                "strong",
-                { className: "recipe-price", "aria-live": "polite" },
-                money(mealPrice(s,teaPrice(s))),
-              ),
 
-            ),
-            h(Button,{disabled:s.paused||s.paymentPending,onClick:action(dispatch,"shake"),"aria-label":"摇匀配方"},s.mix>=1?"摇匀啦":"轻轻摇一摇"),
             s.phase === "mixing" && h(Pause,{state:s,dispatch}),
           ),
-          h(
+          !disabled && h(
             "aside",
             { className: "game-controls" },
             h(Choice, {

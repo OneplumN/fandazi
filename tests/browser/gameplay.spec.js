@@ -25,16 +25,16 @@ test('hotpot direct entry updates delayed quote and uses the first paid factor f
 test('saved sound off remains off with keyboard and synthetic keys never unlock feedback',async({page})=>{
  await page.addInitScript(()=>{localStorage.setItem('dazi.experience.v1',JSON.stringify({sound:false,haptics:false,motion:false}));window.__audioCreated=0;window.AudioContext=class {constructor(){window.__audioCreated++;}};});
  await page.goto('/play/#tea');await page.evaluate(()=>document.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true})));
- await page.getByRole('button',{name:'摇匀配方',exact:true}).focus();await page.keyboard.press('Enter');
+ await page.getByRole('button',{name:'乌龙茶',exact:true}).focus();await page.keyboard.press('Enter');
  expect(await page.evaluate(()=>window.__audioCreated)).toBe(0);
  await expect(page.getByRole('button',{name:'打开声音',exact:true})).toHaveAttribute('aria-pressed','false');
 });
 
 test('sound waits for a trusted gesture and a real keyboard action can unlock it',async({page})=>{
  await page.addInitScript(()=>{localStorage.removeItem('dazi.experience.v1');window.__audioCreated=0;window.AudioContext=class {constructor(){window.__audioCreated++;}};});
- await page.goto('/play/#tea');await page.getByRole('button',{name:'摇匀配方',exact:true}).waitFor();await page.evaluate(()=>{document.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));document.querySelector('button[aria-label="摇匀配方"]').click();});
+ await page.goto('/play/#tea');await page.getByRole('button',{name:'乌龙茶',exact:true}).waitFor();await page.evaluate(()=>{document.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));document.querySelector('.game-choice button[aria-pressed="false"]').click();});
  expect(await page.evaluate(()=>window.__audioCreated)).toBe(0);
- await page.getByRole('button',{name:'摇匀配方',exact:true}).focus();await page.keyboard.press('Enter');
+ await page.getByRole('button',{name:'乌龙茶',exact:true}).focus();await page.keyboard.press('Enter');
  expect(await page.evaluate(()=>window.__audioCreated)).toBe(1);
 });
 
@@ -53,7 +53,7 @@ test('paid tea keeps its factor after street refresh and a closed store cannot r
  await expect(page.getByText('这句味道记住啦，也分享给街坊了。',{exact:true})).toBeVisible();
  expect((await state(page)).discountFactor).toBe(.5);
  const runId=(await state(page)).runId;
- await page.getByRole('button',{name:'接下一杯',exact:true}).click();
+ await page.getByRole('button',{name:'再调一杯',exact:true}).click();
  await expect(page.getByText('小店正在歇业，这餐留着慢慢回味，先逛逛其他小店吧。',{exact:true})).toBeVisible();
  expect((await state(page)).runId).toBe(runId);expect((await state(page)).phase).toBe('result');
  await expect(page.getByRole('button',{name:'逛逛其他小店',exact:true})).toBeVisible();

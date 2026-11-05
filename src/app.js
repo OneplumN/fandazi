@@ -498,9 +498,6 @@ function WeightDisplay({
   budget: d,
   over: r,
   onBudget: S,
-  onNews: g,
-  onSettings: O,
-  onAdmin: D,
 }) {
   return i.jsxs(i.Fragment, {
     children: [
@@ -537,35 +534,6 @@ function WeightDisplay({
                     "aria-label": "本次预算",
                   }),
                 ],
-              }),
-            ],
-          }),
-          i.jsxs("div", {
-            className: "hud-actions",
-            children: [
-              i.jsx("button", {
-                className: "icon-btn",
-                onClick: g,
-                title: "麻辣烫小报",
-                "aria-label":"麻辣烫小报",
-                type: "button",
-                children: "📰",
-              }),
-              i.jsx("button", {
-                className: "icon-btn",
-                onClick: O,
-                title: "单价设置",
-                "aria-label":"单价设置",
-                type: "button",
-                children: "⚙️",
-              }),
-              i.jsx("button", {
-                className: "icon-btn",
-                onClick: D,
-                title: "后台管理",
-                "aria-label":"后台管理",
-                type: "button",
-                children: "🔑",
               }),
             ],
           }),
@@ -1647,6 +1615,7 @@ function MalatangGame({
   offline: r,
   onSettings: S,
   onAdmin: g,
+  renderNav,
 }) {
   const {profile:buddyHistory}=useConsumer();
   const [storeId]=X.useState(()=>resolveStoreId('malatang'));
@@ -1711,6 +1680,7 @@ function MalatangGame({
     i.jsxs("div", {
       className: "app",
       children: [
+        renderNav?.({onNews:()=>A(true),onSettings:()=>Q(true),onAdmin:g}),
         i.jsx(WeightDisplay, {
           settings: d,
           price: rl.price,
@@ -1722,9 +1692,6 @@ function MalatangGame({
               localStorage.setItem("malatang.budget", String(ol));
             } catch {}
           },
-          onNews: () => A(!0),
-          onSettings: () => Q(!0),
-          onAdmin: g,
         }),
         i.jsxs("div", {
           className: "tipbar",
@@ -2815,7 +2782,7 @@ function readSettings() {
     return {};
   }
 }
-function MalatangApp() {
+function MalatangApp({renderNav}) {
   const [s, f] = X.useState(() => STATIC_MODE?builtInBootstrap():null),
     [d, r] = X.useState(readSettings),
     [S, g] = X.useState(() =>
@@ -2854,6 +2821,7 @@ function MalatangApp() {
   return S === "admin"
     ? i.jsx(L3, { onExit: () => O("play") })
     : i.jsx(MalatangGame, {
+        renderNav,
         ingredients: s.ingredients,
         news: s.news,
         settings: _,

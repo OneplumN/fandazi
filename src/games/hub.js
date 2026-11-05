@@ -125,14 +125,11 @@ function CollectionContents({ api, Malatang }) {
     return h(
       React.Fragment,
       null,
-      h(
-        "nav",
-        { className: "malatang-game-nav" },
-        h("a", { href: "#home" }, "← 小馆首页"),
-        h(WalletBadge, {}),h(FeedbackSettings,{},h(FavoriteButton,{game:storeId,name:selected?.name})),
-      ),
       h(RegularWelcome,{game:storeId,name:storeTerms(storeId).name||selected.name,buddyId:profile.buddyId}),
-      h(Malatang,{key:storeId}),
+      h(Malatang,{key:storeId,renderNav:tools=>h("nav",{className:"malatang-game-nav"},
+        h("a",{href:"#home"},"← 小馆首页"),h(WalletBadge,{}),
+        h(FeedbackSettings,{},h(FavoriteButton,{game:storeId,name:selected?.name}),
+          ...[["麻辣烫小报",tools.onNews],["单价设置",tools.onSettings],["后台管理",tools.onAdmin]].map(([label,onClick])=>h("button",{key:label,type:"button",className:"settings-action",onClick:event=>{const menu=event.currentTarget.closest("details.experience-settings");menu.open=false;menu.querySelector("summary").focus({preventScroll:true});onClick();}},label))))}),
     );
   if (activeGame === "bbq") return h(React.Fragment,null,h(RegularWelcome,{game:storeId,name:storeTerms(storeId).name||selected.name,buddyId:profile.buddyId}),h(BBQ, { api:{...api,storeId},key:storeId }));
   if (activeGame === "tea") return h(React.Fragment,null,h(RegularWelcome,{game:storeId,name:storeTerms(storeId).name||selected.name,buddyId:profile.buddyId}),h(MilkTea, { api:{...api,storeId},key:storeId }));

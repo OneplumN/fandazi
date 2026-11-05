@@ -366,7 +366,7 @@ export function GameFrame({
             }
           },
         }),
-        h(FeedbackSettings,{},h(FavoriteButton,{game:state.storeId||id}),      h(
+        h(FeedbackSettings,{},h(FavoriteButton,{game:state.storeId||id}),id==="bbq"&&state.phase==="cooking"&&h(Button,{disabled:state.paymentPending,onClick:event=>{const menu=event.currentTarget.closest("details.experience-settings");menu.open=false;menu.querySelector("summary").focus({preventScroll:true});dispatch({type:"undo"});}},"撤销这盘 · 原路退款"),      h(
         "details",
         {
           className: "game-guide",
@@ -413,7 +413,7 @@ export function GameFrame({
           "已暂停，火候停住了。准备好再继续。",
         ),
       state.paymentMessage && !state.checkout && h("p",{className:"game-pause-note coin-slap",role:"status"},state.paymentMessage),
-      id==="bbq"&&state.phase==="cooking"&&h(Button,{disabled:state.paymentPending,onClick:()=>dispatch({type:"undo"})},"撤销这盘 · 原路退款"),
+
       children,
       !["result", "shift"].includes(state.phase) &&
         !hotpotDining &&
@@ -501,16 +501,16 @@ function MobileDock({ id, state: s, dispatch }) {
     disabled = s.phase === "select" && !s.selected.length;
   }
   if (id === "tea") {
-    text=s.phase === "recipe"?`${money(mealPrice(s,teaPrice(s)))} · 点杯开做`:"正在装杯";
-    label=s.phase === "recipe"?"摇这杯":"摇一摇";type=s.phase === "recipe"?"mix":"shake";
+    text=s.phase === "recipe"?money(mealPrice(s,teaPrice(s))):s.mix>=1?"摇匀啦":"点杯摇匀";
+    label=s.phase === "recipe"?"开做":"摇一摇";type=s.phase === "recipe"?"mix":"shake";
     disabled=!!s.paymentPending;
   }
   if (id === "hotpot") {
-    text=s.phase === "setup"?"点食材直接下锅":`锅里 ${s.pot.length} 份`;
+    text=s.phase === "setup"?"挑几样喜欢的":`锅里 ${s.pot.length} 份`;
     label=!s.pot.length&&s.served.length?"看碗里":"看锅里";type=null;
   }
   if (id === "breakfast") {
-    text=s.phase === "ready"?`早餐${mealPrice(s,10)}金币 · 点饼开摊`:"点饼翻面，点配菜加入";
+    text=s.phase === "ready"?`${mealPrice(s,10)}金币 · 含蛋和配菜`:s.phase === "cooking"?"点饼翻面":"配好就包起来";
     label=s.phase === "ready"?"摊这张饼":s.phase === "assembling"?"包起来":"包起来";
     type=s.phase === "ready"?"start":s.phase === "assembling"?"deliver":"wrap";
     disabled=!!s.paymentPending || (s.phase!=="ready"&&s.paused);
@@ -536,7 +536,7 @@ function MobileDock({ id, state: s, dispatch }) {
         },
         "看烤炉",
       ),
-    id !== "bbq" && h(Button,{onClick:()=>document.querySelector(".game-controls")?.scrollIntoView({block:"start"})},id === "tea"?"选配方":id === "hotpot"?"挑食材":(s.phase === "ready"?"选饼底":"挑配菜")),
+    id !== "bbq" && !(id === "tea" && s.phase !== "recipe") && h(Button,{onClick:()=>document.querySelector(".game-controls")?.scrollIntoView({block:"start"})},id === "tea"?"选配方":id === "hotpot"?"挑食材":(s.phase === "ready"?"选饼底":"挑配菜")),
     h(
       Button,
       {

@@ -114,8 +114,8 @@ export function Hotpot({ api }) {
                 "b",
                 null,
                 s.phase === "setup"
-                  ? "开锅准备中"
-                  : `不限时 · 锅内 ${s.pot.length}/6`,
+                  ? s.broth
+                  : `${s.broth} · ${s.pot.length}/6份`,
               ),
               h(
                 "span",
@@ -131,14 +131,14 @@ export function Hotpot({ api }) {
           h(
             "aside",
             { className: "game-controls" },
-            h(Choice, {
-              label: "选一锅今天的心情",
+            s.phase === "setup" && h(Choice, {
+              label: "汤底",
               options: BROTHS.map((b) => b.name),
               value: s.broth,
               onChange: (value) => dispatch({ type: "broth", value }),
               disabled: s.phase !== "setup",
             }),
-            h("h2", null, "咕嘟咕嘟，下点什么？"),
+            h("h2", null, "下点什么？"),
 
             h(
               "div",
